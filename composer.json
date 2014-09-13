@@ -1,0 +1,25 @@
+{
+    "name": "brick/http",
+    "description": "HTTP request and response library",
+    "type": "library",
+    "keywords": [
+        "Brick",
+        "HTTP",
+        "Request",
+        "Response"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=5.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*",
+        "satooshi/php-coveralls": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Brick\\Http\\": "src/",
+            "Brick\\Http\\Tests\\": "tests/"
+        }
+    }
+}
