@@ -1,6 +1,6 @@
 <?php
 
-namespace Brick\Tests\Http;
+namespace Brick\Http\Tests;
 
 use Brick\Http\Cookie;
 
