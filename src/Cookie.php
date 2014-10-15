@@ -73,6 +73,8 @@ class Cookie
     }
 
     /**
+     * @deprecated
+     *
      * @param string      $name
      * @param string      $value
      * @param integer     $expires
@@ -85,9 +87,12 @@ class Cookie
      */
     public static function create($name, $value, $expires = 0, $path = null, $domain = null, $secure = false, $httpOnly = false)
     {
-        $hostOnly = ($domain === null);
-
-        return new self($name, $value, $expires, $path, $domain, $hostOnly, $secure, $httpOnly);
+        return (new Cookie($name, $value))
+            ->setExpires($expires)
+            ->setPath($path)
+            ->setDomain($domain)
+            ->setSecure($secure)
+            ->setHttpOnly($httpOnly);
     }
 
     /**
@@ -147,7 +152,7 @@ class Cookie
                                 break;
 
                             case 'path':
-                                    $path = $elements[1];
+                                $path = $elements[1];
                                 break;
 
                             case 'domain':
