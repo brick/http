@@ -73,29 +73,6 @@ class Cookie
     }
 
     /**
-     * @deprecated
-     *
-     * @param string      $name
-     * @param string      $value
-     * @param integer     $expires
-     * @param string|null $path
-     * @param string|null $domain
-     * @param boolean     $secure
-     * @param boolean     $httpOnly
-     *
-     * @return Cookie
-     */
-    public static function create($name, $value, $expires = 0, $path = null, $domain = null, $secure = false, $httpOnly = false)
-    {
-        return (new Cookie($name, $value))
-            ->setExpires($expires)
-            ->setPath($path)
-            ->setDomain($domain)
-            ->setSecure($secure)
-            ->setHttpOnly($httpOnly);
-    }
-
-    /**
      * Creates a cookie from the contents of a Set-Cookie header.
      *
      * @param string $string
