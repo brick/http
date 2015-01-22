@@ -3,8 +3,8 @@ Brick\Http
 
 Provides classes to work with HTTP requests and responses.
 
-[![Build Status](https://secure.travis-ci.org/brick/http.png?branch=master)](http://travis-ci.org/brick/http)
-[![Coverage Status](https://coveralls.io/repos/brick/http/badge.png?branch=master)](https://coveralls.io/r/brick/http?branch=master)
+[![Build Status](https://secure.travis-ci.org/brick/http.svg?branch=master)](http://travis-ci.org/brick/http)
+[![Coverage Status](https://coveralls.io/repos/brick/http/badge.svg?branch=master)](https://coveralls.io/r/brick/http?branch=master)
 
 Installation
 ------------
