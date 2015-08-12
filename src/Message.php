@@ -107,6 +107,34 @@ abstract class Message
     }
 
     /**
+     * Returns the value of the first header by the given case-insensitive name, or null if no such header is present.
+     *
+     * @param string $name
+     *
+     * @return string|null
+     */
+    public function getFirstHeader($name)
+    {
+        $name = strtolower($name);
+
+        return isset($this->headers[$name]) ? reset($this->headers[$name]) : null;
+    }
+
+    /**
+     * Returns the value of the last header by the given case-insensitive name, or null if no such header is present.
+     *
+     * @param string $name
+     *
+     * @return string|null
+     */
+    public function getLastHeader($name)
+    {
+        $name = strtolower($name);
+
+        return isset($this->headers[$name]) ? end($this->headers[$name]) : null;
+    }
+
+    /**
      * Retrieves a header by the given case-insensitive name as an array of strings.
      *
      * @param string $name

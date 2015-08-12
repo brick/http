@@ -989,6 +989,24 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('4.3.2.1', $request->getClientIp());
     }
 
+    public function testGetFirstLastHeader()
+    {
+        $request = new Request();
+        $request->addHeader('Referer', 'http://example.com/1');
+        $request->addHeader('Referer', 'http://example.com/2');
+        $request->addHeader('Referer', 'http://example.com/3');
+
+        $this->assertSame('http://example.com/1', $request->getFirstHeader('Referer'));
+        $this->assertSame('http://example.com/3', $request->getLastHeader('Referer'));
+    }
+
+    public function testGetFirstLastHeaderNull()
+    {
+        $request = new Request();
+        $this->assertNull($request->getFirstHeader('Referer'));
+        $this->assertNull($request->getLastHeader('Referer'));
+    }
+
     /**
      * @dataProvider providerAcceptLanguage
      *
