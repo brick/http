@@ -98,9 +98,9 @@ class Url
         }
 
         if (isset($parts['path'])) {
-            $this->path = $parts['path'];
+            $this->path = new Path($parts['path']);
         } else {
-            $this->path = '/';
+            $this->path = new Path('/');
         }
 
         if (isset($parts['query'])) {
@@ -181,7 +181,7 @@ class Url
         return $this->port;
     }
     /**
-     * @return string
+     * @return Path
      */
     public function getPath()
     {

@@ -1,7 +1,9 @@
 <?php
 
 namespace Brick\Http\Tests;
+
 use Brick\Http\Url;
+use Brick\Http\Path;
 
 /**
  * Tests for class Url.
@@ -30,7 +32,8 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($scheme, $url->getScheme());
         $this->assertSame($host, $url->getHost());
         $this->assertSame($port, $url->getPort());
-        $this->assertSame($path, $url->getPath());
+        $this->assertInstanceOf(Path::class, $url->getPath());
+        $this->assertSame($path, (string) $url->getPath());
         $this->assertSame($query, $url->getQuery());
         $this->assertSame($fragment, $url->getFragment());
         $this->assertSame($isStandardPort, $url->isStandardPort());
