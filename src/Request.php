@@ -654,6 +654,8 @@ class Request extends Message
     /**
      * Returns whether the host is on the given domain, or optionally on a sub-domain of it.
      *
+     * @todo should be used against getUrl(), which should return a Url object.
+     *
      * @param string $host
      * @param bool   $includeSubDomains
      *

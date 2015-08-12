@@ -76,4 +76,68 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             ['http://host:port'],
         ];
     }
+
+    /**
+     * @dataProvider providerIsHost
+     *
+     * @param string $urlHost
+     * @param string $testHost
+     * @param bool   $includeSubDomains
+     * @param bool   $result
+     */
+    public function testIsHost($urlHost, $testHost, $includeSubDomains, $result)
+    {
+        $url = new Url('http://' . $urlHost);
+        $this->assertSame($result, $url->isHost($testHost, $includeSubDomains));
+    }
+
+    /**
+     * @return array
+     */
+    public function providerIsHost()
+    {
+        return [
+            ['example.com', 'example.com', false, true],
+            ['example.com', 'example.com', true, true],
+
+            ['anexample.com', 'example.com', false, false],
+            ['anexample.com', 'example.com', true, false],
+
+            ['example2.com', 'example.com', false, false],
+            ['example2.com', 'example.com', true, false],
+
+            ['example.com', 'anexample.com', false, false],
+            ['example.com', 'anexample.com', true, false],
+
+            ['example.com', 'example2.com', false, false],
+            ['example.com', 'example2.com', true, false],
+
+            ['en.example.com', 'Example.com', false, false],
+            ['en.example.com', 'Example.com', true, true],
+
+            ['EN.admin.Example.com', 'example.com', false, false],
+            ['EN.admin.Example.com', 'example.com', true, true],
+
+            ['admin.anexample.com', 'example.com', false, false],
+            ['admin.anexample.com', 'example.com', true, false],
+
+            ['admin.example2.com', 'example.com', false, false],
+            ['admin.example2.com', 'example.com', true, false],
+
+            ['admin.example.com', 'anexample.com', false, false],
+            ['admin.example.com', 'anexample.com', true, false],
+
+            ['admin.example.com', 'example2.com', false, false],
+            ['admin.example.com', 'example2.com', true, false],
+
+            ['admin.example.com', 'admin.example.com', false, true],
+            ['admin.Example.com', 'ADMIN.example.com', true, true],
+
+            ['fr.admin.example.com', 'admin.example.com', false, false],
+            ['fr.admin.Example.com', 'ADMIN.example.com', true, true],
+
+            ['example.com', 'admin.example.com', false, false],
+            ['example.com', 'admin.example.com', true, false],
+        ];
+    }
 }

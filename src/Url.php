@@ -151,6 +151,29 @@ class Url
     }
 
     /**
+     * Returns whether the host is on the given domain, or optionally on a sub-domain of it.
+     *
+     * @param string $host
+     * @param bool   $includeSubDomains
+     *
+     * @return bool
+     */
+    public function isHost($host, $includeSubDomains = false)
+    {
+        $thisHost = strtolower($this->host);
+        $thatHost = strtolower($host);
+
+        if (! $includeSubDomains) {
+            return $thisHost == $thatHost;
+        }
+
+        $thisHost = explode('.', $thisHost);
+        $thatHost = explode('.', $thatHost);
+
+        return array_slice($thisHost, - count($thatHost)) == $thatHost;
+    }
+
+    /**
      * @return int
      */
     public function getPort()
