@@ -961,6 +961,26 @@ class Request extends Message
     }
 
     /**
+     * Returns the Referer URL if it is present and valid, else null.
+     *
+     * @return Url|null
+     */
+    public function getReferer()
+    {
+        $referer = $this->getFirstHeader('Referer');
+
+        if ($referer === null) {
+            return null;
+        }
+
+        try {
+            return new Url($referer);
+        } catch (\InvalidArgumentException $e) {
+            return null;
+        }
+    }
+
+    /**
      * Returns whether this request is sent over a secure connection (HTTPS).
      *
      * @return boolean True if the request is secure, false otherwise.

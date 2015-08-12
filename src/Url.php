@@ -1,0 +1,207 @@
+<?php
+
+namespace Brick\Http;
+
+/**
+ * An http(s) URL.
+ *
+ * Note that the URL is normalized by applying the following transformations:
+ *
+ * - The scheme and host name are converted to lower case;
+ * - If a standard port number is explicitly specified, it is removed;
+ * - If a path is not present, it is defaulted to a single `/` character;
+ * - If a query separator is present but the query string is empty, the separator is removed;
+ * - If a fragment separator is present but the fragment is empty, the separator is removed.
+ */
+class Url
+{
+    /**
+     * @var string
+     */
+    private $url;
+
+    /**
+     * The scheme, http or https.
+     *
+     * @var string
+     */
+    private $scheme;
+
+    /**
+     * The host name.
+     *
+     * @var string
+     */
+    private $host;
+
+    /**
+     * The port number.
+     *
+     * @var int
+     */
+    private $port;
+
+    /**
+     * The path.
+     *
+     * @var string
+     */
+    private $path;
+
+    /**
+     * The query string, after the `?` character. Can be empty.
+     *
+     * @var string
+     */
+    private $query;
+
+    /**
+     * The fragment, after the `#` character. Can be empty.
+     *
+     * @var string
+     */
+    private $fragment;
+
+    /**
+     * @param string $url
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function __construct($url)
+    {
+        $url = (string) $url;
+        $parts = parse_url($url);
+
+        if ($parts === false) {
+            throw new \InvalidArgumentException('URL is malformed.');
+        }
+
+        if (! isset($parts['scheme'])) {
+            throw new \InvalidArgumentException('URL must contain a scheme, http or https.');
+        }
+
+        if (! isset($parts['host'])) {
+            throw new \InvalidArgumentException('URL must contain a host name.');
+        }
+
+        $this->scheme = strtolower($parts['scheme']);
+        $this->host = strtolower($parts['host']);
+
+        if ($this->scheme != 'http' && $this->scheme != 'https') {
+            throw new \InvalidArgumentException('URL scheme must be http or https.');
+        }
+
+        if (isset($parts['port'])) {
+            $this->port = $parts['port'];
+        } else {
+            $this->port = ($this->scheme == 'https') ? 443 : 80;
+        }
+
+        if (isset($parts['path'])) {
+            $this->path = $parts['path'];
+        } else {
+            $this->path = '/';
+        }
+
+        if (isset($parts['query'])) {
+            $this->query = $parts['query'];
+        } else {
+            $this->query = '';
+        }
+
+        if (isset($parts['fragment'])) {
+            $this->fragment = $parts['fragment'];
+        } else {
+            $this->fragment = '';
+        }
+
+        $url = $this->scheme . '://' . $this->host;
+
+        if (! $this->isStandardPort()) {
+            $url .= ':' . $this->port;
+        }
+
+        $url .= $this->path;
+
+        if ($this->query != '') {
+            $url .= '?' . $this->query;
+        }
+
+        if ($this->fragment != '') {
+            $url .= '#' . $this->fragment;
+        }
+
+        $this->url = $url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getScheme()
+    {
+        return $this->scheme;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPort()
+    {
+        return $this->port;
+    }
+    /**
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQuery()
+    {
+        return $this->query;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFragment()
+    {
+        return $this->fragment;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStandardPort()
+    {
+        return $this->port == ($this->scheme == 'https' ? 443 : 80);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSecure()
+    {
+        return $this->scheme == 'https';
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->url;
+    }
+}

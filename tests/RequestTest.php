@@ -3,6 +3,7 @@
 namespace Brick\Http\Tests;
 
 use Brick\Http\Request;
+use Brick\Http\Url;
 
 /**
  * Unit tests for class Request.
@@ -1005,6 +1006,29 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $request = new Request();
         $this->assertNull($request->getFirstHeader('Referer'));
         $this->assertNull($request->getLastHeader('Referer'));
+    }
+
+    public function testGetReferer()
+    {
+        $request = new Request();
+        $request->addHeader('Referer', 'https://example.com/path?query=string');
+        $referer = $request->getReferer();
+
+        $this->assertInstanceOf(Url::class, $referer);
+        $this->assertSame('https://example.com/path?query=string', (string) $referer);
+    }
+
+    public function testGetRefererEmpty()
+    {
+        $request = new Request();
+        $this->assertNull($request->getReferer());
+    }
+
+    public function testGetRefererInvalid()
+    {
+        $request = new Request();
+        $request->addHeader('Referer', 'example.com');
+        $this->assertNull($request->getReferer());
     }
 
     /**
