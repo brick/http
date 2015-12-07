@@ -7,15 +7,12 @@ namespace Brick\Http;
  */
 abstract class Message
 {
-    const HTTP_1_0 = 'HTTP/1.0';
-    const HTTP_1_1 = 'HTTP/1.1';
-
     const CRLF = "\r\n";
 
     /**
      * @var string
      */
-    protected $protocolVersion = 'HTTP/1.0';
+    protected $protocolVersion = '1.0';
 
     /**
      * The message headers.
@@ -33,7 +30,7 @@ abstract class Message
     protected $body = null;
 
     /**
-     * Returns the protocol version, such as 'HTTP/1.0'.
+     * Returns the protocol version, such as '1.0'.
      *
      * @return string
      */

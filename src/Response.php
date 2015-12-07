@@ -83,7 +83,7 @@ class Response extends Message
     {
         $responseObject = new Response();
 
-        if (preg_match('/^(HTTP\/[0-9]\.[0-9]) ([0-9]{3}) .*\r\n/', $response, $matches) == 0) {
+        if (preg_match('/^HTTP\/([0-9]\.[0-9]) ([0-9]{3}) .*\r\n/', $response, $matches) == 0) {
             throw new \RuntimeException('Could not parse response (error 1).');
         }
 
@@ -328,6 +328,6 @@ class Response extends Message
      */
     public function getStartLine()
     {
-        return sprintf('%s %d %s', $this->protocolVersion, $this->statusCode, $this->reasonPhrase);
+        return sprintf('HTTP/%s %d %s', $this->protocolVersion, $this->statusCode, $this->reasonPhrase);
     }
 }

@@ -16,7 +16,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $response = new Response();
 
         $this->assertSame('HTTP/1.0 200 OK', $response->getStartLine());
-        $this->assertSame('HTTP/1.0', $response->getProtocolVersion());
+        $this->assertSame('1.0', $response->getProtocolVersion());
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame('OK', $response->getReasonPhrase());
         $this->assertSame([], $response->getHeaders());

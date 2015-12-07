@@ -2,6 +2,8 @@
 
 namespace Brick\Http;
 
+use Brick\Http\Exception\HttpBadRequestException;
+
 /**
  * Represents an HTTP request received by the server.
  */
@@ -201,7 +203,11 @@ class Request extends Message
         }
 
         if (isset($_SERVER['SERVER_PROTOCOL'])) {
-            $request->protocolVersion = $_SERVER['SERVER_PROTOCOL'];
+            if (preg_match('|^HTTP/(.+)$|', $_SERVER['SERVER_PROTOCOL'], $matches) !== 1) {
+                throw new HttpBadRequestException('Invalid protocol: ' . $_SERVER['SERVER_PROTOCOL']);
+            }
+
+            $request->protocolVersion = $matches[1];
         }
 
         if (isset($_SERVER['REMOTE_ADDR'])) {
@@ -522,7 +528,7 @@ class Request extends Message
      */
     public function getStartLine()
     {
-        return sprintf('%s %s %s', $this->method, $this->requestUri, $this->protocolVersion);
+        return sprintf('%s %s HTTP/%s', $this->method, $this->requestUri, $this->protocolVersion);
     }
 
     /**

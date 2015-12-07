@@ -15,7 +15,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $request = new Request();
 
         $this->assertSame('GET / HTTP/1.0', $request->getStartLine());
-        $this->assertSame('HTTP/1.0', $request->getProtocolVersion());
+        $this->assertSame('1.0', $request->getProtocolVersion());
         $this->assertNull($request->getBody());
         $this->assertSame([], $request->getHeaders());
         $this->assertSame([], $request->getQuery());
@@ -280,7 +280,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $_SERVER = ['SERVER_PROTOCOL' => 'HTTP/1.1'];
         $request = Request::getCurrent();
 
-        $this->assertSame('HTTP/1.1', $request->getProtocolVersion());
+        $this->assertSame('1.1', $request->getProtocolVersion());
     }
 
     public function testGetCurrentWithRemoteAddr()
@@ -611,7 +611,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $request = (new Request())
             ->setMethod('POST')
             ->setRequestUri('/test')
-            ->setProtocolVersion('HTTP/1.1');
+            ->setProtocolVersion('1.1');
 
         $this->assertSame('POST /test HTTP/1.1', $request->getStartLine());
     }
