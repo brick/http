@@ -18,9 +18,9 @@ class HttpException extends \RuntimeException
      * @param string          $statusCode The HTTP status code.
      * @param array           $headers    An optional associative array of HTTP headers.
      * @param string          $message    An optional exception message for debugging.
-     * @param \Exception|null $previous   An optional previous exception for chaining.
+     * @param \Throwable|null $previous   An optional previous exception for chaining.
      */
-    public function __construct($statusCode, array $headers = [], $message = '', \Exception $previous = null)
+    public function __construct($statusCode, array $headers = [], $message = '', \Throwable $previous = null)
     {
         parent::__construct($message, $statusCode, $previous);
 

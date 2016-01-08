@@ -12,9 +12,9 @@ class HttpUnauthorizedException extends HttpException
      *
      * @param string          $wwwAuthenticate The contents of the WWW-Authenticate header.
      * @param string          $message         An optional exception message for debugging.
-     * @param \Exception|null $previous        An optional previous exception for chaining.
+     * @param \Throwable|null $previous        An optional previous exception for chaining.
      */
-    public function __construct($wwwAuthenticate, $message = '', \Exception $previous = null)
+    public function __construct($wwwAuthenticate, $message = '', \Throwable $previous = null)
     {
         $headers = [
             'WWW-Authenticate' => implode(', ', $wwwAuthenticate)
