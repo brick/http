@@ -4,6 +4,16 @@ namespace Brick\Http\Exception;
 
 /**
  * Exception thrown when the request requires user authentication.
+ *
+ * According to RFC 7235:
+ *
+ * The 401 (Unauthorized) status code indicates that the request has not
+ * been applied because it lacks valid authentication credentials for
+ * the target resource.  The server generating a 401 response MUST send
+ * a WWW-Authenticate header field (Section 4.1) containing at least one
+ * challenge applicable to the target resource.
+ *
+ * @see https://tools.ietf.org/html/rfc7235#section-3.1
  */
 class HttpUnauthorizedException extends HttpException
 {
@@ -17,7 +27,7 @@ class HttpUnauthorizedException extends HttpException
     public function __construct($wwwAuthenticate, $message = '', \Throwable $previous = null)
     {
         $headers = [
-            'WWW-Authenticate' => implode(', ', $wwwAuthenticate)
+            'WWW-Authenticate' => $wwwAuthenticate
         ];
 
         parent::__construct(401, $headers, $message, $previous);
