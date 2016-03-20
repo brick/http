@@ -5,15 +5,17 @@
     "keywords": [
         "Brick",
         "HTTP",
+        "PSR-7",
         "Request",
         "Response"
     ],
     "license": "MIT",
     "require": {
-        "php": ">=5.5"
+        "php": ">=5.5",
+        "psr/http-message": "1.*"
     },
     "require-dev": {
-        "phpunit/phpunit": "*",
+        "phpunit/phpunit": "4.*",
         "satooshi/php-coveralls": "dev-master"
     },
     "autoload": {
