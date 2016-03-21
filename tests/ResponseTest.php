@@ -3,8 +3,9 @@
 namespace Brick\Http\Tests;
 
 use Brick\Http\Cookie;
-use Brick\Http\MessageBody;
 use Brick\Http\Response;
+
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Unit tests for class Request.
@@ -21,7 +22,8 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('OK', $response->getReasonPhrase());
         $this->assertSame([], $response->getHeaders());
         $this->assertSame([], $response->getCookies());
-        $this->assertNull($response->getBody());
+        $this->assertInstanceOf(StreamInterface::class, $response->getBody());
+        $this->assertSame('', (string) $response->getBody());
     }
 
     /**
@@ -105,7 +107,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $response = new Response();
 
         $this->assertSame($response, $response->setContent('Hello World'));
-        $this->assertInstanceOf(MessageBody::class, $response->getBody());
+        $this->assertInstanceOf(StreamInterface::class, $response->getBody());
         $this->assertSame('Hello World', (string) $response->getBody());
     }
 

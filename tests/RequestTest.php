@@ -5,6 +5,8 @@ namespace Brick\Http\Tests;
 use Brick\Http\Request;
 use Brick\Http\Url;
 
+use Psr\Http\Message\StreamInterface;
+
 /**
  * Unit tests for class Request.
  */
@@ -16,7 +18,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame('GET / HTTP/1.0', $request->getStartLine());
         $this->assertSame('1.0', $request->getProtocolVersion());
-        $this->assertNull($request->getBody());
+        $this->assertInstanceOf(StreamInterface::class, $request->getBody());
+        $this->assertSame('', (string) $request->getBody());
         $this->assertSame([], $request->getHeaders());
         $this->assertSame([], $request->getQuery());
         $this->assertSame([], $request->getPost());
@@ -36,7 +39,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         $_SERVER = [];
 
-        $this->assertEquals(new Request(), Request::getCurrent());
+        $this->assertSame((string) new Request(), (string) Request::getCurrent());
     }
 
     /**
@@ -306,33 +309,6 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             'Content-Length' => ['1234'],
             'User-Agent'     => ['Mozilla']
         ], $request->getHeaders());
-    }
-
-    /**
-     * @dataProvider providerGetCurrentWithBody
-     *
-     * @param array   $server
-     * @param boolean $hasBody
-     */
-    public function testGetCurrentWithBody(array $server, $hasBody)
-    {
-        $_SERVER = $server;
-        $request = Request::getCurrent();
-
-        $this->assertSame($hasBody, $request->getBody() !== null);
-    }
-
-    /**
-     * @return array
-     */
-    public function providerGetCurrentWithBody()
-    {
-        return [
-            [[],                                      false],
-            [['CONTENT_TYPE' => 'text/plain'],        false],
-            [['CONTENT_LENGTH' => '123'],             true],
-            [['HTTP_TRANSFER_ENCODING' => 'chunked'], true]
-        ];
     }
 
     public function testGetCurrentWithCookie()

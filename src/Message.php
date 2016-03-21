@@ -2,6 +2,8 @@
 
 namespace Brick\Http;
 
+use Psr\Http\Message\StreamInterface;
+
 /**
  * Base class for Request and Response.
  */
@@ -25,9 +27,11 @@ abstract class Message
     protected $headers = [];
 
     /**
-     * @var \Brick\Http\MessageBody|null
+     * The message body. If none is provided, an empty body can be automatically created at runtime.
+     *
+     * @var \Psr\Http\Message\StreamInterface|null
      */
-    protected $body = null;
+    protected $body;
 
     /**
      * Returns the protocol version, such as '1.0'.
@@ -262,38 +266,42 @@ abstract class Message
     /**
      * Returns the body of the message.
      *
-     * @return \Brick\Http\MessageBody|null The body, or null if not set.
+     * @return StreamInterface
      */
     public function getBody()
     {
+        if (! $this->body) {
+            $this->body = new MessageBodyString('');
+        }
+
         return $this->body;
     }
 
     /**
      * Sets the message body.
      *
-     * @param \Brick\Http\MessageBody|null $body
+     * @param StreamInterface $body
      *
      * @return static
      */
-    public function setBody(MessageBody $body = null)
+    public function setBody(StreamInterface $body)
     {
         $this->body = $body;
 
-        if ($body) {
-            $size = $body->getSize();
-
-            if ($size === null) {
-                $this->setHeader('Transfer-Encoding', 'chunked');
-                $this->removeHeader('Content-Length');
-            } else {
-                $this->setHeader('Content-Length', (string) $size);
-                $this->removeHeader('Transfer-Encoding');
-            }
-        } else {
-            $this->removeHeader('Content-Length');
-            $this->removeHeader('Transfer-Encoding');
-        }
+//        if ($body) {
+//            $size = $body->getSize();
+//
+//            if ($size === null) {
+//                $this->setHeader('Transfer-Encoding', 'chunked');
+//                $this->removeHeader('Content-Length');
+//            } else {
+//                $this->setHeader('Content-Length', (string) $size);
+//                $this->removeHeader('Transfer-Encoding');
+//            }
+//        } else {
+//            $this->removeHeader('Content-Length');
+//            $this->removeHeader('Transfer-Encoding');
+//        }
 
         return $this;
     }

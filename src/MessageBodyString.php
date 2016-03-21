@@ -4,7 +4,7 @@ namespace Brick\Http;
 
 use Psr\Http\Message\StreamInterface;
 
-class MessageBodyString implements MessageBody, StreamInterface
+class MessageBodyString implements StreamInterface
 {
     /**
      * @var string

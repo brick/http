@@ -220,9 +220,7 @@ class Request extends Message
         $request->cookies = $_COOKIE;
         $request->files   = UploadedFileMap::createFromFilesGlobal($_FILES);
 
-        if (isset($_SERVER['CONTENT_LENGTH']) || isset($_SERVER['HTTP_TRANSFER_ENCODING'])) {
-            $request->body = new MessageBodyResource(fopen('php://input', 'rb'));
-        }
+        $request->body = new MessageBodyResource(fopen('php://input', 'rb'));
 
         if ($trustProxy) {
             if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {

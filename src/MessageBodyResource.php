@@ -4,7 +4,7 @@ namespace Brick\Http;
 
 use Psr\Http\Message\StreamInterface;
 
-class MessageBodyResource implements MessageBody, StreamInterface
+class MessageBodyResource implements StreamInterface
 {
     /**
      * The resource, or null if it has been detached.

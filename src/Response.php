@@ -316,7 +316,9 @@ class Response extends Message
             }
         }
 
-        echo (string) $this->body;
+        if ($this->body) {
+            echo (string) $this->body;
+        }
 
         flush();
 
