@@ -3,6 +3,8 @@ Brick\Http
 
 Provides classes to work with HTTP requests and responses.
 
+This project aims to be fully [PSR-7](http://www.php-fig.org/psr/psr-7/) compliant for maximum compatibility with other libraries.
+
 [![Build Status](https://secure.travis-ci.org/brick/http.svg?branch=master)](http://travis-ci.org/brick/http)
 [![Coverage Status](https://coveralls.io/repos/brick/http/badge.svg?branch=master)](https://coveralls.io/r/brick/http?branch=master)
 
