@@ -292,7 +292,7 @@ abstract class Message
 //            $size = $body->getSize();
 //
 //            if ($size === null) {
-//                $this->setHeader('Transfer-Encoding', 'chunked');
+//                $this->setHeader('Transfer-Encoding', 'identity');
 //                $this->removeHeader('Content-Length');
 //            } else {
 //                $this->setHeader('Content-Length', (string) $size);
