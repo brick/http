@@ -48,4 +48,17 @@ class HttpException extends \RuntimeException
     {
         return $this->headers;
     }
+
+    /**
+     * @param string $name
+     * @param string $value
+     *
+     * @return static
+     */
+    final public function withHeader($name, $value)
+    {
+        $this->headers[$name] = $value;
+
+        return $this;
+    }
 }
