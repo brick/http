@@ -39,9 +39,13 @@ class MessageBodyResource implements MessageBody
     public function getSize()
     {
         if ($this->seekable) {
+            $offset = ftell($this->body);
             fseek($this->body, 0, SEEK_END);
 
-            return ftell($this->body);
+            $size = ftell($this->body);
+            fseek($this->body, $offset, SEEK_SET);
+
+            return $size;
         }
 
         return null;
