@@ -7,6 +7,7 @@ Provides classes to work with HTTP requests and responses.
 
 [![Build Status](https://secure.travis-ci.org/brick/http.svg?branch=master)](http://travis-ci.org/brick/http)
 [![Coverage Status](https://coveralls.io/repos/brick/http/badge.svg?branch=master)](https://coveralls.io/r/brick/http?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/brick/http/v/stable)](https://packagist.org/packages/brick/http)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](http://opensource.org/licenses/MIT)
 
 Installation
@@ -17,7 +18,7 @@ Just define the following requirement in your `composer.json` file:
 
     {
         "require": {
-            "brick/http": "dev-master"
+            "brick/http": "0.1.*"
         }
     }
 
