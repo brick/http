@@ -25,7 +25,7 @@ Just define the following requirement in your `composer.json` file:
 Requirements
 ------------
 
-This library requires PHP 5.6, PHP 7 or [HHVM](http://hhvm.com/).
+This library requires PHP 7.1 or later.
 
 Package contents
 ----------------
