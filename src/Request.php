@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Brick\Http;
 
 use Brick\Http\Exception\HttpBadRequestException;
