@@ -15,9 +15,9 @@ class Path
     /**
      * @param string $path
      */
-    public function __construct($path)
+    public function __construct(string $path)
     {
-        $this->path = (string) $path;
+        $this->path = $path;
     }
 
     /**
@@ -27,7 +27,7 @@ class Path
      *
      * @return array
      */
-    public function getParts()
+    public function getParts() : array
     {
         return preg_split('|/|', $this->path, -1, PREG_SPLIT_NO_EMPTY);
     }
@@ -37,10 +37,8 @@ class Path
      *
      * @return bool
      */
-    public function contains($string)
+    public function contains(string $string) : bool
     {
-        $string = (string) $string;
-
         return strpos($this->path, $string) !== false;
     }
 
@@ -49,10 +47,8 @@ class Path
      *
      * @return bool
      */
-    public function startsWith($string)
+    public function startsWith(string $string) : bool
     {
-        $string = (string) $string;
-
         return substr($this->path, 0, strlen($string)) === $string;
     }
 
@@ -61,17 +57,15 @@ class Path
      *
      * @return bool
      */
-    public function endsWith($string)
+    public function endsWith(string $string) : bool
     {
-        $string = (string) $string;
-
         return substr($this->path, - strlen($string)) === $string;
     }
 
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString() : string
     {
         return $this->path;
     }

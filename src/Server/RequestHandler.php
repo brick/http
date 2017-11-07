@@ -3,6 +3,7 @@
 namespace Brick\Http\Server;
 
 use Brick\Http\Request;
+use Brick\Http\Response;
 
 /**
  * RequestHandler returns a Response for a Request.
@@ -16,5 +17,5 @@ interface RequestHandler
      *
      * @return \Brick\Http\Response
      */
-    public function handle(Request $request);
+    public function handle(Request $request) : Response;
 }

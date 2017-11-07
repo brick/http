@@ -10,7 +10,7 @@ class MessageBodyString implements MessageBody
     private $body;
 
     /**
-     * @var integer
+     * @var int
      */
     private $offset = 0;
 
@@ -25,7 +25,7 @@ class MessageBodyString implements MessageBody
     /**
      * {@inheritdoc}
      */
-    public function read($length)
+    public function read(int $length) : string
     {
         $string = substr($this->body, $this->offset, $length);
 
@@ -37,7 +37,7 @@ class MessageBodyString implements MessageBody
     /**
      * {@inheritdoc}
      */
-    public function getSize()
+    public function getSize() : ?int
     {
         return strlen($this->body);
     }
@@ -45,7 +45,7 @@ class MessageBodyString implements MessageBody
     /**
      * {@inheritdoc}
      */
-    public function __toString()
+    public function __toString() : string
     {
         return $this->body;
     }

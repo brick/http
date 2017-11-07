@@ -21,16 +21,16 @@ class CookieOrigin
     private $path;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $secure;
 
     /**
-     * @param string  $host
-     * @param string  $path
-     * @param boolean $secure
+     * @param string $host
+     * @param string $path
+     * @param bool   $secure
      */
-    public function __construct($host, $path, $secure)
+    public function __construct(string $host, string $path, bool $secure)
     {
         $this->host   = $host;
         $this->path   = $path;
@@ -44,7 +44,7 @@ class CookieOrigin
      *
      * @return CookieOrigin
      */
-    public static function createFromRequest(Request $request)
+    public static function createFromRequest(Request $request) : CookieOrigin
     {
         return new self($request->getHost(), $request->getPath(), $request->isSecure());
     }
@@ -52,7 +52,7 @@ class CookieOrigin
     /**
      * @return string
      */
-    public function getHost()
+    public function getHost() : string
     {
         return $this->host;
     }
@@ -60,15 +60,15 @@ class CookieOrigin
     /**
      * @return string
      */
-    public function getPath()
+    public function getPath() : string
     {
         return $this->path;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isSecure()
+    public function isSecure() : bool
     {
         return $this->secure;
     }

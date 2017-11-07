@@ -10,53 +10,53 @@ interface ResponseInterface
     /**
      * Returns the HTTP status code of the response.
      *
-     * @return integer
+     * @return int
      */
-    public function getStatusCode();
+    public function getStatusCode() : int;
 
     /**
      * Returns the HTTP protocol version of the response.
      *
      * @return string
      */
-    public function getProtocolVersion();
+    public function getProtocolVersion() : string;
 
     /**
      * Returns an associative array of the response headers.
      *
      * @return array
      */
-    public function getHeaders();
+    public function getHeaders() : array;
 
     /**
      * Returns the response content as a string.
      *
      * @return string
      */
-    public function getContent();
+    public function getContent() : string;
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isInformational();
+    public function isInformational() : bool;
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isSuccessful();
+    public function isSuccessful() : bool;
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isRedirection();
+    public function isRedirection() : bool;
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isClientError();
+    public function isClientError() : bool;
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isServerError();
+    public function isServerError() : bool;
 }

@@ -10,7 +10,7 @@ class MessageBodyResource implements MessageBody
     private $body;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $seekable;
 
@@ -28,7 +28,7 @@ class MessageBodyResource implements MessageBody
     /**
      * {@inheritdoc}
      */
-    public function read($length)
+    public function read(int $length) : string
     {
         return stream_get_contents($this->body, $length);
     }
@@ -36,7 +36,7 @@ class MessageBodyResource implements MessageBody
     /**
      * {@inheritdoc}
      */
-    public function getSize()
+    public function getSize() : ?int
     {
         if ($this->seekable) {
             $offset = ftell($this->body);
@@ -54,7 +54,7 @@ class MessageBodyResource implements MessageBody
     /**
      * {@inheritdoc}
      */
-    public function __toString()
+    public function __toString() : string
     {
         return stream_get_contents($this->body);
     }

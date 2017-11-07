@@ -17,7 +17,7 @@ class ClientCookie
     /**
      * Whether the cookie is only valid on the host itself (not subdomains).
      *
-     * @var boolean
+     * @var bool
      */
     private $hostOnly;
 
@@ -36,7 +36,7 @@ class ClientCookie
     private $path;
 
     /**
-     * @var integer
+     * @var int
      */
     private $creationTime;
 
@@ -65,7 +65,7 @@ class ClientCookie
      *
      * @return string
      */
-    public function hash()
+    public function hash() : string
     {
         return serialize([
             $this->domain,
@@ -79,9 +79,9 @@ class ClientCookie
      *
      * @param CookieOrigin $origin
      *
-     * @return boolean
+     * @return bool
      */
-    public function matches(CookieOrigin $origin)
+    public function matches(CookieOrigin $origin) : bool
     {
         if ($this->cookie->isSecure() && ! $origin->isSecure()) {
             return false;
@@ -113,9 +113,10 @@ class ClientCookie
 
     /**
      * @param string $path
+     *
      * @return string
      */
-    private static function getPathDirectory($path)
+    private static function getPathDirectory(string $path) : string
     {
         return substr($path, 0, strrpos($path, '/'));
     }
@@ -131,9 +132,9 @@ class ClientCookie
      *
      * @param ClientCookie $that
      *
-     * @return integer
+     * @return int
      */
-    public function compareTo(ClientCookie $that)
+    public function compareTo(ClientCookie $that) : int
     {
         $thisLength = substr_count($this->cookie->getPath(), '/');
         $thatLength = substr_count($that->cookie->getPath(), '/');
@@ -151,7 +152,7 @@ class ClientCookie
     /**
      * @return string
      */
-    public function getName()
+    public function getName() : string
     {
         return $this->cookie->getName();
     }
@@ -159,7 +160,7 @@ class ClientCookie
     /**
      * @return string
      */
-    public function getValue()
+    public function getValue() : string
     {
         return $this->cookie->getValue();
     }
@@ -167,17 +168,17 @@ class ClientCookie
     /**
      * Returns whether this cookie has expired.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isExpired()
+    public function isExpired() : bool
     {
         return $this->cookie->isExpired();
     }
 
     /**
-     * @return integer
+     * @return int
      */
-    public function getCreationtime()
+    public function getCreationtime() : int
     {
         return $this->creationTime;
     }
@@ -187,7 +188,7 @@ class ClientCookie
      *
      * @return string
      */
-    public function toString()
+    public function toString() : string
     {
         return $this->cookie->getName() . '=' . rawurlencode($this->cookie->getValue());
     }

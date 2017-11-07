@@ -13,7 +13,7 @@ class NetworkHandler implements RequestHandler
     /**
      * {@inheritdoc}
      */
-    public function handle(Request $request)
+    public function handle(Request $request) : Response
     {
         $request->setHeader('Connection', 'close');
 

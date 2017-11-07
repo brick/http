@@ -12,9 +12,10 @@ class UploadedFileMap
      * Creates an UploadedFileMap from the $_FILES superglobal.
      *
      * @param array $files
+     *
      * @return array
      */
-    public static function createFromFilesGlobal(array $files)
+    public static function createFromFilesGlobal(array $files) : array
     {
         $items = [];
         $files = self::normalizeSuperglobal($files);
@@ -27,9 +28,10 @@ class UploadedFileMap
      * Normalizes a $_FILES superglobal.
      *
      * @param array $files
+     *
      * @return array
      */
-    private static function normalizeSuperglobal(array $files)
+    private static function normalizeSuperglobal(array $files) : array
     {
         $result = [];
 
@@ -60,7 +62,7 @@ class UploadedFileMap
      *
      * @return void
      */
-    private static function buildMap(array $files, array & $destination)
+    private static function buildMap(array $files, array & $destination) : void
     {
         foreach ($files as $structure) {
             foreach ($structure as $key => $value) {

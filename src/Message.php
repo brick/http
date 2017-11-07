@@ -34,7 +34,7 @@ abstract class Message
      *
      * @return string
      */
-    public function getProtocolVersion()
+    public function getProtocolVersion() : string
     {
         return $this->protocolVersion;
     }
@@ -44,7 +44,7 @@ abstract class Message
      *
      * @return static
      */
-    public function setProtocolVersion($version)
+    public function setProtocolVersion(string $version) : Message
     {
         $this->protocolVersion = $version;
 
@@ -59,7 +59,7 @@ abstract class Message
      *
      * @return array
      */
-    public function getHeaders()
+    public function getHeaders() : array
     {
         $headers = [];
 
@@ -76,9 +76,9 @@ abstract class Message
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
-    public function hasHeader($name)
+    public function hasHeader(string $name) : bool
     {
         $name = strtolower($name);
 
@@ -96,7 +96,7 @@ abstract class Message
      *
      * @return string
      */
-    public function getHeader($name)
+    public function getHeader(string $name) : string
     {
         $name = strtolower($name);
 
@@ -110,7 +110,7 @@ abstract class Message
      *
      * @return string|null
      */
-    public function getFirstHeader($name)
+    public function getFirstHeader(string $name) : ?string
     {
         $name = strtolower($name);
 
@@ -124,7 +124,7 @@ abstract class Message
      *
      * @return string|null
      */
-    public function getLastHeader($name)
+    public function getLastHeader(string $name) : ?string
     {
         $name = strtolower($name);
 
@@ -138,7 +138,7 @@ abstract class Message
      *
      * @return array
      */
-    public function getHeaderAsArray($name)
+    public function getHeaderAsArray(string $name) : array
     {
         $name = strtolower($name);
 
@@ -155,7 +155,7 @@ abstract class Message
      *
      * @return static
      */
-    public function setHeader($name, $value)
+    public function setHeader(string $name, $value) : Message
     {
         $name = strtolower($name);
         $this->headers[$name] = is_array($value) ? array_values($value) : [$value];
@@ -173,7 +173,7 @@ abstract class Message
      *
      * @return static
      */
-    public function setHeaders(array $headers)
+    public function setHeaders(array $headers) : Message
     {
         foreach ($headers as $name => $value) {
             $this->setHeader($name, $value);
@@ -190,7 +190,7 @@ abstract class Message
      *
      * @return static
      */
-    public function addHeader($name, $value)
+    public function addHeader(string $name, $value) : Message
     {
         $name = strtolower($name);
 
@@ -219,7 +219,7 @@ abstract class Message
      *
      * @return static
      */
-    public function addHeaders(array $headers)
+    public function addHeaders(array $headers) : Message
     {
         foreach ($headers as $name => $value) {
             $this->addHeader($name, $value);
@@ -235,7 +235,7 @@ abstract class Message
      *
      * @return static
      */
-    public function removeHeader($name)
+    public function removeHeader(string $name) : Message
     {
         $name = strtolower($name);
         unset($this->headers[$name]);
@@ -246,7 +246,7 @@ abstract class Message
     /**
      * @return string
      */
-    public function getHead()
+    public function getHead() : string
     {
         $result = $this->getStartLine() . Message::CRLF;
 
@@ -264,7 +264,7 @@ abstract class Message
      *
      * @return \Brick\Http\MessageBody|null The body, or null if not set.
      */
-    public function getBody()
+    public function getBody() : ?MessageBody
     {
         return $this->body;
     }
@@ -272,11 +272,11 @@ abstract class Message
     /**
      * Sets the message body.
      *
-     * @param \Brick\Http\MessageBody|null $body
+     * @param MessageBody|null $body
      *
      * @return static
      */
-    public function setBody(MessageBody $body = null)
+    public function setBody(?MessageBody $body) : Message
     {
         $this->body = $body;
 
@@ -303,9 +303,9 @@ abstract class Message
      *
      * If the Content-Length header is absent or invalid, this method returns zero.
      *
-     * @return integer
+     * @return int
      */
-    public function getContentLength()
+    public function getContentLength() : int
     {
         $contentLength = $this->getHeader('Content-Length');
 
@@ -320,9 +320,9 @@ abstract class Message
      *
      * @param string $contentType The Content-Type to check, such as `text/html`.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isContentType($contentType)
+    public function isContentType(string $contentType) : bool
     {
         $thisContentType = $this->getHeader('Content-Type');
 
@@ -340,12 +340,12 @@ abstract class Message
      *
      * @return string
      */
-    abstract public function getStartLine();
+    abstract public function getStartLine() : string;
 
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString() : string
     {
         $message = $this->getHead();
 

@@ -14,16 +14,16 @@ interface RequestInterface
      *
      * @return string
      */
-    public function getMethod();
+    public function getMethod() : string;
 
     /**
      * Returns whether the request method is safe (no side effects).
      *
      * The request is considered safe when the method is GET or HEAD.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isMethodSafe();
+    public function isMethodSafe() : bool;
 
     /**
      * Returns the scheme of the request.
@@ -32,7 +32,7 @@ interface RequestInterface
      *
      * @return string
      */
-    public function getScheme();
+    public function getScheme() : string;
 
     /**
      * Returns the host of the requested URL.
@@ -41,7 +41,7 @@ interface RequestInterface
      *
      * @return string
      */
-    public function getHost();
+    public function getHost() : string;
 
     /**
      * Returns the host parts of the requested URL (using dot as a separator).
@@ -50,16 +50,16 @@ interface RequestInterface
      *
      * @return array
      */
-    public function getHostParts();
+    public function getHostParts() : array;
 
     /**
      * Returns the port the request targets.
      *
      * Example: 80
      *
-     * @return integer
+     * @return int
      */
-    public function getPort();
+    public function getPort() : int;
 
     /**
      * Returns the path of the requested URL, without the query string.
@@ -68,7 +68,7 @@ interface RequestInterface
      *
      * @return string
      */
-    public function getPath();
+    public function getPath() : string;
 
     /**
      * Returns the path parts of the requested URL (using slash as a separator).
@@ -79,14 +79,14 @@ interface RequestInterface
      *
      * @return array
      */
-    public function getPathParts();
+    public function getPathParts() : array;
 
     /**
      * Returns whether the requested URL has a query string.
      *
-     * @return boolean
+     * @return bool
      */
-    public function hasQueryString();
+    public function hasQueryString() : bool;
 
     /**
      * Returns the query string, or an empty string if no query string is present.
@@ -95,7 +95,7 @@ interface RequestInterface
      *
      * @return string
      */
-    public function getQueryString();
+    public function getQueryString() : string;
 
     /**
      * Returns the request URI, which includes the path and the query string.
@@ -104,7 +104,7 @@ interface RequestInterface
      *
      * @return string
      */
-    public function getRequestUri();
+    public function getRequestUri() : string;
 
     /**
      * Returns the full requested URL.
@@ -113,32 +113,32 @@ interface RequestInterface
      *
      * @return string
      */
-    public function getUrl();
+    public function getUrl() : string;
 
     /**
      * @return array
      */
-    public function getQueryParameters();
+    public function getQueryParameters() : array;
 
     /**
      * @return array
      */
-    public function getPostParameters();
+    public function getPostParameters() : array;
 
     /**
      * @return array
      */
-    public function getCookies();
+    public function getCookies() : array;
 
     /**
      * @return array
      */
-    public function getHeaders();
+    public function getHeaders() : array;
 
     /**
      * @return array
      */
-    public function getUploadedFiles();
+    public function getUploadedFiles() : array;
 
     public function getBody();
 }

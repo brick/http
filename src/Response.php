@@ -56,7 +56,7 @@ class Response extends Message
     ];
 
     /**
-     * @var integer
+     * @var int
      */
     private $statusCode = 200;
 
@@ -79,7 +79,7 @@ class Response extends Message
      *
      * @throws \RuntimeException
      */
-    public static function parse($response)
+    public static function parse(string $response) : Response
     {
         $responseObject = new Response();
 
@@ -131,9 +131,9 @@ class Response extends Message
     /**
      * Returns the status code of this response.
      *
-     * @return integer The status code.
+     * @return int The status code.
      */
-    public function getStatusCode()
+    public function getStatusCode() : int
     {
         return $this->statusCode;
     }
@@ -143,7 +143,7 @@ class Response extends Message
      *
      * @return string
      */
-    public function getReasonPhrase()
+    public function getReasonPhrase() : string
     {
         return $this->reasonPhrase;
     }
@@ -151,17 +151,15 @@ class Response extends Message
     /**
      * Sets the status code of this response.
      *
-     * @param integer     $statusCode   The status code.
+     * @param int         $statusCode   The status code.
      * @param string|null $reasonPhrase An optional reason phrase, or null to use the default.
      *
      * @return static
      *
      * @throws \InvalidArgumentException If the status code is not valid.
      */
-    public function setStatusCode($statusCode, $reasonPhrase = null)
+    public function setStatusCode(int $statusCode, string $reasonPhrase = null) : Response
     {
-        $statusCode = (int) $statusCode;
-
         if ($statusCode < 100 || $statusCode > 999) {
             throw new \InvalidArgumentException('Invalid  status code: ' . $statusCode);
         }
@@ -185,7 +183,7 @@ class Response extends Message
      *
      * @return \Brick\Http\Cookie[]
      */
-    public function getCookies()
+    public function getCookies() : array
     {
         return $this->cookies;
     }
@@ -197,7 +195,7 @@ class Response extends Message
      *
      * @return static This response.
      */
-    public function setCookie(Cookie $cookie)
+    public function setCookie(Cookie $cookie) : Response
     {
         $this->cookies[] = $cookie;
         $this->addHeader('Set-Cookie', (string) $cookie);
@@ -210,7 +208,7 @@ class Response extends Message
      *
      * @return static This response.
      */
-    public function removeCookies()
+    public function removeCookies() : Response
     {
         $this->cookies = [];
 
@@ -222,7 +220,7 @@ class Response extends Message
      *
      * @return static This response.
      */
-    public function setContent($content)
+    public function setContent($content) : Response
     {
         if (is_resource($content)) {
             $body = new MessageBodyResource($content);
@@ -236,9 +234,9 @@ class Response extends Message
     /**
      * Returns whether this response has an informational status code, 1xx.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isInformational()
+    public function isInformational() : bool
     {
         return $this->statusCode >= 100 && $this->statusCode < 200;
     }
@@ -246,9 +244,9 @@ class Response extends Message
     /**
      * Returns whether this response has a successful status code, 2xx.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isSuccessful()
+    public function isSuccessful() : bool
     {
         return $this->statusCode >= 200 && $this->statusCode < 300;
     }
@@ -256,9 +254,9 @@ class Response extends Message
     /**
      * Returns whether this response has a redirection status code, 3xx.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isRedirection()
+    public function isRedirection() : bool
     {
         return $this->statusCode >= 300 && $this->statusCode < 400;
     }
@@ -266,9 +264,9 @@ class Response extends Message
     /**
      * Returns whether this response has a client error status code, 4xx.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isClientError()
+    public function isClientError() : bool
     {
         return $this->statusCode >= 400 && $this->statusCode < 500;
     }
@@ -276,9 +274,9 @@ class Response extends Message
     /**
      * Returns whether this response has a server error status code, 5xx.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isServerError()
+    public function isServerError() : bool
     {
         return $this->statusCode >= 500 && $this->statusCode < 600;
     }
@@ -286,13 +284,13 @@ class Response extends Message
     /**
      * Returns whether this response has the given status code.
      *
-     * @param integer $statusCode
+     * @param int $statusCode
      *
-     * @return boolean
+     * @return bool
      */
-    public function isStatusCode($statusCode)
+    public function isStatusCode(int $statusCode) : bool
     {
-        return $this->statusCode === (int) $statusCode;
+        return $this->statusCode === $statusCode;
     }
 
     /**
@@ -300,9 +298,9 @@ class Response extends Message
      *
      * This method will fail (return `false`) if the headers have been already sent.
      *
-     * @return boolean Whether the response has been successfully sent.
+     * @return bool Whether the response has been successfully sent.
      */
-    public function send()
+    public function send() : bool
     {
         if (headers_sent()) {
             return false;
@@ -326,7 +324,7 @@ class Response extends Message
     /**
      * {@inheritdoc}
      */
-    public function getStartLine()
+    public function getStartLine() : string
     {
         return sprintf('HTTP/%s %d %s', $this->protocolVersion, $this->statusCode, $this->reasonPhrase);
     }

@@ -33,7 +33,7 @@ class RequestResponse
     /**
      * @return \Brick\Http\Request
      */
-    public function getRequest()
+    public function getRequest() : Request
     {
         return $this->request;
     }
@@ -41,7 +41,7 @@ class RequestResponse
     /**
      * @return \Brick\Http\Response
      */
-    public function getResponse()
+    public function getResponse() : Response
     {
         return $this->response;
     }

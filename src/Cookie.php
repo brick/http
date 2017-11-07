@@ -28,7 +28,7 @@ class Cookie
      *
      * Zero if the cookie should expire at the end of the browser session.
      *
-     * @var integer
+     * @var int
      */
     private $expires = 0;
 
@@ -49,14 +49,14 @@ class Cookie
     /**
      * Whether the cookie should only be sent on a secure connection.
      *
-     * @var boolean
+     * @var bool
      */
     private $secure = false;
 
     /**
      * Whether the cookie should only be sent over the HTTP protocol.
      *
-     * @var boolean
+     * @var bool
      */
     private $httpOnly = false;
 
@@ -66,10 +66,10 @@ class Cookie
      * @param string $name  The name of the cookie.
      * @param string $value The value of the cookie.
      */
-    public function __construct($name, $value)
+    public function __construct(string $name, string $value)
     {
-        $this->name  = (string) $name;
-        $this->value = (string) $value;
+        $this->name  = $name;
+        $this->value = $value;
     }
 
     /**
@@ -81,7 +81,7 @@ class Cookie
      *
      * @throws \InvalidArgumentException If the cookie string is not valid.
      */
-    public static function parse($string)
+    public static function parse(string $string) : Cookie
     {
         $parts = preg_split('/;\s*/', $string);
         $nameValue = explode('=', array_shift($parts), 2);
@@ -150,7 +150,7 @@ class Cookie
     /**
      * @return string
      */
-    public function getName()
+    public function getName() : string
     {
         return $this->name;
     }
@@ -158,15 +158,15 @@ class Cookie
     /**
      * @return string
      */
-    public function getValue()
+    public function getValue() : string
     {
         return $this->value;
     }
 
     /**
-     * @return integer
+     * @return int
      */
-    public function getExpires()
+    public function getExpires() : int
     {
         return $this->expires;
     }
@@ -174,13 +174,13 @@ class Cookie
     /**
      * Sets the cookie expiry time.
      *
-     * @param integer $expires The unix timestamp at which the cookie expires, zero for a transient cookie.
+     * @param int $expires The unix timestamp at which the cookie expires, zero for a transient cookie.
      *
      * @return static This cookie.
      */
-    public function setExpires($expires)
+    public function setExpires(int $expires) : Cookie
     {
-        $this->expires = (int) $expires;
+        $this->expires = $expires;
 
         return $this;
     }
@@ -188,7 +188,7 @@ class Cookie
     /**
      * @return string|null
      */
-    public function getPath()
+    public function getPath() : ?string
     {
         return $this->path;
     }
@@ -198,7 +198,7 @@ class Cookie
      *
      * @return static This cookie.
      */
-    public function setPath($path)
+    public function setPath(?string $path) : Cookie
     {
         if ($path !== null) {
             $path = (string) $path;
@@ -212,7 +212,7 @@ class Cookie
     /**
      * @return string|null
      */
-    public function getDomain()
+    public function getDomain() : ?string
     {
         return $this->domain;
     }
@@ -222,7 +222,7 @@ class Cookie
      *
      * @return static This cookie.
      */
-    public function setDomain($domain)
+    public function setDomain(?string $domain) : Cookie
     {
         if ($domain !== null) {
             $domain = (string) $domain;
@@ -234,17 +234,17 @@ class Cookie
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isHostOnly()
+    public function isHostOnly() : bool
     {
         return $this->domain === null;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isSecure()
+    public function isSecure() : bool
     {
         return $this->secure;
     }
@@ -252,13 +252,13 @@ class Cookie
     /**
      * Sets whether this cookie should only be sent over a secure connection.
      *
-     * @param boolean $secure True to only send over a secure connection, false otherwise.
+     * @param bool $secure True to only send over a secure connection, false otherwise.
      *
      * @return static This cookie.
      */
-    public function setSecure($secure)
+    public function setSecure(bool $secure) : Cookie
     {
-        $this->secure = (bool) $secure;
+        $this->secure = $secure;
 
         return $this;
     }
@@ -266,9 +266,9 @@ class Cookie
     /**
      * Returns whether to limit the scope of this cookie to HTTP requests.
      *
-     * @return boolean True if this cookie should only be sent over a secure connection, false otherwise.
+     * @return bool True if this cookie should only be sent over a secure connection, false otherwise.
      */
-    public function isHttpOnly()
+    public function isHttpOnly() : bool
     {
         return $this->httpOnly;
     }
@@ -282,13 +282,13 @@ class Cookie
      * This helps mitigate the risk of client side script accessing the protected cookie
      * (provided that the user agent supports it).
      *
-     * @param boolean $httpOnly
+     * @param bool $httpOnly
      *
      * @return static This cookie.
      */
-    public function setHttpOnly($httpOnly)
+    public function setHttpOnly(bool $httpOnly) : Cookie
     {
-        $this->httpOnly = (bool) $httpOnly;
+        $this->httpOnly = $httpOnly;
 
         return $this;
     }
@@ -296,9 +296,9 @@ class Cookie
     /**
      * Returns whether this cookie has expired.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isExpired()
+    public function isExpired() : bool
     {
         return $this->expires !== 0 && $this->expires < time();
     }
@@ -309,9 +309,9 @@ class Cookie
      * If false, the cookie should be discarded at the end of the session.
      * If true, the cookie should be discarded when the expiry time is reached.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isPersistent()
+    public function isPersistent() : bool
     {
         return $this->expires !== 0;
     }
@@ -319,7 +319,7 @@ class Cookie
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString() : string
     {
         $cookie = $this->name . '=' . rawurlencode($this->value);
 

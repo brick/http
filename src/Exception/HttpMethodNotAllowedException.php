@@ -17,7 +17,7 @@ class HttpMethodNotAllowedException extends HttpException
      * @param string          $message        An optional exception message for debugging.
      * @param \Throwable|null $previous       An optional previous exception for chaining.
      */
-    public function __construct(array $allowedMethods, $message = '', \Throwable $previous = null)
+    public function __construct(array $allowedMethods, string $message = '', \Throwable $previous = null)
     {
         $headers = [
             'Allow' => implode(', ', $allowedMethods)

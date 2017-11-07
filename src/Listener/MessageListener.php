@@ -13,5 +13,5 @@ interface MessageListener
      *
      * @return void
      */
-    public function listen(Message $message);
+    public function listen(Message $message) : void;
 }

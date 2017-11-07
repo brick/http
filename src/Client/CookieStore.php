@@ -26,7 +26,7 @@ class CookieStore
      *
      * @return void
      */
-    public function addCookie(Cookie $cookie, CookieOrigin $origin)
+    public function addCookie(Cookie $cookie, CookieOrigin $origin) : void
     {
         $cookie = new ClientCookie($cookie, $origin);
         $this->cookies[$cookie->hash()] = $cookie;
@@ -40,7 +40,7 @@ class CookieStore
      *
      * @return void
      */
-    public function update(Request $request, Response $response)
+    public function update(Request $request, Response $response) : void
     {
         $origin = CookieOrigin::createFromRequest($request);
 
@@ -56,7 +56,7 @@ class CookieStore
      *
      * @return ClientCookie[]
      */
-    public function get(CookieOrigin $origin)
+    public function get(CookieOrigin $origin) : array
     {
         $this->deleteExpiredCookies();
 
@@ -80,7 +80,7 @@ class CookieStore
      *
      * @return array
      */
-    public function getAsArray(CookieOrigin $origin)
+    public function getAsArray(CookieOrigin $origin) : array
     {
         $cookies = [];
 
@@ -100,7 +100,7 @@ class CookieStore
      *
      * @return string
      */
-    public function getAsString(CookieOrigin $origin)
+    public function getAsString(CookieOrigin $origin) : string
     {
         $cookies = $this->get($origin);
 
@@ -114,7 +114,7 @@ class CookieStore
     /**
      * @return void
      */
-    private function deleteExpiredCookies()
+    private function deleteExpiredCookies() : void
     {
         foreach ($this->cookies as $key => $cookie) {
             if ($cookie->isExpired()) {

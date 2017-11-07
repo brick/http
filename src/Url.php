@@ -67,9 +67,8 @@ class Url
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct($url)
+    public function __construct(string $url)
     {
-        $url = (string) $url;
         $parts = parse_url($url);
 
         if ($parts === false) {
@@ -137,7 +136,7 @@ class Url
     /**
      * @return string
      */
-    public function getScheme()
+    public function getScheme() : string
     {
         return $this->scheme;
     }
@@ -145,7 +144,7 @@ class Url
     /**
      * @return string
      */
-    public function getHost()
+    public function getHost() : string
     {
         return $this->host;
     }
@@ -158,7 +157,7 @@ class Url
      *
      * @return bool
      */
-    public function isHost($host, $includeSubDomains = false)
+    public function isHost(string $host, bool $includeSubDomains = false) : bool
     {
         $thisHost = strtolower($this->host);
         $thatHost = strtolower($host);
@@ -176,14 +175,14 @@ class Url
     /**
      * @return int
      */
-    public function getPort()
+    public function getPort() : int
     {
         return $this->port;
     }
     /**
      * @return Path
      */
-    public function getPath()
+    public function getPath() : Path
     {
         return $this->path;
     }
@@ -191,7 +190,7 @@ class Url
     /**
      * @return string
      */
-    public function getQuery()
+    public function getQuery() : string
     {
         return $this->query;
     }
@@ -199,7 +198,7 @@ class Url
     /**
      * @return string
      */
-    public function getFragment()
+    public function getFragment() : string
     {
         return $this->fragment;
     }
@@ -207,7 +206,7 @@ class Url
     /**
      * @return bool
      */
-    public function isStandardPort()
+    public function isStandardPort() : bool
     {
         return $this->port == ($this->scheme == 'https' ? 443 : 80);
     }
@@ -215,7 +214,7 @@ class Url
     /**
      * @return bool
      */
-    public function isSecure()
+    public function isSecure() : bool
     {
         return $this->scheme == 'https';
     }
@@ -223,7 +222,7 @@ class Url
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString() : string
     {
         return $this->url;
     }

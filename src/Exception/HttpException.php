@@ -15,12 +15,12 @@ class HttpException extends \RuntimeException
     /**
      * Class constructor.
      *
-     * @param string          $statusCode The HTTP status code.
+     * @param int             $statusCode The HTTP status code.
      * @param array           $headers    An optional associative array of HTTP headers.
      * @param string          $message    An optional exception message for debugging.
      * @param \Throwable|null $previous   An optional previous exception for chaining.
      */
-    public function __construct($statusCode, array $headers = [], $message = '', \Throwable $previous = null)
+    public function __construct(int $statusCode, array $headers = [], string $message = '', \Throwable $previous = null)
     {
         parent::__construct($message, $statusCode, $previous);
 
@@ -34,7 +34,7 @@ class HttpException extends \RuntimeException
      *
      * @return int
      */
-    final public function getStatusCode()
+    final public function getStatusCode() : int
     {
         return $this->code;
     }
@@ -44,7 +44,7 @@ class HttpException extends \RuntimeException
      *
      * @return array
      */
-    final public function getHeaders()
+    final public function getHeaders() : array
     {
         return $this->headers;
     }
@@ -55,7 +55,7 @@ class HttpException extends \RuntimeException
      *
      * @return static
      */
-    final public function withHeader($name, $value)
+    final public function withHeader(string $name, string $value) : HttpException
     {
         $this->headers[$name] = $value;
 

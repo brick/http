@@ -22,14 +22,14 @@ class EchoListener implements MessageListener
     const ALL = 15;
 
     /**
-     * @var integer
+     * @var int
      */
     private $mask;
 
     /**
-     * @param integer $mask
+     * @param int $mask
      */
-    public function __construct($mask = self::ALL)
+    public function __construct(int $mask = self::ALL)
     {
         $this->mask = $mask;
     }
@@ -37,7 +37,7 @@ class EchoListener implements MessageListener
     /**
      * {@inheritdoc}
      */
-    public function listen(Message $message)
+    public function listen(Message $message) : void
     {
         if ($message instanceof Request) {
             if ($this->mask & self::REQUEST_HEADER) {

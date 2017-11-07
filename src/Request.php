@@ -61,7 +61,7 @@ class Request extends Message
     private $files = [];
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $isSecure = false;
 
@@ -78,7 +78,7 @@ class Request extends Message
     private $host = 'localhost';
 
     /**
-     * @var integer
+     * @var int
      */
     private $port = 80;
 
@@ -118,12 +118,12 @@ class Request extends Message
      * and not just taken from the $_GET superglobal.
      * This is to provide a consistent behaviour even when mod_rewrite is in use.
      *
-     * @param boolean $trustProxy     Whether to trust X-Forwarded-* headers.
-     * @param integer $hostPortSource One of the PREFER_* or ONLY_* constants.
+     * @param bool $trustProxy     Whether to trust X-Forwarded-* headers.
+     * @param int  $hostPortSource One of the PREFER_* or ONLY_* constants.
      *
      * @return Request
      */
-    public static function getCurrent($trustProxy = false, $hostPortSource = self::PREFER_HTTP_HOST)
+    public static function getCurrent(bool $trustProxy = false, int $hostPortSource = self::PREFER_HTTP_HOST) : Request
     {
         $request = new Request();
 
@@ -255,7 +255,7 @@ class Request extends Message
      *
      * @return array
      */
-    private static function getCurrentRequestHeaders()
+    private static function getCurrentRequestHeaders() : array
     {
         $headers = [];
 
@@ -301,7 +301,7 @@ class Request extends Message
      *
      * @return string|array|null The query parameter(s), or null if the path is not found.
      */
-    public function getQuery($name = null)
+    public function getQuery(string $name = null)
     {
         if ($name === null) {
             return $this->query;
@@ -317,7 +317,7 @@ class Request extends Message
      *
      * @return static This request.
      */
-    public function setQuery(array $query)
+    public function setQuery(array $query) : Request
     {
         $this->query = $query;
         $this->queryString = http_build_query($query);
@@ -338,7 +338,7 @@ class Request extends Message
      *
      * @return string|array|null The post parameter(s), or null if the path is not found.
      */
-    public function getPost($name = null)
+    public function getPost(string $name = null)
     {
         if ($name === null) {
             return $this->post;
@@ -358,7 +358,7 @@ class Request extends Message
      *
      * @return static This request.
      */
-    public function setPost(array $post)
+    public function setPost(array $post) : Request
     {
         $this->post = $post;
 
@@ -384,7 +384,7 @@ class Request extends Message
      *
      * @return \Brick\Http\UploadedFile|null The uploaded file, or NULL if not found.
      */
-    public function getFile($name)
+    public function getFile(string $name) : ?UploadedFile
     {
         $file = $this->resolvePath($this->files, $name);
 
@@ -404,7 +404,7 @@ class Request extends Message
      *
      * @return \Brick\Http\UploadedFile[] The uploaded files.
      */
-    public function getFiles($name = null)
+    public function getFiles(string $name = null) : array
     {
         if ($name === null) {
             return $this->files;
@@ -435,7 +435,7 @@ class Request extends Message
      *
      * @return static This request.
      */
-    public function setFiles(array $files)
+    public function setFiles(array $files) : Request
     {
         $this->files = $files;
         $this->body  = new MessageBodyString('');
@@ -455,7 +455,7 @@ class Request extends Message
      *
      * @return string|array|null The cookie value(s), or null if the path is not found.
      */
-    public function getCookie($name = null)
+    public function getCookie(string $name = null)
     {
         if ($name === null) {
             return $this->cookies;
@@ -473,7 +473,7 @@ class Request extends Message
      *
      * @return static This request.
      */
-    public function addCookies(array $cookies)
+    public function addCookies(array $cookies) : Request
     {
         return $this->setCookies($cookies + $this->cookies);
     }
@@ -487,7 +487,7 @@ class Request extends Message
      *
      * @return static This request.
      */
-    public function setCookies(array $cookies)
+    public function setCookies(array $cookies) : Request
     {
         $this->cookies = $cookies;
 
@@ -507,7 +507,7 @@ class Request extends Message
      *
      * @return mixed
      */
-    private function resolvePath(array $value, $path)
+    private function resolvePath(array $value, string $path)
     {
         $path = preg_replace('/\[(.*?)\]/', '.$1', $path);
         $path = explode('.', $path);
@@ -526,7 +526,7 @@ class Request extends Message
     /**
      * {@inheritdoc}
      */
-    public function getStartLine()
+    public function getStartLine() : string
     {
         return sprintf('%s %s HTTP/%s', $this->method, $this->requestUri, $this->protocolVersion);
     }
@@ -536,7 +536,7 @@ class Request extends Message
      *
      * @return string The request method.
      */
-    public function getMethod()
+    public function getMethod() : string
     {
         return $this->method;
     }
@@ -550,7 +550,7 @@ class Request extends Message
      *
      * @return static This request.
      */
-    public function setMethod($method)
+    public function setMethod(string $method) : Request
     {
         $this->method = $this->fixMethodCase($method);
 
@@ -567,9 +567,9 @@ class Request extends Message
      *
      * @param string $method The method to test this request against.
      *
-     * @return boolean True if this request matches the method, false otherwise.
+     * @return bool True if this request matches the method, false otherwise.
      */
-    public function isMethod($method)
+    public function isMethod(string $method) : bool
     {
         return $this->method === $this->fixMethodCase($method);
     }
@@ -577,9 +577,9 @@ class Request extends Message
     /**
      * Returns whether this request method is GET or HEAD.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isMethodSafe()
+    public function isMethodSafe() : bool
     {
         return $this->method === 'GET' || $this->method === 'HEAD';
     }
@@ -593,7 +593,7 @@ class Request extends Message
      *
      * @return string
      */
-    private function fixMethodCase($method)
+    private function fixMethodCase(string $method) : string
     {
         $upperMethod = strtoupper($method);
         $isStandard = in_array($upperMethod, self::$standardMethods, true);
@@ -606,7 +606,7 @@ class Request extends Message
      *
      * @return string
      */
-    public function getScheme()
+    public function getScheme() : string
     {
         return $this->isSecure ? 'https' : 'http';
     }
@@ -620,7 +620,7 @@ class Request extends Message
      *
      * @throws \InvalidArgumentException If the scheme is not http or https.
      */
-    public function setScheme($scheme)
+    public function setScheme(string $scheme) : Request
     {
         $scheme = strtolower($scheme);
 
@@ -640,7 +640,7 @@ class Request extends Message
      *
      * @return string The host name.
      */
-    public function getHost()
+    public function getHost() : string
     {
         return $this->host;
     }
@@ -652,7 +652,7 @@ class Request extends Message
      *
      * @return array The host parts.
      */
-    public function getHostParts()
+    public function getHostParts() : array
     {
         return explode('.', $this->host);
     }
@@ -667,7 +667,7 @@ class Request extends Message
      *
      * @return bool
      */
-    public function isHost($host, $includeSubDomains = false)
+    public function isHost(string $host, bool $includeSubDomains = false) : bool
     {
         $thisHost = strtolower($this->host);
         $thatHost = strtolower($host);
@@ -691,9 +691,9 @@ class Request extends Message
      *
      * @return static This request.
      */
-    public function setHost($host)
+    public function setHost(string $host) : Request
     {
-        $this->host = (string) $host;
+        $this->host = $host;
 
         return $this->updateHostHeader();
     }
@@ -701,9 +701,9 @@ class Request extends Message
     /**
      * Returns the port number of this request.
      *
-     * @return integer The port number.
+     * @return int The port number.
      */
-    public function getPort()
+    public function getPort() : int
     {
         return $this->port;
     }
@@ -713,13 +713,13 @@ class Request extends Message
      *
      * This will update the Host header accordingly.
      *
-     * @param integer $port The new port number.
+     * @param int $port The new port number.
      *
      * @return static This request.
      */
-    public function setPort($port)
+    public function setPort(int $port) : Request
     {
-        $this->port = (int) $port;
+        $this->port = $port;
 
         return $this->updateHostHeader();
     }
@@ -729,7 +729,7 @@ class Request extends Message
      *
      * @return static This request.
      */
-    private function updateHostHeader()
+    private function updateHostHeader() : Request
     {
         $host = $this->host;
         $standardPort = $this->isSecure ? 443 : 80;
@@ -750,7 +750,7 @@ class Request extends Message
      *
      * @return string The request path.
      */
-    public function getPath()
+    public function getPath() : string
     {
         return $this->path;
     }
@@ -762,7 +762,7 @@ class Request extends Message
      *
      * @return array
      */
-    public function getPathParts()
+    public function getPathParts() : array
     {
         return preg_split('|/|', $this->path, -1, PREG_SPLIT_NO_EMPTY);
     }
@@ -778,13 +778,13 @@ class Request extends Message
      *
      * @throws \InvalidArgumentException If the path is not valid.
      */
-    public function setPath($path)
+    public function setPath(string $path) : Request
     {
         if (strpos($path, '?') !== false) {
             throw new \InvalidArgumentException('The request path must not contain a query string.');
         }
 
-        $this->path = (string) $path;
+        $this->path = $path;
 
         return $this->updateRequestUri();
     }
@@ -798,7 +798,7 @@ class Request extends Message
      *
      * @return string The query string.
      */
-    public function getQueryString()
+    public function getQueryString() : string
     {
         return $this->queryString;
     }
@@ -810,7 +810,7 @@ class Request extends Message
      *
      * @return static This request.
      */
-    public function setQueryString($queryString)
+    public function setQueryString(string $queryString) : Request
     {
         $this->queryString = (string) $queryString;
         parse_str($this->queryString, $this->query);
@@ -823,7 +823,7 @@ class Request extends Message
      *
      * @return static This request.
      */
-    private function updateRequestUri()
+    private function updateRequestUri() : Request
     {
         $this->requestUri = $this->path;
 
@@ -839,7 +839,7 @@ class Request extends Message
      *
      * @return string The request URI.
      */
-    public function getRequestUri()
+    public function getRequestUri() : string
     {
         return $this->requestUri;
     }
@@ -853,9 +853,8 @@ class Request extends Message
      *
      * @return static
      */
-    public function setRequestUri($requestUri)
+    public function setRequestUri(string $requestUri) : Request
     {
-        $requestUri = (string) $requestUri;
         $pos = strpos($requestUri, '?');
 
         if ($pos === false) {
@@ -885,7 +884,7 @@ class Request extends Message
      *
      * @return string The request URL.
      */
-    public function getUrl()
+    public function getUrl() : string
     {
         return $this->getUrlBase() . $this->requestUri;
     }
@@ -895,7 +894,7 @@ class Request extends Message
      *
      * @return string The base URL.
      */
-    public function getUrlBase()
+    public function getUrlBase() : string
     {
         $url = sprintf('%s://%s', $this->getScheme(), $this->host);
         $isStandardPort = ($this->port === ($this->isSecure ? 443 : 80));
@@ -912,7 +911,7 @@ class Request extends Message
      *
      * @throws \InvalidArgumentException If the URL is not valid.
      */
-    public function setUrl($url)
+    public function setUrl(string $url) : Request
     {
         $components = parse_url($url);
 
@@ -973,7 +972,7 @@ class Request extends Message
      *
      * @return Url|null
      */
-    public function getReferer()
+    public function getReferer() : ?Url
     {
         $referer = $this->getFirstHeader('Referer');
 
@@ -991,9 +990,9 @@ class Request extends Message
     /**
      * Returns whether this request is sent over a secure connection (HTTPS).
      *
-     * @return boolean True if the request is secure, false otherwise.
+     * @return bool True if the request is secure, false otherwise.
      */
-    public function isSecure()
+    public function isSecure() : bool
     {
         return $this->isSecure;
     }
@@ -1001,13 +1000,12 @@ class Request extends Message
     /**
      * Sets whether this request is sent over a secure connection.
      *
-     * @param boolean $isSecure True to mark the request as secure, false to mark it as not secure.
+     * @param bool $isSecure True to mark the request as secure, false to mark it as not secure.
      *
      * @return static This request.
      */
-    public function setSecure($isSecure)
+    public function setSecure(bool $isSecure) : Request
     {
-        $isSecure = (bool) $isSecure;
         $isStandardPort = ($this->port === ($this->isSecure ? 443 : 80));
 
         if ($isStandardPort) {
@@ -1024,7 +1022,7 @@ class Request extends Message
      *
      * @return string The IP address.
      */
-    public function getClientIp()
+    public function getClientIp() : string
     {
         return $this->clientIp;
     }
@@ -1036,9 +1034,9 @@ class Request extends Message
      *
      * @return static This request.
      */
-    public function setClientIp($ip)
+    public function setClientIp(string $ip) : Request
     {
-        $this->clientIp = (string) $ip;
+        $this->clientIp = $ip;
 
         return $this;
     }
@@ -1052,7 +1050,7 @@ class Request extends Message
      *
      * @return array The accepted languages.
      */
-    public function getAcceptLanguage()
+    public function getAcceptLanguage() : array
     {
         return $this->parseQualityValues($this->getHeader('Accept-Language'));
     }
@@ -1064,7 +1062,7 @@ class Request extends Message
      *
      * @return array The parsed values as an associative array mapping the string to the quality value.
      */
-    private function parseQualityValues($header)
+    private function parseQualityValues(string $header) : array
     {
         $values = $this->parseHeaderParameters($header);
 
@@ -1115,7 +1113,7 @@ class Request extends Message
      *
      * @return array An associative array of values and theirs parameters.
      */
-    private function parseHeaderParameters($header)
+    private function parseHeaderParameters(string $header) : array
     {
         $result = [];
         $values = explode(',', $header);
@@ -1146,9 +1144,9 @@ class Request extends Message
     /**
      * Returns whether this request is sent with an XMLHttpRequest object.
      *
-     * @return boolean True if the request is AJAX, false otherwise.
+     * @return bool True if the request is AJAX, false otherwise.
      */
-    public function isAjax()
+    public function isAjax() : bool
     {
         return $this->getHeader('X-Requested-With') === 'XMLHttpRequest';
     }

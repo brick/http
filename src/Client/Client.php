@@ -3,6 +3,7 @@
 namespace Brick\Http\Client;
 
 use Brick\Http\Listener\MessageListener;
+use Brick\Http\Response;
 use Brick\Http\Server\RequestHandler;
 use Brick\Http\Request;
 
@@ -31,7 +32,7 @@ class Client
      *
      * This is ON by default, but can be turned off to manually control redirections.
      *
-     * @var boolean
+     * @var bool
      */
     private $autoFollowRedirects = true;
 
@@ -82,7 +83,7 @@ class Client
      *
      * @return RequestResponse
      */
-    public function request($method, $url, array $headers = [])
+    public function request(string $method, string $url, array $headers = []) : RequestResponse
     {
         return $this->doRequest($method, $url, $headers, true);
     }
@@ -96,7 +97,7 @@ class Client
      *
      * @return \Brick\Http\Request
      */
-    public function createRequest($method, $url, array $post = [], array $cookies = [], array $headers = [])
+    public function createRequest(string $method, string $url, array $post = [], array $cookies = [], array $headers = []) : Request
     {
         return (new Request())
             ->setMethod($method)
@@ -113,17 +114,17 @@ class Client
      *
      * @return RequestResponse
      */
-    private function doRequest($method, $url, array $headers)
+    private function doRequest(string $method, string $url, array $headers) : RequestResponse
     {
         return $this->rawRequest($this->createRequest($method, $url, $headers));
     }
 
     /**
-     * @param \Brick\Http\Request $request
+     * @param Request $request
      *
      * @return RequestResponse
      */
-    public function rawRequest(Request $request)
+    public function rawRequest(Request $request) : RequestResponse
     {
         $cookies = $this->getCookiesForRequest($request);
         $request->setCookies($cookies);
@@ -160,7 +161,7 @@ class Client
      *
      * @throws \LogicException If there is no redirection to follow.
      */
-    public function followRedirect()
+    public function followRedirect() : RequestResponse
     {
         $response = $this->getLastResponse();
 
@@ -186,9 +187,10 @@ class Client
      * Returns the current URL.
      *
      * @return string
+     *
      * @throws \LogicException If no request has been sent yet.
      */
-    public function getUrl()
+    public function getUrl() : string
     {
         return $this->getLastRequest()->getUrl();
     }
@@ -200,7 +202,7 @@ class Client
      *
      * @throws \LogicException If no request has been sent yet.
      */
-    public function getLastRequest()
+    public function getLastRequest() : Request
     {
         if ($this->lastRequest === null) {
             throw new \LogicException('No request has been sent yet.');
@@ -216,7 +218,7 @@ class Client
      *
      * @throws \LogicException If no response has been received yet.
      */
-    public function getLastResponse()
+    public function getLastResponse() : Response
     {
         if ($this->lastResponse === null) {
             throw new \LogicException('No response has been received yet.');
@@ -230,9 +232,9 @@ class Client
      *
      * @param array $headers An associativate array of headers.
      *
-     * @return static This HttpClient instance.
+     * @return static This Client instance.
      */
-    public function setHeaders(array $headers)
+    public function setHeaders(array $headers) : Client
     {
         $this->headers = $headers;
 
@@ -244,20 +246,21 @@ class Client
      *
      * @param bool $follow Whether to automatically follow redirects.
      *
-     * @return static This HttpClient instance.
+     * @return static This Client instance.
      */
-    public function autoFollowRedirects($follow = true)
+    public function autoFollowRedirects(bool $follow = true) : Client
     {
-        $this->autoFollowRedirects = (bool) $follow;
+        $this->autoFollowRedirects = $follow;
 
         return $this;
     }
 
     /**
      * @param string $uri
+     *
      * @return string
      */
-    public function getAbsoluteUrl($uri)
+    public function getAbsoluteUrl(string $uri) : string
     {
         $uri = $this->removeFragment($uri);
         $request = $this->getLastRequest();
@@ -291,9 +294,10 @@ class Client
 
     /**
      * @param string $uri
+     *
      * @return string
      */
-    private function removeFragment($uri)
+    private function removeFragment(string $uri) : string
     {
         $pos = strpos($uri, '#');
 
@@ -305,7 +309,7 @@ class Client
      *
      * @return array
      */
-    private function getCookiesForRequest(Request $request)
+    private function getCookiesForRequest(Request $request) : array
     {
         return $this->cookieStore->getAsArray(CookieOrigin::createFromRequest($request));
     }

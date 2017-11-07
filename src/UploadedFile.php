@@ -39,14 +39,14 @@ class UploadedFile
      *
      * This can be zero if the uploaded file is empty or the upload is not valid.
      *
-     * @var integer
+     * @var int
      */
     private $size;
 
     /**
      * The status of the upload, one of the `UPLOAD_ERR_*` constants.
      *
-     * @var integer
+     * @var int
      */
     private $status;
 
@@ -56,10 +56,10 @@ class UploadedFile
      * @param string  $path   The path of the temporary file on the local filesystem.
      * @param string  $name   The original file name, as sent by the browser.
      * @param string  $type   The file MIME type, as sent by the browser.
-     * @param integer $size   The size of the uploaded file.
-     * @param integer $status The status of the upload, one of the UPLOAD_ERR_* constants.
+     * @param int     $size   The size of the uploaded file.
+     * @param int     $status The status of the upload, one of the UPLOAD_ERR_* constants.
      */
-    private function __construct($path, $name, $type, $size, $status)
+    private function __construct(string $path, string $name, string $type, int $size, int $status)
     {
         $this->path   = $path;
         $this->name   = $name;
@@ -75,7 +75,7 @@ class UploadedFile
      *
      * @return UploadedFile
      */
-    public static function create(array $file)
+    public static function create(array $file) : UploadedFile
     {
         return new UploadedFile(
             $file['tmp_name'],
@@ -93,7 +93,7 @@ class UploadedFile
      *
      * @return string
      */
-    public function getPath()
+    public function getPath() : string
     {
         return $this->path;
     }
@@ -108,7 +108,7 @@ class UploadedFile
      *
      * @return string
      */
-    public function getName()
+    public function getName() : string
     {
         return $this->name;
     }
@@ -123,7 +123,7 @@ class UploadedFile
      *
      * @return string
      */
-    public function getExtension()
+    public function getExtension() : string
     {
         return pathinfo($this->name, PATHINFO_EXTENSION);
     }
@@ -138,7 +138,7 @@ class UploadedFile
      *
      * @return string
      */
-    public function getType()
+    public function getType() : string
     {
         return $this->type;
     }
@@ -148,9 +148,9 @@ class UploadedFile
      *
      * This can be zero if the uploaded file is empty or the upload is not valid.
      *
-     * @return integer
+     * @return int
      */
-    public function getSize()
+    public function getSize() : int
     {
         return $this->size;
     }
@@ -158,9 +158,9 @@ class UploadedFile
     /**
      * Returns the status of the upload, one of the UPLOAD_ERR_* constants.
      *
-     * @return integer
+     * @return int
      */
-    public function getStatus()
+    public function getStatus() : int
     {
         return $this->status;
     }
@@ -171,9 +171,9 @@ class UploadedFile
      * This method should always be checked before attempting
      * to perform any processing on the uploaded file.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isValid()
+    public function isValid() : bool
     {
         return $this->status === UPLOAD_ERR_OK;
     }
@@ -181,9 +181,9 @@ class UploadedFile
     /**
      * Returns whether a file was selected in the web form.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isSelected()
+    public function isSelected() : bool
     {
         return $this->status !== UPLOAD_ERR_NO_FILE;
     }
