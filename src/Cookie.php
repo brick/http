@@ -88,7 +88,7 @@ class Cookie
         $parts = preg_split('/;\s*/', $string);
         $nameValue = explode('=', array_shift($parts), 2);
 
-        if (count($nameValue) != 2) {
+        if (count($nameValue) !== 2) {
             throw new \InvalidArgumentException('The cookie string is not valid.');
         }
 
@@ -121,7 +121,7 @@ class Cookie
 
                 default:
                     $elements = explode('=', $part, 2);
-                    if (count($elements) == 2) {
+                    if (count($elements) === 2) {
                         switch (strtolower($elements[0])) {
                             case 'expires':
                                 // Using @ to suppress the timezone warning, might not be the best thing to do.

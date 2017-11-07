@@ -92,7 +92,7 @@ class ClientCookie
         $requestHost = explode('.', strtolower($origin->getHost()));
         $cookieDomain = explode('.', $this->domain);
 
-        if ($this->hostOnly && $requestHost != $cookieDomain) {
+        if ($this->hostOnly && $requestHost !== $cookieDomain) {
             return false;
         }
 
@@ -100,13 +100,13 @@ class ClientCookie
             return false;
         }
 
-        if (array_slice($requestHost, -count($cookieDomain)) != $cookieDomain) {
+        if (array_slice($requestHost, -count($cookieDomain)) !== $cookieDomain) {
             return false;
         }
 
         $path = self::getPathDirectory($origin->getPath());
 
-        if (substr($path, 0, strlen($this->path)) != $this->path) {
+        if (substr($path, 0, strlen($this->path)) !== $this->path) {
             return false;
         }
 
@@ -141,7 +141,7 @@ class ClientCookie
         $thisLength = substr_count($this->cookie->getPath(), '/');
         $thatLength = substr_count($that->cookie->getPath(), '/');
 
-        if ($thisLength == $thatLength) {
+        if ($thisLength === $thatLength) {
             // Among cookies that have equal-length path fields,
             // Cookies with earlier creation-times are listed first.
             return $this->creationTime - $that->creationTime;

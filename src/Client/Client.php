@@ -268,22 +268,22 @@ class Client
         $request = $this->getLastRequest();
 
         // Empty URI
-        if ($uri == '') {
+        if ($uri === '') {
             return $request->getUrl();
         }
 
         // Absolute URL with scheme
-        if (preg_match('~^[a-z]+\://~i', $uri) == 1) {
+        if (preg_match('~^[a-z]+\://~i', $uri) === 1) {
             return $uri;
         }
 
         // Absolute URL with no scheme
-        if (substr($uri, 0, 2) == '//') {
+        if (substr($uri, 0, 2) === '//') {
             return $request->getScheme() . ':' . $uri;
         }
 
         // Absolute URI
-        if ($uri[0] == '/') {
+        if ($uri[0] === '/') {
             return $request->getUrlBase() . $uri;
         }
 

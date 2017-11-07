@@ -85,7 +85,7 @@ class Response extends Message
     {
         $responseObject = new Response();
 
-        if (preg_match('/^HTTP\/([0-9]\.[0-9]) ([0-9]{3}) .*\r\n/', $response, $matches) == 0) {
+        if (preg_match('/^HTTP\/([0-9]\.[0-9]) ([0-9]{3}) .*\r\n/', $response, $matches) !== 1) {
             throw new \RuntimeException('Could not parse response (error 1).');
         }
 
@@ -102,19 +102,19 @@ class Response extends Message
                 throw new \RuntimeException('Could not parse response (error 2).');
             }
 
-            if ($pos == 0) {
+            if ($pos === 0) {
                 break;
             }
 
             $header = substr($response, 0, $pos);
 
-            if (preg_match('/^(\S+):\s*(.*)$/', $header, $matches) == 0) {
+            if (preg_match('/^(\S+):\s*(.*)$/', $header, $matches) !== 1) {
                 throw new \RuntimeException('Could not parse response (error 3).');
             }
 
             list ($line, $name, $value) = $matches;
 
-            if (strtolower($name) == 'set-cookie') {
+            if (strtolower($name) === 'set-cookie') {
                 $responseObject->setCookie(Cookie::parse($value));
             } else {
                 $responseObject->addHeader($name, $value);

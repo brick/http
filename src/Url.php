@@ -88,14 +88,14 @@ class Url
         $this->scheme = strtolower($parts['scheme']);
         $this->host = strtolower($parts['host']);
 
-        if ($this->scheme != 'http' && $this->scheme != 'https') {
+        if ($this->scheme !== 'http' && $this->scheme !== 'https') {
             throw new \InvalidArgumentException('URL scheme must be http or https.');
         }
 
         if (isset($parts['port'])) {
             $this->port = $parts['port'];
         } else {
-            $this->port = ($this->scheme == 'https') ? 443 : 80;
+            $this->port = ($this->scheme === 'https') ? 443 : 80;
         }
 
         if (isset($parts['path'])) {
@@ -124,11 +124,11 @@ class Url
 
         $url .= $this->path;
 
-        if ($this->query != '') {
+        if ($this->query !== '') {
             $url .= '?' . $this->query;
         }
 
-        if ($this->fragment != '') {
+        if ($this->fragment !== '') {
             $url .= '#' . $this->fragment;
         }
 
@@ -165,13 +165,13 @@ class Url
         $thatHost = strtolower($host);
 
         if (! $includeSubDomains) {
-            return $thisHost == $thatHost;
+            return $thisHost === $thatHost;
         }
 
         $thisHost = explode('.', $thisHost);
         $thatHost = explode('.', $thatHost);
 
-        return array_slice($thisHost, - count($thatHost)) == $thatHost;
+        return array_slice($thisHost, - count($thatHost)) === $thatHost;
     }
 
     /**
@@ -210,7 +210,7 @@ class Url
      */
     public function isStandardPort() : bool
     {
-        return $this->port == ($this->scheme == 'https' ? 443 : 80);
+        return $this->port === ($this->scheme === 'https' ? 443 : 80);
     }
 
     /**
@@ -218,7 +218,7 @@ class Url
      */
     public function isSecure() : bool
     {
-        return $this->scheme == 'https';
+        return $this->scheme === 'https';
     }
 
     /**

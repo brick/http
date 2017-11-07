@@ -326,7 +326,7 @@ class Request extends Message
 
         $this->requestUri = $this->path;
 
-        if ($this->queryString != '') {
+        if ($this->queryString !== '') {
             $this->requestUri .= '?' . $this->queryString;
         }
 
@@ -675,13 +675,13 @@ class Request extends Message
         $thatHost = strtolower($host);
 
         if (! $includeSubDomains) {
-            return $thisHost == $thatHost;
+            return $thisHost === $thatHost;
         }
 
         $thisHost = explode('.', $thisHost);
         $thatHost = explode('.', $thatHost);
 
-        return array_slice($thisHost, - count($thatHost)) == $thatHost;
+        return array_slice($thisHost, - count($thatHost)) === $thatHost;
     }
 
     /**
@@ -829,7 +829,7 @@ class Request extends Message
     {
         $this->requestUri = $this->path;
 
-        if ($this->queryString != '') {
+        if ($this->queryString !== '') {
             $this->requestUri .= '?' . $this->queryString;
         }
 
