@@ -27,6 +27,10 @@ class NetworkHandler implements RequestHandler
 
         fwrite($fp, $request);
 
-        return Response::parse(stream_get_contents($fp));
+        $result = Response::parse(stream_get_contents($fp));
+
+        fclose($fp);
+
+        return $result;
     }
 }
