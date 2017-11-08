@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Brick\Http\Server;
+namespace Brick\Http;
 
 use Brick\Http\Request;
 use Brick\Http\Response;
