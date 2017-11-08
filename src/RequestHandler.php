@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Brick\Http;
 
-use Brick\Http\Request;
-use Brick\Http\Response;
-
 /**
  * RequestHandler returns a Response for a Request.
  */
