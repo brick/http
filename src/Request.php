@@ -1044,6 +1044,20 @@ class Request extends Message
     }
 
     /**
+     * Returns the content types accepted by the client.
+     *
+     * This method parses the Accept header,
+     * and returns an associative array where keys are language tags,
+     * and values are the associated weights in the range [0-1]. Highest weights are returned first.
+     *
+     * @return array The accepted languages.
+     */
+    public function getAccept() : array
+    {
+        return $this->parseQualityValues($this->getHeader('Accept'));
+    }
+
+    /**
      * Returns the languages accepted by the client.
      *
      * This method parses the Accept-Language header,
