@@ -1047,7 +1047,7 @@ class Request extends Message
      * Returns the content types accepted by the client.
      *
      * This method parses the Accept header,
-     * and returns an associative array where keys are language tags,
+     * and returns an associative array where keys are content types,
      * and values are the associated weights in the range [0-1]. Highest weights are returned first.
      *
      * @return array The accepted languages.
