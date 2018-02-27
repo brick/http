@@ -1034,6 +1034,92 @@ class RequestTest extends TestCase
     }
 
     /**
+     * @expectedException        Brick\Http\Exception\HttpBadRequestException
+     * @expectedExceptionMessage Invalid protocol: invalid_protocol
+     */
+    public function testGetCurrentShouldReturnHttpBadRequestException()
+    {
+        $request = new Request();
+        $_SERVER['SERVER_PROTOCOL'] = 'invalid_protocol';
+        $request->getCurrent();
+    }
+
+    public function testSetFiles()
+    {
+        $request = new Request();
+        $result = $request->setFiles(['./uploaded_file']);
+        $this->assertInstanceOf(Request::class, $result);
+        $this->assertContains('./uploaded_file', $request->getFiles());
+    }
+
+    public function testSetCookiesShouldRemoveCookieHeader()
+    {
+        $request = new Request();
+        $result = $request->setCookies([]);
+        $this->assertCount(0, $result->getCookie());
+    }
+
+    public function testSetRequestUriWithNoQueryString()
+    {
+        $request = new Request();
+        $result = $request->setRequestUri('http://localhost?');
+        $this->assertInstanceOf(Request::class, $result);
+        $this->assertContains('http://localhost?', $result->getRequestUri());
+    }
+
+    public function testGetAcceptShouldReturnEmptyArray()
+    {
+        $request = new Request();
+        $this->assertCount(0, $request->setUrl('http://localhost:8000')->getAccept());
+    }
+
+    public function testIsAjaxShouldReturnFalse()
+    {
+        $request = new Request();
+        $this->assertFalse($request->isAjax());
+    }
+
+    /**
+     * @expectedException        \InvalidArgumentException
+     * @expectedExceptionMessage The URL provided is not valid.
+     */
+    public function testSetUrlWithInvalidUrl()
+    {
+        $request = new Request();
+        $request->setUrl('http:////invalid_url');
+    }
+
+    /**
+     * @expectedException        \InvalidArgumentException
+     * @expectedExceptionMessage The URL must have a scheme.
+     */
+    public function testSetUrlWithNoUrlScheme()
+    {
+        $request = new Request();
+        $request->setUrl('invalid_protocol://invalid_url');
+    }
+
+    /**
+     * @expectedException        \InvalidArgumentException
+     * @expectedExceptionMessage The URL scheme "ftp" is not acceptable.
+     */
+    public function testSetUrlWithUnsupportedProtocol()
+    {
+        $request = new Request();
+        $request->setUrl('ftp://invalid_url');
+    }
+
+    /**
+     * @expectedException        \InvalidArgumentException
+     * @expectedExceptionMessage The URL must have a host name.
+     */
+    public function testSetUrlWithNoHostName()
+    {
+        $request = new Request();
+        $request->setUrl('http:sub.site.org');
+    }
+
+    /**
      * @dataProvider providerAcceptLanguage
      *
      * @param string $acceptLanguage The Accept-Language header.
