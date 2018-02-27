@@ -5,11 +5,30 @@ namespace Brick\Http\Tests;
 use Brick\Http\Request;
 use Brick\Http\Url;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Unit tests for class Request.
  */
-class RequestTest extends \PHPUnit_Framework_TestCase
+class RequestTest extends TestCase
 {
+    /**
+     * Workaround for https://github.com/sebastianbergmann/phpunit/issues/3026
+     *
+     * @var float
+     */
+    private $requestTimeFloat;
+
+    public function setUp()
+    {
+        $this->requestTimeFloat = $_SERVER['REQUEST_TIME_FLOAT'];
+    }
+
+    public function tearDown()
+    {
+        $_SERVER['REQUEST_TIME_FLOAT'] = $this->requestTimeFloat;
+    }
+
     public function testDefaults()
     {
         $request = new Request();

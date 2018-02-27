@@ -6,10 +6,12 @@ use Brick\Http\Cookie;
 use Brick\Http\MessageBody;
 use Brick\Http\Response;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Unit tests for class Request.
  */
-class ResponseTest extends \PHPUnit_Framework_TestCase
+class ResponseTest extends TestCase
 {
     public function testDefaults()
     {

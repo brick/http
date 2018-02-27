@@ -4,10 +4,12 @@ namespace Brick\Http\Tests;
 
 use Brick\Http\Cookie;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Unit tests for class Cookie.
  */
-class CookieTest extends \PHPUnit_Framework_TestCase
+class CookieTest extends TestCase
 {
     public function testConstructorAndDefaults()
     {

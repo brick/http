@@ -5,10 +5,12 @@ namespace Brick\Http\Tests;
 use Brick\Http\Url;
 use Brick\Http\Path;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tests for class Url.
  */
-class UrlTest extends \PHPUnit_Framework_TestCase
+class UrlTest extends TestCase
 {
     /**
      * @dataProvider providerValidUrl
