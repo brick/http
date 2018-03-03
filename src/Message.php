@@ -351,7 +351,7 @@ abstract class Message
     {
         $message = $this->getHead();
 
-        if ($this->body) {
+        if (isset($this->body)) {
             $message .= (string) $this->body;
         }
 
