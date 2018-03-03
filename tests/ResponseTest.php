@@ -138,6 +138,38 @@ class ResponseTest extends TestCase
         Response::parse('<!DCOTYPE html><html>HTML strings</html>');
     }
 
+    /**
+     * @expectedException        \RuntimeException
+     * @expectedExceptionMessage Could not parse response (error 2).
+     */
+    public function testParseShouldReturnRuntimeExceptionError2()
+    {
+        Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Length: 20' . "\r\n");
+    }
+
+    /**
+     * @expectedException        \RuntimeException
+     * @expectedExceptionMessage Could not parse response (error 3).
+     */
+    public function testParseShouldReturnRuntimeExceptionError3()
+    {
+        Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Length20' . "\r\n\r\n");
+    }
+
+    public function testParseShouldReturnResponseObject()
+    {
+        $result = Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Length: 20' . "\r\n\r\n");
+
+        $this->assertInstanceOf(Response::class, $result);
+    }
+
+    public function testParseWithCookieHeaderShouldReturnResponseObject()
+    {
+        $result = Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Length: 20' . "\r\n" . 'Set-Cookie: sessionid=38afes7a8; HttpOnly; Path=/' . "\r\n\r\n");
+
+        $this->assertInstanceOf(Response::class, $result);
+    }
+
     public function testIsType()
     {
         $response = new Response();
