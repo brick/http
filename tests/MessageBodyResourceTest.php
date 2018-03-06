@@ -7,7 +7,7 @@ use Brick\Http\MessageBodyResource;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unit tests for class Path.
+ * Unit tests for class MessageBodyResource.
  */
 class MessageBodyResourceTest extends TestCase
 {
@@ -26,11 +26,5 @@ class MessageBodyResourceTest extends TestCase
     public function testGetSizeShouldReturnZero()
     {
         $this->assertSame(0, $this->messageBodyResource->getSize());
-    }
-
-    public function testClassInstanceShouldReturnString()
-    {
-        $messageBodyResource = new MessageBodyResource(fopen('php://input', 'rb'));
-        $this->assertEquals('', $messageBodyResource);
     }
 }

@@ -5,6 +5,7 @@ namespace Brick\Http\Tests;
 use Brick\Http\Cookie;
 use Brick\Http\MessageBody;
 use Brick\Http\MessageBodyString;
+use Brick\Http\MessageBodyResource;
 use Brick\Http\Response;
 
 use PHPUnit\Framework\TestCase;
@@ -118,7 +119,8 @@ class ResponseTest extends TestCase
 
         $this->assertSame($response, $response->setContent(fopen('php://input', 'rb')));
         $this->assertInstanceOf(MessageBody::class, $response->getBody());
-        $this->assertSame('', (string) $response->getBody());
+        $this->assertInstanceOf(MessageBodyResource::class, $response->getBody());
+        $this->assertSame(0, $response->getBody()->getSize());
     }
 
     public function testIsStatusCode()
@@ -133,7 +135,7 @@ class ResponseTest extends TestCase
      * @expectedException        \RuntimeException
      * @expectedExceptionMessage Could not parse response (error 1).
      */
-    public function testParseShouldReturnRuntimeExceptionError1()
+    public function testParseShouldThrowRuntimeExceptionError1()
     {
         Response::parse('<!DCOTYPE html><html>HTML strings</html>');
     }
@@ -142,7 +144,7 @@ class ResponseTest extends TestCase
      * @expectedException        \RuntimeException
      * @expectedExceptionMessage Could not parse response (error 2).
      */
-    public function testParseShouldReturnRuntimeExceptionError2()
+    public function testParseShouldThrowRuntimeExceptionError2()
     {
         Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Length: 20' . "\r\n");
     }
@@ -151,7 +153,7 @@ class ResponseTest extends TestCase
      * @expectedException        \RuntimeException
      * @expectedExceptionMessage Could not parse response (error 3).
      */
-    public function testParseShouldReturnRuntimeExceptionError3()
+    public function testParseShouldThrowRuntimeExceptionError3()
     {
         Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Length20' . "\r\n\r\n");
     }
@@ -161,6 +163,9 @@ class ResponseTest extends TestCase
         $result = Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Length: 20' . "\r\n\r\n");
 
         $this->assertInstanceOf(Response::class, $result);
+        $this->assertSame(200, $result->getStatusCode());
+        $this->assertSame('1.0', $result->getProtocolVersion());
+        $this->assertSame(['Content-Length' => ['0']], $result->getHeaders());
     }
 
     public function testParseWithCookieHeaderShouldReturnResponseObject()
@@ -168,6 +173,9 @@ class ResponseTest extends TestCase
         $result = Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Length: 20' . "\r\n" . 'Set-Cookie: sessionid=38afes7a8; HttpOnly; Path=/' . "\r\n\r\n");
 
         $this->assertInstanceOf(Response::class, $result);
+        $this->assertSame(200, $result->getStatusCode());
+        $this->assertSame('1.0', $result->getProtocolVersion());
+        $this->assertSame(['Content-Length' => ['0'], 'Set-Cookie' => ['sessionid=38afes7a8; Path=/; HttpOnly']], $result->getHeaders());
     }
 
     public function testIsType()
@@ -189,9 +197,10 @@ class ResponseTest extends TestCase
     public function testHasHeader()
     {
         $response = new Response();
-        //$resultTrue = $response->
+        $response->setHeader('Accept', 'image/png');
 
         $this->assertFalse($response->hasHeader('no_header_name'));
+        $this->assertTrue($response->hasHeader('Accept'));
     }
 
     public function testAddHeaderWithArrayValue()
@@ -202,7 +211,7 @@ class ResponseTest extends TestCase
         $this->assertSame('Sun, 18 Oct 2009 08:56:53 GMT', $response->getHeader('Date'));
     }
 
-    public function testAddHeaderWithArrayValueAppendExistedHeader()
+    public function testAddHeaderWithExistingValue()
     {
         $response = new Response();
         $response->addHeader('Date', 'Sun');
@@ -243,7 +252,7 @@ class ResponseTest extends TestCase
         $this->assertSame(0, $response->getContentLength());
     }
 
-    public function testGetContentLengthShouldReturn19730()
+    public function testGetContentLengthWithValue()
     {
         $response = new Response();
         $response->addHeader('Content-Length', 19730);
@@ -251,25 +260,44 @@ class ResponseTest extends TestCase
         $this->assertSame(19730, $response->getContentLength());
     }
 
-    public function testIsContentType()
+    /**
+     * @dataProvider providerIsContentType
+     *
+     * @param string  $headerValue    The specific header value
+     * @param boolean $expectedResult The expected result
+     */
+    public function testIsContentType($headerValue, $expectedResult)
     {
         $response = new Response();
-        $response->addHeader('Content-Type', 'text/html; charset=utf-8');
+        $response->addHeader('Content-Type', $headerValue);
 
-        $this->assertTrue($response->isContentType('text/html'));
+        $this->assertSame($expectedResult, $response->isContentType('text/html'));
     }
 
-    public function testClassInstanceShouldReturnMessageBodyString()
+    /**
+     * @return array
+     */
+    public function providerIsContentType()
+    {
+        return [
+            ['text/html; charset=utf-8', true],
+            ['text/html;', true],
+            ['text/html', true],
+            ['text/html charset=utf-8', false],
+        ];
+    }
+
+    public function testCastToString()
     {
         $response = new Response();
         $response->setBody(new MessageBodyString('param1=value1&param2=value2'));
-        $response->addHeader('Content-Length', 19730);
-        $expectedString = 'HTTP/1.0 200 OK' . "\r\n" . 'Content-Length: 27' . "\r\n" . 'Content-Length: 19730' . "\r\n\r\n" . 'param1=value1&param2=value2';
+        $response->addHeader('Accept', 'image/png');
+        $expectedString = 'HTTP/1.0 200 OK' . "\r\n" . 'Content-Length: 27' . "\r\n" . 'Accept: image/png' . "\r\n\r\n" . 'param1=value1&param2=value2';
 
         $this->assertSame($expectedString, (string)$response);
     }
 
-    public function testClassInstanceShouldBeCloned()
+    public function testClone()
     {
         $response = new Response();
         $response->setBody(new MessageBodyString('param1=value1&param2=value2'));
@@ -277,5 +305,7 @@ class ResponseTest extends TestCase
 
         $this->assertInstanceOf(Response::class, $cloneResponse);
         $this->assertInstanceOf(MessageBodyString::class, $cloneResponse->getBody());
+        $this->assertSame(27, $cloneResponse->getContentLength());
+        $this->assertSame('param1=value1&param2=value2', (string) $cloneResponse->getBody());
     }
 }

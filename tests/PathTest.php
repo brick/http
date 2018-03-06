@@ -29,28 +29,19 @@ class PathTest extends TestCase
 
     public function testContains()
     {
-        $resultTrue = $this->path->contains('path1');
-        $resultFalse = $this->path->contains('path3');
-
-        $this->assertTrue($resultTrue);
-        $this->assertFalse($resultFalse);
+        $this->assertTrue($this->path->contains('path1'));
+        $this->assertFalse($this->path->contains('path3'));
     }
 
     public function testStartsWith()
     {
-        $resultTrue = $this->path->startsWith('/path1');
-        $resultFalse = $this->path->startsWith('/path3');
-
-        $this->assertTrue($resultTrue);
-        $this->assertFalse($resultFalse);
+        $this->assertTrue($this->path->startsWith('/path1'));
+        $this->assertFalse($this->path->startsWith('/path3'));
     }
 
     public function testEndsWith()
     {
-        $resultTrue = $this->path->endsWith('/path2');
-        $resultFalse = $this->path->endsWith('/path3');
-
-        $this->assertTrue($resultTrue);
-        $this->assertFalse($resultFalse);
+        $this->assertTrue($this->path->endsWith('/path2'));
+        $this->assertFalse($this->path->endsWith('/path3'));
     }
 }
