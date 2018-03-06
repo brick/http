@@ -13,11 +13,12 @@ class MessageBodyStringTest extends TestCase
 {
     public function testRead()
     {
-        $messageBodyString = new MessageBodyString('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="ie=edge"><title>Document</title></head><body></body></html>');
+        $messageBodyString = new MessageBodyString('<!DOCTYPE html><html lang="en"><body></body></html>');
 
         $this->assertSame('<!DOCTYPE html>', $messageBodyString->read(15));
-        $this->assertSame(232, $messageBodyString->getSize());
-
         $this->assertSame('<html lang="en">', $messageBodyString->read(16));
+        $this->assertSame('<body></body></html>', $messageBodyString->read(1024));
+
+        $this->assertSame(51, $messageBodyString->getSize());
     }
 }
