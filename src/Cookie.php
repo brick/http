@@ -92,7 +92,7 @@ class Cookie
             throw new \InvalidArgumentException('The cookie string is not valid.');
         }
 
-        list ($name, $value) = $nameValue;
+        [$name, $value] = $nameValue;
 
         if ($name === '') {
             throw new \InvalidArgumentException('The cookie string is not valid.');

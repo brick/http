@@ -89,7 +89,7 @@ class Response extends Message
             throw new \RuntimeException('Could not parse response (error 1).');
         }
 
-        list ($line, $protocolVersion, $statusCode) = $matches;
+        [$line, $protocolVersion, $statusCode] = $matches;
 
         $responseObject->setProtocolVersion($protocolVersion);
         $responseObject->setStatusCode((int) $statusCode);
@@ -112,7 +112,7 @@ class Response extends Message
                 throw new \RuntimeException('Could not parse response (error 3).');
             }
 
-            list ($line, $name, $value) = $matches;
+            [$line, $name, $value] = $matches;
 
             if (strtolower($name) === 'set-cookie') {
                 $responseObject->setCookie(Cookie::parse($value));
