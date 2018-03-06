@@ -433,12 +433,16 @@ class Request extends Message
      * This will replace the message body, if any, with an empty body.
      * This is in line with the values available when dealing with a multipart request in PHP.
      *
-     * @param array $files An associative array of uploaded files.
+     * @param array $files An associative array of (potentially nested) UploadedFile instances.
      *
      * @return static This request.
+     *
+     * @throws \InvalidArgumentException If the UploadedFile array is invalid.
      */
     public function setFiles(array $files) : Request
     {
+        $this->checkFiles($files);
+
         $this->files = $files;
         $this->body  = new MessageBodyString('');
 
@@ -448,6 +452,26 @@ class Request extends Message
         ]);
 
         return $this;
+    }
+
+    /**
+     * @param array $files
+     *
+     * @return void
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function checkFiles(array $files) : void
+    {
+        foreach ($files as $value) {
+            if (is_array($value)) {
+                $this->checkFiles($value);
+            } elseif (! $value instanceof UploadedFile) {
+                $type = is_object($value) ? get_class($value) : gettype($value);
+
+                throw new \InvalidArgumentException('Expected ' . UploadedFile::class . ' or array, got ' . $type);
+            }
+        }
     }
 
     /**

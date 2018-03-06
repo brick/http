@@ -13,15 +13,20 @@ class UploadedFileTest extends TestCase
 {
     protected $uploadedFile;
 
-    protected function setUp()
+    public static function createSampleUploadedFile() : UploadedFile
     {
-        $this->uploadedFile = UploadedFile::create([
+        return UploadedFile::create([
             'tmp_name' => 'uploaded_temp_file.txt',
             'name' => 'uploaded_file.txt',
             'type' => 'txt',
             'size' => 1024,
             'error' => 0,
         ]);
+    }
+
+    protected function setUp()
+    {
+        $this->uploadedFile = self::createSampleUploadedFile();
     }
 
     public function testGetExtension()

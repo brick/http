@@ -1045,18 +1045,31 @@ class RequestTest extends TestCase
 
     public function testSetFiles()
     {
+        $uploadedFile = UploadedFileTest::createSampleUploadedFile();
+
         $expectedArray = [
-            'image' => 'uploaded_image_file',
+            'image' => $uploadedFile,
             'documents' => [
-                'uploaded_file1',
-                'uploaded_file2',
+                $uploadedFile,
+                $uploadedFile,
             ]
         ];
+
         $request = new Request();
         $result = $request->setFiles($expectedArray);
-        $this->assertInstanceOf(Request::class, $result);
 
+        $this->assertInstanceOf(Request::class, $result);
         $this->assertSame($expectedArray, $request->getFiles());
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Expected Brick\Http\UploadedFile or array, got string
+     */
+    public function testSetFilesWithInvalidContentsThrowException()
+    {
+        $request = new Request();
+        $request->setFiles(['nested' => ['array' => ['contains' => 'string']]]);
     }
 
     public function testSetCookiesShouldRemoveCookieHeader()
