@@ -11,20 +11,29 @@ use PHPUnit\Framework\TestCase;
  */
 class MessageBodyResourceTest extends TestCase
 {
+    /**
+     * @var MessageBodyResource
+     */
     protected $messageBodyResource;
 
     public function setUp()
     {
-        $this->messageBodyResource = new MessageBodyResource(fopen('php://input', 'rb'));
+        $fp = fopen('php://memory', 'rb+');
+
+        fwrite($fp, 'data');
+        fseek($fp, 0);
+
+        $this->messageBodyResource = new MessageBodyResource($fp);
     }
 
     public function testRead()
     {
-        $this->assertSame('', $this->messageBodyResource->read(1));
+        $this->assertSame('da', $this->messageBodyResource->read(2));
+        $this->assertSame('ta', $this->messageBodyResource->read(1024));
     }
 
-    public function testGetSizeShouldReturnZero()
+    public function testGetSize()
     {
-        $this->assertSame(0, $this->messageBodyResource->getSize());
+        $this->assertSame(4, $this->messageBodyResource->getSize());
     }
 }
