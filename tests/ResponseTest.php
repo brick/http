@@ -115,11 +115,16 @@ class ResponseTest extends TestCase
 
     public function testSetContentWithResource()
     {
+        $fp = fopen('php://memory', 'rb+');
+        fwrite($fp, 'data');
+        fseek($fp, 0);
+
         $response = new Response();
 
-        $this->assertSame($response, $response->setContent(fopen('php://input', 'rb')));
+        $this->assertSame($response, $response->setContent($fp));
         $this->assertInstanceOf(MessageBodyResource::class, $response->getBody());
-        $this->assertSame(0, $response->getBody()->getSize());
+        $this->assertSame(4, $response->getBody()->getSize());
+        $this->assertSame('data', (string) $response->getBody());
     }
 
     public function testIsStatusCode()
