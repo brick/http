@@ -92,7 +92,7 @@ class Response extends Message
         list ($line, $protocolVersion, $statusCode) = $matches;
 
         $responseObject->setProtocolVersion($protocolVersion);
-        $responseObject->setStatusCode((int)$statusCode);
+        $responseObject->setStatusCode((int) $statusCode);
 
         $response = substr($response, strlen($line));
 

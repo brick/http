@@ -293,7 +293,7 @@ class ResponseTest extends TestCase
         $response->addHeader('Accept', 'image/png');
         $expectedString = 'HTTP/1.0 200 OK' . "\r\n" . 'Content-Length: 27' . "\r\n" . 'Accept: image/png' . "\r\n\r\n" . 'param1=value1&param2=value2';
 
-        $this->assertSame($expectedString, (string)$response);
+        $this->assertSame($expectedString, (string) $response);
     }
 
     public function testClone()
