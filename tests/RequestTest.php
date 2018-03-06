@@ -1034,7 +1034,7 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @expectedException        Brick\Http\Exception\HttpBadRequestException
+     * @expectedException        \Brick\Http\Exception\HttpBadRequestException
      * @expectedExceptionMessage Invalid protocol: invalid_protocol
      */
     public function testGetCurrentWithInvalidProtocolThrowsException()
