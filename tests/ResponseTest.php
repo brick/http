@@ -136,7 +136,7 @@ class ResponseTest extends TestCase
      */
     public function testParseShouldThrowRuntimeExceptionError1()
     {
-        Response::parse('<!DCOTYPE html><html>HTML strings</html>');
+        Response::parse('<!DOCTYPE html><html>HTML strings</html>');
     }
 
     /**
