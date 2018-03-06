@@ -118,7 +118,6 @@ class ResponseTest extends TestCase
         $response = new Response();
 
         $this->assertSame($response, $response->setContent(fopen('php://input', 'rb')));
-        $this->assertInstanceOf(MessageBody::class, $response->getBody());
         $this->assertInstanceOf(MessageBodyResource::class, $response->getBody());
         $this->assertSame(0, $response->getBody()->getSize());
     }
@@ -146,7 +145,7 @@ class ResponseTest extends TestCase
      */
     public function testParseShouldThrowRuntimeExceptionError2()
     {
-        Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Length: 20' . "\r\n");
+        Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Type: text/plain' . "\r\n");
     }
 
     /**
@@ -155,27 +154,27 @@ class ResponseTest extends TestCase
      */
     public function testParseShouldThrowRuntimeExceptionError3()
     {
-        Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Length20' . "\r\n\r\n");
+        Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Typetext/plain' . "\r\n\r\n");
     }
 
     public function testParseShouldReturnResponseObject()
     {
-        $result = Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Length: 20' . "\r\n\r\n");
+        $result = Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Type: text/html' . "\r\n\r\n");
 
         $this->assertInstanceOf(Response::class, $result);
         $this->assertSame(200, $result->getStatusCode());
         $this->assertSame('1.0', $result->getProtocolVersion());
-        $this->assertSame(['Content-Length' => ['0']], $result->getHeaders());
+        $this->assertSame(['Content-Type' => ['text/html']], $result->getHeaders());
     }
 
     public function testParseWithCookieHeaderShouldReturnResponseObject()
     {
-        $result = Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Length: 20' . "\r\n" . 'Set-Cookie: sessionid=38afes7a8; HttpOnly; Path=/' . "\r\n\r\n");
+        $result = Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Type: text/html' . "\r\n" . 'Set-Cookie: sessionid=38afes7a8; HttpOnly; Path=/' . "\r\n\r\n");
 
         $this->assertInstanceOf(Response::class, $result);
         $this->assertSame(200, $result->getStatusCode());
         $this->assertSame('1.0', $result->getProtocolVersion());
-        $this->assertSame(['Content-Length' => ['0'], 'Set-Cookie' => ['sessionid=38afes7a8; Path=/; HttpOnly']], $result->getHeaders());
+        $this->assertSame(['Content-Type' => ['text/html'], 'Set-Cookie' => ['sessionid=38afes7a8; Path=/; HttpOnly']], $result->getHeaders());
     }
 
     public function testIsType()
