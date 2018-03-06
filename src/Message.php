@@ -29,7 +29,7 @@ abstract class Message
     /**
      * @var \Brick\Http\MessageBody|null
      */
-    protected $body = null;
+    protected $body;
 
     /**
      * Returns the protocol version, such as '1.0'.

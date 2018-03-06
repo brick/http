@@ -39,14 +39,14 @@ class Cookie
      *
      * @var string|null
      */
-    private $path = null;
+    private $path;
 
     /**
      * The domain on which the cookie is valid, or null if not set.
      *
      * @var string|null
      */
-    private $domain = null;
+    private $domain;
 
     /**
      * Whether the cookie should only be sent on a secure connection.
