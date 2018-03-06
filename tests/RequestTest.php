@@ -1084,15 +1084,31 @@ class RequestTest extends TestCase
         $this->assertSame('', $result->getHeader('Cookie'));
     }
 
-    public function testSetRequestUriWithNoQueryString()
+    /**
+     * @dataProvider providerSetRequestUriWithNoQueryString
+     *
+     * @param string $requestUri
+     */
+    public function testSetRequestUriWithNoQueryString(string $requestUri)
     {
         $request = new Request();
-        $result = $request->setRequestUri('http://localhost/');
+        $result = $request->setRequestUri($requestUri);
         $this->assertInstanceOf(Request::class, $result);
-        $this->assertContains('http://localhost/', $result->getRequestUri());
+        $this->assertSame($requestUri, $result->getRequestUri());
         $this->assertSame([], $result->getQuery());
         $this->assertSame('', $result->getQueryString());
-        $this->assertSame('http://localhost/', $result->getPath());
+        $this->assertSame(rtrim($requestUri, '?'), $result->getPath());
+    }
+
+    /**
+     * @return array
+     */
+    public function providerSetRequestUriWithNoQueryString()
+    {
+        return [
+            ['/foo'],
+            ['/foo/bar?']
+        ];
     }
 
     /**
