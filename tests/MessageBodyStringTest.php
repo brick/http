@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Tests for class MessageBodyString.
  */
-class MessageBodyStringtTest extends TestCase
+class MessageBodyStringTest extends TestCase
 {
     public function testRead()
     {
