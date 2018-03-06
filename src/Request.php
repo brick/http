@@ -864,14 +864,12 @@ class Request extends Message
             $this->queryString = '';
             $this->query = [];
         } else {
-            $this->path = substr($requestUri, 0, $pos);
-            $queryString = substr($requestUri, $pos + 1);
+            $this->path        = substr($requestUri, 0, $pos);
+            $this->queryString = substr($requestUri, $pos + 1);
 
-            if ($queryString === '') {
-                $this->queryString = '';
+            if ($this->queryString === '') {
                 $this->query = [];
             } else {
-                $this->queryString = $queryString;
                 parse_str($this->queryString, $this->query);
             }
         }
