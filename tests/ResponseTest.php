@@ -164,7 +164,7 @@ class ResponseTest extends TestCase
         $this->assertInstanceOf(Response::class, $result);
         $this->assertSame(200, $result->getStatusCode());
         $this->assertSame('1.0', $result->getProtocolVersion());
-        $this->assertSame(['Content-Type' => ['text/html']], $result->getHeaders());
+        $this->assertSame(['Content-Type' => ['text/html'], 'Content-Length' => ['0']], $result->getHeaders());
     }
 
     public function testParseWithCookieHeaderShouldReturnResponseObject()
@@ -174,7 +174,7 @@ class ResponseTest extends TestCase
         $this->assertInstanceOf(Response::class, $result);
         $this->assertSame(200, $result->getStatusCode());
         $this->assertSame('1.0', $result->getProtocolVersion());
-        $this->assertSame(['Content-Type' => ['text/html'], 'Set-Cookie' => ['sessionid=38afes7a8; Path=/; HttpOnly']], $result->getHeaders());
+        $this->assertSame(['Content-Type' => ['text/html'], 'Set-Cookie' => ['sessionid=38afes7a8; Path=/; HttpOnly'], 'Content-Length' => ['0']], $result->getHeaders());
     }
 
     public function testIsType()
