@@ -867,7 +867,7 @@ class Request extends Message
             $this->path = substr($requestUri, 0, $pos);
             $queryString = substr($requestUri, $pos + 1);
 
-            if ($queryString === false) {
+            if ($queryString === '') {
                 $this->queryString = '';
                 $this->query = [];
             } else {

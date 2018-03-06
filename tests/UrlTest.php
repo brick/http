@@ -43,6 +43,15 @@ class UrlTest extends TestCase
     }
 
     /**
+     * @expectedException        \InvalidArgumentException
+     * @expectedExceptionMessage URL must contain a host name.
+     */
+    public function testConstructorUrlWithNoHostName()
+    {
+        $url = new Url('http:sub.site.org');
+    }
+
+    /**
      * @return array
      */
     public function providerValidUrl()

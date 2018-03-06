@@ -25,6 +25,21 @@ class CookieTest extends TestCase
         $this->assertFalse($cookie->isHttpOnly());
     }
 
+    public function testIsHostOnlyShouldReturnTrue()
+    {
+        $cookie = new Cookie('foo', 'bar');
+
+        $this->assertTrue($cookie->isHostOnly());
+    }
+
+    public function testIsHostOnlyShouldReturnFalse()
+    {
+        $cookie = new Cookie('foo', 'bar');
+        $cookie->setDomain('http://localhost');
+
+        $this->assertFalse($cookie->isHostOnly());
+    }
+
     /**
      * @dataProvider providerParse
      *
