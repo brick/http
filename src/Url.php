@@ -92,11 +92,7 @@ class Url
             throw new \InvalidArgumentException('URL scheme must be http or https.');
         }
 
-        if (isset($parts['port'])) {
-            $this->port = $parts['port'];
-        } else {
-            $this->port = ($this->scheme === 'https') ? 443 : 80;
-        }
+        $this->port = $parts['port'] ?? ($this->scheme === 'https' ? 443 : 80);
 
         if (isset($parts['path'])) {
             $this->path = new Path($parts['path']);
@@ -104,17 +100,9 @@ class Url
             $this->path = new Path('/');
         }
 
-        if (isset($parts['query'])) {
-            $this->query = $parts['query'];
-        } else {
-            $this->query = '';
-        }
+        $this->query = $parts['query'] ?? '';
 
-        if (isset($parts['fragment'])) {
-            $this->fragment = $parts['fragment'];
-        } else {
-            $this->fragment = '';
-        }
+        $this->fragment = $parts['fragment'] ?? '';
 
         $url = $this->scheme . '://' . $this->host;
 
