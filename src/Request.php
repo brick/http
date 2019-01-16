@@ -419,7 +419,7 @@ class Request extends Message
         }
 
         if (is_array($files)) {
-            return array_filter($files, function ($file) {
+            return array_filter($files, static function ($file) {
                 return $file instanceof UploadedFile;
             });
         }
@@ -1129,7 +1129,7 @@ class Request extends Message
             $position--;
         }
 
-        usort($result, function(array $a, array $b) {
+        usort($result, static function(array $a, array $b) {
             return $b[2] - $a[2];
         });
 
