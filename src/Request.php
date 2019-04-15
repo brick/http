@@ -520,10 +520,11 @@ class Request extends Message
      */
     public function setCookies(array $cookies) : Request
     {
-        $this->cookies = $cookies;
+        $query = http_build_query($cookies);
+        parse_str($query, $this->cookies);
 
         if ($cookies) {
-            $cookie = str_replace('&', '; ', http_build_query($cookies));
+            $cookie = str_replace('&', '; ', $query);
             $this->setHeader('Cookie', $cookie);
         } else {
             $this->removeHeader('Cookie');
