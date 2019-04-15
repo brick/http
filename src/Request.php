@@ -321,8 +321,11 @@ class Request extends Message
      */
     public function setQuery(array $query) : Request
     {
-        $this->query = $query;
         $this->queryString = http_build_query($query);
+
+        // Ensure that we get a value for getQuery() that's consistent with the query string, and whose scalar values
+        // have all been converted to strings, to get a result similar to what we'd get with an incoming HTTP request.
+        parse_str($this->queryString, $this->query);
 
         $this->requestUri = $this->path;
 
@@ -362,7 +365,9 @@ class Request extends Message
      */
     public function setPost(array $post) : Request
     {
-        $this->post = $post;
+        // Ensure that we get a value for getQuery() that's consistent with the query string, and whose scalar values
+        // have all been converted to strings, to get a result similar to what we'd get with an incoming HTTP request.
+        parse_str(http_build_query($post), $this->post);
 
         if (! $this->isContentType('multipart/form-data')) {
             $body = http_build_query($post);
