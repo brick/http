@@ -27,6 +27,6 @@ class HttpRedirectException extends HttpException
 
         parent::__construct($statusCode, [
             'Location' => $location
-        ]);
+        ], $message, $previous);
     }
 }
