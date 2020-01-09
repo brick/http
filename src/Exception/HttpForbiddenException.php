@@ -15,7 +15,7 @@ class HttpForbiddenException extends HttpException
      * @param string          $message  An optional exception message for debugging.
      * @param \Throwable|null $previous An optional previous exception for chaining.
      */
-    public function __construct(string $message = '', \Throwable $previous = null)
+    public function __construct(string $message = '', ?\Throwable $previous = null)
     {
         parent::__construct(403, [], $message, $previous);
     }

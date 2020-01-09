@@ -160,7 +160,7 @@ class Response extends Message
      *
      * @throws \InvalidArgumentException If the status code is not valid.
      */
-    public function setStatusCode(int $statusCode, string $reasonPhrase = null) : Response
+    public function setStatusCode(int $statusCode, ?string $reasonPhrase = null) : Response
     {
         if ($statusCode < 100 || $statusCode > 999) {
             throw new \InvalidArgumentException('Invalid  status code: ' . $statusCode);

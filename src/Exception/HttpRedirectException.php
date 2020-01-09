@@ -19,7 +19,7 @@ class HttpRedirectException extends HttpException
      *
      * @throws \RuntimeException
      */
-    public function __construct(string $location, int $statusCode = 302, string $message = '', \Throwable $previous = null)
+    public function __construct(string $location, int $statusCode = 302, string $message = '', ?\Throwable $previous = null)
     {
         if ($statusCode < 300 || $statusCode >= 400) {
             throw new \RuntimeException('Invalid HTTP redirect status code: ' . $statusCode);

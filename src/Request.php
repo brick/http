@@ -303,7 +303,7 @@ class Request extends Message
      *
      * @return string|array|null The query parameter(s), or null if the path is not found.
      */
-    public function getQuery(string $name = null)
+    public function getQuery(?string $name = null)
     {
         if ($name === null) {
             return $this->query;
@@ -343,7 +343,7 @@ class Request extends Message
      *
      * @return string|array|null The post parameter(s), or null if the path is not found.
      */
-    public function getPost(string $name = null)
+    public function getPost(?string $name = null)
     {
         if ($name === null) {
             return $this->post;
@@ -411,7 +411,7 @@ class Request extends Message
      *
      * @return \Brick\Http\UploadedFile[] The uploaded files.
      */
-    public function getFiles(string $name = null) : array
+    public function getFiles(?string $name = null) : array
     {
         if ($name === null) {
             return $this->files;
@@ -486,7 +486,7 @@ class Request extends Message
      *
      * @return string|array|null The cookie value(s), or null if the path is not found.
      */
-    public function getCookie(string $name = null)
+    public function getCookie(?string $name = null)
     {
         if ($name === null) {
             return $this->cookies;
