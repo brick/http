@@ -8,7 +8,7 @@ namespace Brick\Http;
  * Represents a collection of UploadedFile instances, potentially nested in sub-arrays.
  * This object is immutable.
  */
-class UploadedFileMap
+final class UploadedFileMap
 {
     /**
      * Creates an UploadedFileMap from the $_FILES superglobal.

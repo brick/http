@@ -7,7 +7,7 @@ namespace Brick\Http;
 /**
  * The path of a URL.
  */
-class Path
+final class Path
 {
     /**
      * @var string

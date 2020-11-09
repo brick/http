@@ -9,7 +9,7 @@ namespace Brick\Http;
  *
  * @todo Max-Age support.
  */
-class Cookie
+final class Cookie
 {
     /**
      * The name of the cookie.

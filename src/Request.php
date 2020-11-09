@@ -7,11 +7,9 @@ namespace Brick\Http;
 use Brick\Http\Exception\HttpBadRequestException;
 
 /**
- * @todo make final
- *
  * Represents an HTTP request received by the server. This class is immutable.
  */
-class Request extends Message
+final class Request extends Message
 {
     const PREFER_HTTP_HOST   = 0; // Prefer HTTP_HOST, fall back to SERVER_NAME and SERVER_PORT.
     const PREFER_SERVER_NAME = 1; // Prefer SERVER_NAME and SERVER_PORT, fall back to HTTP_HOST.

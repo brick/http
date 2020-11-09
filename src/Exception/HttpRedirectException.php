@@ -7,7 +7,7 @@ namespace Brick\Http\Exception;
 /**
  * Exception thrown when the resource is located elsewhere.
  */
-class HttpRedirectException extends HttpException
+final class HttpRedirectException extends HttpException
 {
     /**
      * Class constructor.

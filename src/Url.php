@@ -15,7 +15,7 @@ namespace Brick\Http;
  * - If a query separator is present but the query string is empty, the separator is removed;
  * - If a fragment separator is present but the fragment is empty, the separator is removed.
  */
-class Url
+final class Url
 {
     /**
      * @var string

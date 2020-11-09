@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Brick\Http;
 
-class MessageBodyString implements MessageBody
+final class MessageBodyString implements MessageBody
 {
     /**
      * @var string

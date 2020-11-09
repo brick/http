@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Brick\Http;
 
 /**
- * @todo make final
- *
  * Represents an HTTP response to send back to the client. This class is immutable.
  */
-class Response extends Message
+final class Response extends Message
 {
     /**
      * Mapping of Status Code to Reason Phrase.

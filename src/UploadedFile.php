@@ -7,7 +7,7 @@ namespace Brick\Http;
 /**
  * Represents a file uploaded via an HTML form (RFC 1867).
  */
-class UploadedFile
+final class UploadedFile
 {
     /**
      * The temporary path of the uploaded file on the local filesystem.

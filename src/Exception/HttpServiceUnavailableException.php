@@ -9,7 +9,7 @@ namespace Brick\Http\Exception;
  *
  * This might be due to a temporary overloading or maintenance of the server.
  */
-class HttpServiceUnavailableException extends HttpException
+final class HttpServiceUnavailableException extends HttpException
 {
     /**
      * Class constructor.

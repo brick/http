@@ -7,7 +7,7 @@ namespace Brick\Http\Exception;
 /**
  * Exception thrown when the resource cannot be found.
  */
-class HttpNotFoundException extends HttpException
+final class HttpNotFoundException extends HttpException
 {
     /**
      * Class constructor.

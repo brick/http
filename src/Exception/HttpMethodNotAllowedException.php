@@ -10,7 +10,7 @@ namespace Brick\Http\Exception;
  * As per RFC 2616:
  * The response MUST include an Allow header containing a list of valid methods for the requested resource.
  */
-class HttpMethodNotAllowedException extends HttpException
+final class HttpMethodNotAllowedException extends HttpException
 {
     /**
      * Class constructor.

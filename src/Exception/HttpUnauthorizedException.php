@@ -17,7 +17,7 @@ namespace Brick\Http\Exception;
  *
  * @see https://tools.ietf.org/html/rfc7235#section-3.1
  */
-class HttpUnauthorizedException extends HttpException
+final class HttpUnauthorizedException extends HttpException
 {
     /**
      * Class constructor.

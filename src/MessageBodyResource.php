@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Brick\Http;
 
-class MessageBodyResource implements MessageBody
+final class MessageBodyResource implements MessageBody
 {
     /**
      * @var resource
