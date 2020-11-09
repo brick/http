@@ -22,7 +22,7 @@ abstract class Message
      * The keys represent the lowercase header name, and
      * each value is an array of strings associated with the header.
      *
-     * @var array
+     * @var array<string, list<string>>
      */
     protected array $headers = [];
 
@@ -64,7 +64,7 @@ abstract class Message
      * The keys represent the header name as it will be sent over the wire, and
      * each value is an array of strings associated with the header.
      *
-     * @return array
+     * @return array<string, list<string>>
      */
     public function getHeaders() : array
     {

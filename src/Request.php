@@ -127,6 +127,8 @@ final class Request extends Message
     {
         $request = new Request();
 
+        /** @var array<string, string> $_SERVER */
+
         if (isset($_SERVER['HTTPS'])) {
             if ($_SERVER['HTTPS'] === 'on' || $_SERVER['HTTPS'] === '1') {
                 $request->isSecure = true;
@@ -253,13 +255,14 @@ final class Request extends Message
      *   - keys are lowercased
      *   - values are arrays of strings
      *
-     * @return array
+     * @return array<string, list<string>>
      */
     private static function getCurrentRequestHeaders() : array
     {
         $headers = [];
 
         if (function_exists('apache_request_headers')) {
+            /** @var array<string, string> $requestHeaders */
             $requestHeaders = apache_request_headers();
 
             if ($requestHeaders) {
@@ -271,6 +274,8 @@ final class Request extends Message
                 return $headers;
             }
         }
+
+        /** @var array<string, string> $_SERVER */
 
         foreach ($_SERVER as $key => $value) {
             if (substr($key, 0, 5) === 'HTTP_') {
@@ -1175,6 +1180,7 @@ final class Request extends Message
     {
         $values = $this->parseHeaderParameters($header);
 
+        /** @psalm-var list<array{string, float, int}> $result */
         $result = [];
 
         $count = count($values);
@@ -1216,11 +1222,12 @@ final class Request extends Message
     /**
      * Parses a header with multiple values and optional parameters.
      *
-     * Example: text/html; charset=utf8, text/xml => ['text/html' => ['charset' => 'utf8'], 'text/xml' => []]
+     * Example: text/html; charset=utf8, text/xml
+     *       => ['text/html' => ['charset' => 'utf8'], 'text/xml' => []]
      *
      * @param string $header The header to parse.
      *
-     * @return array An associative array of values and theirs parameters.
+     * @return array<string, array<string, string>> An associative array of values and theirs parameters.
      */
     private function parseHeaderParameters(string $header) : array
     {
