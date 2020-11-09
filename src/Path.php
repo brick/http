@@ -6,6 +6,8 @@ namespace Brick\Http;
 
 /**
  * The path of a URL.
+ *
+ * @psalm-immutable
  */
 final class Path
 {

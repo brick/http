@@ -6,6 +6,8 @@ namespace Brick\Http;
 
 /**
  * Represents an HTTP response to send back to the client. This class is immutable.
+ *
+ * @psalm-immutable
  */
 final class Response extends Message
 {
@@ -310,6 +312,8 @@ final class Response extends Message
      * Sends the response.
      *
      * This method will fail (return `false`) if the headers have been already sent.
+     *
+     * @psalm-suppress ImpureFunctionCall
      *
      * @return bool Whether the response has been successfully sent.
      */

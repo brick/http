@@ -6,6 +6,8 @@ namespace Brick\Http;
 
 /**
  * Builds collections of UploadedFile instances, potentially nested in sub-arrays.
+ *
+ * @psalm-immutable
  */
 final class UploadedFileMap
 {

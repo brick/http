@@ -8,6 +8,8 @@ use Brick\Http\Exception\HttpBadRequestException;
 
 /**
  * Represents an HTTP request received by the server. This class is immutable.
+ *
+ * @psalm-immutable
  */
 final class Request extends Message
 {
@@ -332,6 +334,7 @@ final class Request extends Message
 
         // Ensure that we get a value for getQuery() that's consistent with the query string, and whose scalar values
         // have all been converted to strings, to get a result similar to what we'd get with an incoming HTTP request.
+        /** @psalm-suppress ImpureFunctionCall */
         parse_str($that->queryString, $that->query);
 
         $that->requestUri = $that->path;
@@ -378,6 +381,7 @@ final class Request extends Message
 
         // Ensure that we get a value for getQuery() that's consistent with the query string, and whose scalar values
         // have all been converted to strings, to get a result similar to what we'd get with an incoming HTTP request.
+        /** @psalm-suppress ImpureFunctionCall */
         parse_str(http_build_query($post), $that->post);
 
         if (! $that->isContentType('multipart/form-data')) {
@@ -540,6 +544,8 @@ final class Request extends Message
         $that = clone $this;
 
         $query = http_build_query($cookies);
+
+        /** @psalm-suppress ImpureFunctionCall */
         parse_str($query, $that->cookies);
 
         if ($cookies) {
@@ -855,7 +861,9 @@ final class Request extends Message
         $that = clone $this;
         $that->path = $path;
 
-        return $that->updateRequestUri();
+        $that->requestUri = $that->recomputeRequestUri();
+
+        return $that;
     }
 
     /**
@@ -890,25 +898,27 @@ final class Request extends Message
         $that = clone $this;
 
         $that->queryString = $queryString;
+
+        /** @psalm-suppress ImpureFunctionCall */
         parse_str($that->queryString, $that->query);
 
-        return $that->updateRequestUri();
+        $that->requestUri = $that->recomputeRequestUri();
+
+        return $that;
     }
 
     /**
-     * Updates the request URI from the values of path and query string.
-     *
-     * @return static This request.
+     * Recomputes the request URI from the values of path and query string.
      */
-    private function updateRequestUri() : Request
+    private function recomputeRequestUri(): string
     {
-        $this->requestUri = $this->path;
+        $requestUri = $this->path;
 
         if ($this->queryString !== '') {
-            $this->requestUri .= '?' . $this->queryString;
+            $requestUri .= '?' . $this->queryString;
         }
 
-        return $this;
+        return $requestUri;
     }
 
     /**
@@ -953,6 +963,7 @@ final class Request extends Message
             if ($that->queryString === '') {
                 $that->query = [];
             } else {
+                /** @psalm-suppress ImpureFunctionCall */
                 parse_str($that->queryString, $that->query);
             }
         }
@@ -1037,6 +1048,7 @@ final class Request extends Message
 
         if (isset($components['query'])) {
             $that->queryString = $components['query'];
+            /** @psalm-suppress ImpureFunctionCall */
             parse_str($that->queryString, $that->query);
             $requestUri .= '?' . $that->queryString;
         } else {
@@ -1044,14 +1056,12 @@ final class Request extends Message
             $that->query = [];
         }
 
-        $that = $that->withHeader('Host', $hostHeader);
-
         $that->host = $host;
         $that->port = $port;
         $that->isSecure = $isSecure;
         $that->requestUri = $requestUri;
 
-        return $that;
+        return $that->withHeader('Host', $hostHeader);
     }
 
     /**

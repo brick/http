@@ -6,6 +6,8 @@ namespace Brick\Http;
 
 /**
  * Represents a file uploaded via an HTML form (RFC 1867).
+ *
+ * @psalm-immutable
  */
 final class UploadedFile
 {

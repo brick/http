@@ -14,6 +14,8 @@ namespace Brick\Http;
  * - If a path is not present, it is defaulted to a single `/` character;
  * - If a query separator is present but the query string is empty, the separator is removed;
  * - If a fragment separator is present but the fragment is empty, the separator is removed.
+ *
+ * @psalm-immutable
  */
 final class Url
 {

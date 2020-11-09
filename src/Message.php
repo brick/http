@@ -6,6 +6,8 @@ namespace Brick\Http;
 
 /**
  * Base class for Request and Response. This class is immutable.
+ *
+ * @psalm-immutable
  */
 abstract class Message
 {
