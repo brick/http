@@ -44,8 +44,8 @@ class RequestTest extends TestCase
     /**
      * @dataProvider providerGetCurrentWithHttps
      *
-     * @param string  $https    The HTTPS server value.
-     * @param boolean $isSecure The expected isSecure() value.
+     * @param string $https    The HTTPS server value.
+     * @param bool   $isSecure The expected isSecure() value.
      */
     public function testGetCurrentWithHttps(string $https, bool $isSecure): void
     {
@@ -76,7 +76,7 @@ class RequestTest extends TestCase
      * @param array   $server         The contents of the $_SERVER array.
      * @param int     $hostPortSource The value that will be passed to getCurrent().
      * @param string  $expectedHost   The expected host name.
-     * @param integer $expectedPort   The expected port number.
+     * @param int     $expectedPort   The expected port number.
      */
     public function testGetCurrentWithHostPort(array $server, int $hostPortSource, string $expectedHost, int $expectedPort): void
     {
@@ -313,8 +313,8 @@ class RequestTest extends TestCase
     /**
      * @dataProvider providerGetCurrentWithBody
      *
-     * @param array   $server
-     * @param boolean $hasBody
+     * @param array $server
+     * @param bool  $hasBody
      */
     public function testGetCurrentWithBody(array $server, bool $hasBody): void
     {
@@ -395,12 +395,12 @@ class RequestTest extends TestCase
     /**
      * @dataProvider providerGetCurrentWithFiles
      *
-     * @param string  $key    The array key.
-     * @param string  $path   The expected path.
-     * @param string  $name   The expected file name.
-     * @param string  $type   The expected MIME type.
-     * @param integer $size   The expected file size.
-     * @param integer $status The expected upload status.
+     * @param string $key    The array key.
+     * @param string $path   The expected path.
+     * @param string $name   The expected file name.
+     * @param string $type   The expected MIME type.
+     * @param int    $size   The expected file size.
+     * @param int    $status The expected upload status.
      */
     public function testGetCurrentWithFiles(string $key, string $path, string $name, string $type, int $size, int $status): void
     {
@@ -673,8 +673,8 @@ class RequestTest extends TestCase
     /**
      * @dataProvider providerIsMethodSafe
      *
-     * @param string  $method
-     * @param boolean $isSafe
+     * @param string $method
+     * @param bool   $isSafe
      */
     public function testIsMethodSafe(string $method, bool $isSafe): void
     {
@@ -704,9 +704,9 @@ class RequestTest extends TestCase
     /**
      * @dataProvider providerGetWithScheme
      *
-     * @param string  $setScheme The scheme to set.
-     * @param string  $getScheme The expected scheme to get.
-     * @param boolean $isSecure  The expected secure flag.
+     * @param string $setScheme The scheme to set.
+     * @param string $getScheme The expected scheme to get.
+     * @param bool   $isSecure  The expected secure flag.
      */
     public function testGetWithScheme(string $setScheme, string $getScheme, bool $isSecure): void
     {
@@ -920,15 +920,15 @@ class RequestTest extends TestCase
     /**
      * @dataProvider providerGetWithUrl
      *
-     * @param string       $url         The URL to test.
-     * @param string|null  $expectedUrl The expected URL, or NULL to use the original URL.
-     * @param string       $host        The expected host name.
-     * @param integer      $port        The expected port number.
-     * @param string       $requestUri  The expected request URI.
-     * @param string       $path        The expected path.
-     * @param string       $qs          The expected query string.
-     * @param bool         $isSecure    The expected isSecure flag.
-     * @param array        $query       The expected query parameters.
+     * @param string      $url         The URL to test.
+     * @param string|null $expectedUrl The expected URL, or NULL to use the original URL.
+     * @param string      $host        The expected host name.
+     * @param int         $port        The expected port number.
+     * @param string      $requestUri  The expected request URI.
+     * @param string      $path        The expected path.
+     * @param string      $qs          The expected query string.
+     * @param bool        $isSecure    The expected isSecure flag.
+     * @param array       $query       The expected query parameters.
      */
     public function testGetWithUrl(string $url, ?string $expectedUrl, string $host, int $port, string $requestUri, string $path, string $qs, bool $isSecure, array $query): void
     {
@@ -1194,8 +1194,8 @@ class RequestTest extends TestCase
     /**
      * @dataProvider providerIsAjax
      *
-     * @param string  $ajax           X-Requested-With header.
-     * @param boolean $expectedResult The expected result.
+     * @param string $ajax           X-Requested-With header.
+     * @param bool   $expectedResult The expected result.
      */
     public function testIsAjax(string $ajax, bool $expectedResult): void
     {

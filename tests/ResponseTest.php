@@ -64,7 +64,7 @@ class ResponseTest extends TestCase
      * @dataProvider providerWithInvalidStatusCodeThrowsException
      * @expectedException \InvalidArgumentException
      *
-     * @param integer $statusCode
+     * @param int $statusCode
      */
     public function testWithInvalidStatusCodeThrowsException(int $statusCode): void
     {
@@ -292,8 +292,8 @@ class ResponseTest extends TestCase
     /**
      * @dataProvider providerIsContentType
      *
-     * @param string  $headerValue    The specific header value
-     * @param boolean $expectedResult The expected result
+     * @param string $headerValue    The specific header value
+     * @param bool   $expectedResult The expected result
      */
     public function testIsContentType(string $headerValue, bool $expectedResult): void
     {

@@ -47,11 +47,11 @@ class CookieTest extends TestCase
      * @param string      $cookieString
      * @param string      $name
      * @param string      $value
-     * @param integer     $expires
+     * @param int         $expires
      * @param string|null $path
      * @param string|null $domain
-     * @param boolean     $secure
-     * @param boolean     $httpOnly
+     * @param bool        $secure
+     * @param bool        $httpOnly
      */
     public function testParse(string $cookieString, string $name, string $value, int $expires, ?string $path, ?string $domain, bool $secure, bool $httpOnly): void
     {
@@ -195,9 +195,9 @@ class CookieTest extends TestCase
     /**
      * @dataProvider providerIsExpiredIsPersistent
      *
-     * @param integer $expires      The cookie expiration time.
-     * @param boolean $isExpired    The expected value for isExpired.
-     * @param boolean $isPersistent The expected value for isPersistent.
+     * @param int  $expires      The cookie expiration time.
+     * @param bool $isExpired    The expected value for isExpired.
+     * @param bool $isPersistent The expected value for isPersistent.
      */
     public function testIsExpiredIsPersistent(int $expires, bool $isExpired, bool $isPersistent): void
     {
