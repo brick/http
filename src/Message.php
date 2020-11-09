@@ -346,7 +346,11 @@ abstract class Message
     {
         $contentLength = $this->getHeader('Content-Length');
 
-        return ctype_digit($contentLength) ? (int) $contentLength : 0;
+        if (preg_match('/^[0-9]+$/', $contentLength) === 1) {
+            return (int) $contentLength;
+        }
+
+        return 0;
     }
 
     /**
