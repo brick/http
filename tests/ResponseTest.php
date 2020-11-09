@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Brick\Http\Tests;
 
 use Brick\Http\Cookie;
@@ -206,7 +208,7 @@ class ResponseTest extends TestCase
 
         for ($statusCode = 100; $statusCode <= 999; $statusCode++) {
             $response = $response->withStatusCode($statusCode);
-            $digit = substr($statusCode, 0, 1);
+            $digit = substr((string) $statusCode, 0, 1);
 
             $this->assertSame($digit == 1, $response->isInformational());
             $this->assertSame($digit == 2, $response->isSuccessful());
