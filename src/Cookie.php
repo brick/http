@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Brick\Http;
 
 /**
- * An HTTP cookie.
+ * An HTTP cookie. This class is immutable.
  *
  * @todo Max-Age support.
  */
@@ -142,11 +142,11 @@ class Cookie
         }
 
         return (new Cookie($name, $value))
-            ->setExpires($expires)
-            ->setPath($path)
-            ->setDomain($domain)
-            ->setSecure($secure)
-            ->setHttpOnly($httpOnly);
+            ->withExpires($expires)
+            ->withPath($path)
+            ->withDomain($domain)
+            ->withSecure($secure)
+            ->withHttpOnly($httpOnly);
     }
 
     /**
@@ -174,23 +174,20 @@ class Cookie
     }
 
     /**
-     * @deprecated use withExpires()
+     * Returns a copy of this cookie with a new expiration time.
      *
-     * Sets the cookie expiry time.
+     * This instance is immutable and unaffected by this method call.
      *
-     * @param int $expires The unix timestamp at which the cookie expires, zero for a transient cookie.
+     * @param int $expires The expiration time as a unix timestamp, or zero for a transient cookie.
      *
-     * @return static This cookie.
+     * @return Cookie The updated cookie.
      */
-    public function setExpires(int $expires) : Cookie
-    {
-        $this->expires = $expires;
-
-        return $this;
-    }
-
     public function withExpires(int $expires): Cookie
     {
+        if ($expires === $this->expires) {
+            return $this;
+        }
+
         $that = clone $this;
         $that->expires = $expires;
 
@@ -206,21 +203,20 @@ class Cookie
     }
 
     /**
-     * @deprecated use withPath()
+     * Returns a copy of this cookie with a new path.
      *
-     * @param string|null $path
+     * This instance is immutable and unaffected by this method call.
      *
-     * @return static This cookie.
+     * @param string|null $path The cookie path, or null to unset.
+     *
+     * @return Cookie The updated cookie.
      */
-    public function setPath(?string $path) : Cookie
-    {
-        $this->path = $path;
-
-        return $this;
-    }
-
     public function withPath(?string $path): Cookie
     {
+        if ($path === $this->path) {
+            return $this;
+        }
+
         $that = clone $this;
         $that->path = $path;
 
@@ -236,21 +232,20 @@ class Cookie
     }
 
     /**
-     * @deprecated use withDomain()
+     * Returns a copy of this cookie with a new domain.
      *
-     * @param string|null $domain
+     * This instance is immutable and unaffected by this method call.
      *
-     * @return static This cookie.
+     * @param string|null $domain The domain, or null to unset.
+     *
+     * @return Cookie The updated cookie.
      */
-    public function setDomain(?string $domain) : Cookie
-    {
-        $this->domain = $domain;
-
-        return $this;
-    }
-
     public function withDomain(?string $domain): Cookie
     {
+        if ($domain === $this->domain) {
+            return $this;
+        }
+
         $that = clone $this;
         $that->domain = $domain;
 
@@ -274,23 +269,20 @@ class Cookie
     }
 
     /**
-     * @deprecated use withSecure()
+     * Returns a copy of this cookie with an updated Secure flag.
      *
-     * Sets whether this cookie should only be sent over a secure connection.
+     * This instance is immutable and unaffected by this method call.
      *
-     * @param bool $secure True to only send over a secure connection, false otherwise.
+     * @param bool $secure Whether the cookie should only be sent over a secure connection.
      *
-     * @return static This cookie.
+     * @return Cookie The updated cookie.
      */
-    public function setSecure(bool $secure) : Cookie
-    {
-        $this->secure = $secure;
-
-        return $this;
-    }
-
     public function withSecure(bool $secure): Cookie
     {
+        if ($secure === $this->secure) {
+            return $this;
+        }
+
         $that = clone $this;
         $that->secure = $secure;
 
@@ -308,9 +300,9 @@ class Cookie
     }
 
     /**
-     * @deprecated use withHttpOnly()
+     * Returns a copy of this cookie with an updated HttpOnly flag.
      *
-     * Sets whether to limit the scope of this cookie to HTTP requests.
+     * This instance is immutable and unaffected by this method call.
      *
      * Set to true to instruct the user agent to omit the cookie when providing access to
      * cookies via "non-HTTP" APIs (such as a web browser API that exposes cookies to scripts).
@@ -318,19 +310,16 @@ class Cookie
      * This helps mitigate the risk of client side script accessing the protected cookie
      * (provided that the user agent supports it).
      *
-     * @param bool $httpOnly
+     * @param bool $httpOnly Whether to limit the scope of this cookie to HTTP requests.
      *
-     * @return static This cookie.
+     * @return Cookie The updated cookie.
      */
-    public function setHttpOnly(bool $httpOnly) : Cookie
-    {
-        $this->httpOnly = $httpOnly;
-
-        return $this;
-    }
-
     public function withHttpOnly(bool $httpOnly): Cookie
     {
+        if ($httpOnly === $this->httpOnly) {
+            return $this;
+        }
+
         $that = clone $this;
         $that->httpOnly = $httpOnly;
 

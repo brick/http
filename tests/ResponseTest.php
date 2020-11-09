@@ -29,25 +29,28 @@ class ResponseTest extends TestCase
     }
 
     /**
-     * @dataProvider providerGetSetStatusCode
+     * @dataProvider providerGetWithStatusCode
      *
      * @param string      $statusCode           The status code to set.
      * @param string|null $reasonPhrase         The reason phrase to set, or null to skip.
      * @param string      $expectedReasonPhrase The expected reason phrase.
      */
-    public function testGetSetStatusCode($statusCode, $reasonPhrase, $expectedReasonPhrase)
+    public function testGetWithStatusCode($statusCode, $reasonPhrase, $expectedReasonPhrase)
     {
         $response = new Response();
 
-        $this->assertSame($response, $response->setStatusCode($statusCode, $reasonPhrase));
-        $this->assertSame($statusCode, $response->getStatusCode());
-        $this->assertSame($expectedReasonPhrase, $response->getReasonPhrase());
+        $newResponse = $response->withStatusCode($statusCode, $reasonPhrase);
+
+        $this->assertNotSame($response, $newResponse);
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame($statusCode, $newResponse->getStatusCode());
+        $this->assertSame($expectedReasonPhrase, $newResponse->getReasonPhrase());
     }
 
     /**
      * @return array
      */
-    public function providerGetSetStatusCode()
+    public function providerGetWithStatusCode()
     {
         return [
             [404, null,     'Not Found'],
@@ -58,21 +61,21 @@ class ResponseTest extends TestCase
     }
 
     /**
-     * @dataProvider providerSetInvalidStatusCodeThrowsException
+     * @dataProvider providerWithInvalidStatusCodeThrowsException
      * @expectedException \InvalidArgumentException
      *
      * @param integer $statusCode
      */
-    public function testSetInvalidStatusCodeThrowsException($statusCode)
+    public function testWithInvalidStatusCodeThrowsException($statusCode)
     {
         $response = new Response();
-        $response->setStatusCode($statusCode);
+        $response->withStatusCode($statusCode);
     }
 
     /**
      * @return array
      */
-    public function providerSetInvalidStatusCodeThrowsException()
+    public function providerWithInvalidStatusCodeThrowsException()
     {
         return [
             [0],
@@ -81,39 +84,50 @@ class ResponseTest extends TestCase
         ];
     }
 
-    public function testSetRemoveCookie()
+    public function testWithWithoutCookies()
     {
         $response = new Response();
 
         $foo = new Cookie('foo', 'bar');
-        $foo->setSecure(true);
+        $foo = $foo->withSecure(true);
 
-        $this->assertSame($response, $response->setCookie($foo));
-        $this->assertSame([$foo], $response->getCookies());
-        $this->assertSame(['foo=bar; Secure'], $response->getHeaderAsArray('Set-Cookie'));
+        $responseWithFoo = $response->withCookie($foo);
+        $this->assertNotSame($response, $responseWithFoo);
+        $this->assertSame([], $response->getCookies());
+        $this->assertSame([$foo], $responseWithFoo->getCookies());
+        $this->assertSame(['foo=bar; Secure'], $responseWithFoo->getHeaderAsArray('Set-Cookie'));
 
         $bar = new Cookie('bar', 'baz');
-        $bar->setHttpOnly(true);
+        $bar = $bar->withHttpOnly(true);
 
-        $this->assertSame($response, $response->setCookie($bar));
-        $this->assertSame([$foo, $bar], $response->getCookies());
-        $this->assertSame(['foo=bar; Secure', 'bar=baz; HttpOnly'], $response->getHeaderAsArray('Set-Cookie'));
+        $responseWithFooBar = $responseWithFoo->withCookie($bar);
 
-        $this->assertSame($response, $response->removeCookies());
-        $this->assertSame([], $response->getCookies());
-        $this->assertSame([], $response->getHeaderAsArray('Set-Cookie'));
+        $this->assertNotSame($responseWithFoo, $responseWithFooBar);
+        $this->assertSame(['foo=bar; Secure'], $responseWithFoo->getHeaderAsArray('Set-Cookie'));
+        $this->assertSame([$foo, $bar], $responseWithFooBar->getCookies());
+        $this->assertSame(['foo=bar; Secure', 'bar=baz; HttpOnly'], $responseWithFooBar->getHeaderAsArray('Set-Cookie'));
+
+        $responseWithNoCookies = $responseWithFooBar->withoutCookies();
+
+        $this->assertNotSame($responseWithFooBar, $responseWithNoCookies);
+        $this->assertSame([$foo, $bar], $responseWithFooBar->getCookies());
+        $this->assertSame([], $responseWithNoCookies->getCookies());
+        $this->assertSame([], $responseWithNoCookies->getHeaderAsArray('Set-Cookie'));
     }
 
-    public function testSetContent()
+    public function testWithContent()
     {
         $response = new Response();
 
-        $this->assertSame($response, $response->setContent('Hello World'));
-        $this->assertInstanceOf(MessageBody::class, $response->getBody());
-        $this->assertSame('Hello World', (string) $response->getBody());
+        $newResponse = $response->withContent('Hello World');
+
+        $this->assertNotSame($response, $newResponse);
+        $this->assertSame('', (string) $response->getBody());
+        $this->assertInstanceOf(MessageBody::class, $newResponse->getBody());
+        $this->assertSame('Hello World', (string) $newResponse->getBody());
     }
 
-    public function testSetContentWithResource()
+    public function testWithContentAsResource()
     {
         $fp = fopen('php://memory', 'rb+');
         fwrite($fp, 'data');
@@ -121,10 +135,14 @@ class ResponseTest extends TestCase
 
         $response = new Response();
 
-        $this->assertSame($response, $response->setContent($fp));
-        $this->assertInstanceOf(MessageBodyResource::class, $response->getBody());
-        $this->assertSame(4, $response->getBody()->getSize());
-        $this->assertSame('data', (string) $response->getBody());
+        $newResponse = $response->withContent($fp);
+        $this->assertNotSame($response, $newResponse);
+        $this->assertSame('', (string) $response->getBody());
+
+        $newResponseBody = $newResponse->getBody();
+        $this->assertInstanceOf(MessageBodyResource::class, $newResponseBody);
+        $this->assertSame(4, $newResponseBody->getSize());
+        $this->assertSame('data', (string) $newResponseBody);
     }
 
     public function testIsStatusCode()
@@ -187,7 +205,7 @@ class ResponseTest extends TestCase
         $response = new Response();
 
         for ($statusCode = 100; $statusCode <= 999; $statusCode++) {
-            $response->setStatusCode($statusCode);
+            $response = $response->withStatusCode($statusCode);
             $digit = substr($statusCode, 0, 1);
 
             $this->assertSame($digit == 1, $response->isInformational());
@@ -201,46 +219,53 @@ class ResponseTest extends TestCase
     public function testHasHeader()
     {
         $response = new Response();
-        $response->setHeader('Accept', 'image/png');
+        $response = $response->withHeader('Accept', 'image/png');
 
         $this->assertFalse($response->hasHeader('no_header_name'));
         $this->assertTrue($response->hasHeader('Accept'));
     }
 
-    public function testAddHeaderWithArrayValue()
+    public function testWithAddedHeaderWithArrayValue()
     {
         $response = new Response();
 
-        $this->assertInstanceOf(Response::class, $response->addHeader('Date', ['Sun', '18 Oct 2009 08:56:53 GMT']));
+        $newResponse = $response->withAddedHeader('Date', ['Sun', '18 Oct 2009 08:56:53 GMT']);
+
+        $this->assertNotSame($response, $newResponse);
+        $this->assertInstanceOf(Response::class, $newResponse);
+        $this->assertSame('', $response->getHeader('Date'));
+        $this->assertSame('Sun, 18 Oct 2009 08:56:53 GMT', $newResponse->getHeader('Date'));
+    }
+
+    public function testWithAddedHeaderWithExistingValue()
+    {
+        $response = new Response();
+        $response = $response->withAddedHeader('Date', 'Sun');
+        $response = $response->withAddedHeader('Date', ['18 Oct 2009 08:56:53 GMT']);
+
         $this->assertSame('Sun, 18 Oct 2009 08:56:53 GMT', $response->getHeader('Date'));
     }
 
-    public function testAddHeaderWithExistingValue()
+    public function testWithAddedHeaders()
     {
         $response = new Response();
-        $response->addHeader('Date', 'Sun');
-        $response->addHeader('Date', ['18 Oct 2009 08:56:53 GMT']);
 
-        $this->assertSame('Sun, 18 Oct 2009 08:56:53 GMT', $response->getHeader('Date'));
-    }
-
-    public function testAddHeaders()
-    {
-        $response = new Response();
-        $result = $response->addHeaders([
+        $newResponse = $response->withAddedHeaders([
             'Content-Type' => 'text/html; charset=utf-8',
             'Server' => 'Apache',
         ]);
 
-        $this->assertInstanceOf(Response::class, $result);
-        $this->assertSame('text/html; charset=utf-8', $response->getHeader('Content-Type'));
-        $this->assertSame('Apache', $response->getHeader('Server'));
+        $this->assertNotSame($response, $newResponse);
+        $this->assertInstanceOf(Response::class, $newResponse);
+        $this->assertSame([], $response->getHeaders());
+        $this->assertSame('text/html; charset=utf-8', $newResponse->getHeader('Content-Type'));
+        $this->assertSame('Apache', $newResponse->getHeader('Server'));
     }
 
     public function testGetHead()
     {
         $response = new Response();
-        $response->addHeaders([
+        $response = $response->withAddedHeaders([
             'Content-Type' => 'text/html; charset=utf-8',
             'Server' => 'Apache',
         ]);
@@ -259,7 +284,7 @@ class ResponseTest extends TestCase
     public function testGetContentLengthWithValue()
     {
         $response = new Response();
-        $response->addHeader('Content-Length', 19730);
+        $response = $response->withAddedHeader('Content-Length', 19730);
 
         $this->assertSame(19730, $response->getContentLength());
     }
@@ -273,7 +298,7 @@ class ResponseTest extends TestCase
     public function testIsContentType($headerValue, $expectedResult)
     {
         $response = new Response();
-        $response->addHeader('Content-Type', $headerValue);
+        $response = $response->withAddedHeader('Content-Type', $headerValue);
 
         $this->assertSame($expectedResult, $response->isContentType('text/html'));
     }
@@ -294,8 +319,8 @@ class ResponseTest extends TestCase
     public function testCastToString()
     {
         $response = new Response();
-        $response->setBody(new MessageBodyString('param1=value1&param2=value2'));
-        $response->addHeader('Accept', 'image/png');
+        $response = $response->withBody(new MessageBodyString('param1=value1&param2=value2'));
+        $response = $response->withHeader('Accept', 'image/png');
         $expectedString = 'HTTP/1.0 200 OK' . "\r\n" . 'Content-Length: 27' . "\r\n" . 'Accept: image/png' . "\r\n\r\n" . 'param1=value1&param2=value2';
 
         $this->assertSame($expectedString, (string) $response);
@@ -304,7 +329,7 @@ class ResponseTest extends TestCase
     public function testClone()
     {
         $response = new Response();
-        $response->setBody(new MessageBodyString('param1=value1&param2=value2'));
+        $response = $response->withBody(new MessageBodyString('param1=value1&param2=value2'));
         $cloneResponse = clone $response;
 
         $this->assertInstanceOf(Response::class, $cloneResponse);

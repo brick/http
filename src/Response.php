@@ -7,7 +7,7 @@ namespace Brick\Http;
 /**
  * @todo make final
  *
- * Represents an HTTP response to send back to the client.
+ * Represents an HTTP response to send back to the client. This class is immutable.
  */
 class Response extends Message
 {
@@ -93,8 +93,8 @@ class Response extends Message
 
         [$line, $protocolVersion, $statusCode] = $matches;
 
-        $responseObject->setProtocolVersion($protocolVersion);
-        $responseObject->setStatusCode((int) $statusCode);
+        $responseObject = $responseObject->withProtocolVersion($protocolVersion);
+        $responseObject = $responseObject->withStatusCode((int) $statusCode);
 
         $response = substr($response, strlen($line));
 
@@ -117,9 +117,9 @@ class Response extends Message
             [$line, $name, $value] = $matches;
 
             if (strtolower($name) === 'set-cookie') {
-                $responseObject->setCookie(Cookie::parse($value));
+                $responseObject = $responseObject->withCookie(Cookie::parse($value));
             } else {
-                $responseObject->addHeader($name, $value);
+                $responseObject = $responseObject->withAddedHeader($name, $value);
             }
 
             $response = substr($response, strlen($line) + 2);
@@ -127,7 +127,7 @@ class Response extends Message
 
         $body = substr($response, 2);
 
-        $responseObject->setContent($body);
+        $responseObject = $responseObject->withContent($body);
 
         return $responseObject;
     }
@@ -153,19 +153,21 @@ class Response extends Message
     }
 
     /**
-     * @deprecated use withStatusCode()
+     * Returns a copy of this response with a new status code.
      *
-     * Sets the status code of this response.
+     * This instance is immutable and unaffected by this method call.
      *
      * @param int         $statusCode   The status code.
      * @param string|null $reasonPhrase An optional reason phrase, or null to use the default.
      *
-     * @return static
+     * @return Response The updated response.
      *
      * @throws \InvalidArgumentException If the status code is not valid.
      */
-    public function setStatusCode(int $statusCode, ?string $reasonPhrase = null) : Response
+    public function withStatusCode(int $statusCode, ?string $reasonPhrase = null): Response
     {
+        $that = clone $this;
+
         if ($statusCode < 100 || $statusCode > 999) {
             throw new \InvalidArgumentException('Invalid  status code: ' . $statusCode);
         }
@@ -178,16 +180,8 @@ class Response extends Message
             $reasonPhrase = (string) $reasonPhrase;
         }
 
-        $this->statusCode   = $statusCode;
-        $this->reasonPhrase = $reasonPhrase;
-
-        return $this;
-    }
-
-    public function withStatusCode(int $statusCode, ?string $reasonPhrase = null): Response
-    {
-        $that = clone $this;
-        $that->setStatusCode($statusCode);
+        $that->statusCode   = $statusCode;
+        $that->reasonPhrase = $reasonPhrase;
 
         return $that;
     }
@@ -203,44 +197,29 @@ class Response extends Message
     }
 
     /**
-     * @deprecated use withCookie()
+     * Returns a copy of this response with the given cookie set.
      *
-     * Sets a cookie on this response.
+     * This instance is immutable and unaffected by this method call.
      *
-     * @param \Brick\Http\Cookie $cookie The cookie to set.
+     * @param Cookie $cookie The cookie to set.
      *
-     * @return static This response.
+     * @return Response The updated response.
      */
-    public function setCookie(Cookie $cookie) : Response
-    {
-        $this->cookies[] = $cookie;
-        $this->addHeader('Set-Cookie', (string) $cookie);
-
-        return $this;
-    }
-
     public function withCookie(Cookie $cookie): Response
     {
         $that = clone $this;
-        $that->setCookie($cookie);
+        $that->cookies[] = $cookie;
 
-        return $that;
+        return $that->withAddedHeader('Set-Cookie', (string) $cookie);
     }
 
     /**
-     * @deprecated use withoutCookies()
+     * Returns a copy of this response with all cookies removed.
      *
-     * Removes all cookies from this response.
+     * This instance is immutable and unaffected by this method call.
      *
-     * @return static This response.
+     * @return Response The updated response.
      */
-    public function removeCookies() : Response
-    {
-        $this->cookies = [];
-
-        return $this->removeHeader('Set-Cookie');
-    }
-
     public function withoutCookies(): Response
     {
         $that = clone $this;
@@ -250,13 +229,17 @@ class Response extends Message
     }
 
     /**
-     * @deprecated use withContent()
+     * Returns a copy of this response with a new content.
      *
-     * @param string|resource $content
+     * This is a convenience method for setBody().
      *
-     * @return static This response.
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param string|resource $content The response content.
+     *
+     * @return Response The updated response.
      */
-    public function setContent($content) : Response
+    public function withContent($content): Response
     {
         if (is_resource($content)) {
             $body = new MessageBodyResource($content);
@@ -264,18 +247,7 @@ class Response extends Message
             $body = new MessageBodyString($content);
         }
 
-        return $this->setBody($body);
-    }
-
-    /**
-     * @param string|resource $content
-     */
-    public function withContent($content): Response
-    {
-        $that = clone $this;
-        $that->setContent($content);
-
-        return $that;
+        return $this->withBody($body);
     }
 
     /**

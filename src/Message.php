@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Brick\Http;
 
 /**
- * Base class for Request and Response.
+ * Base class for Request and Response. This class is immutable.
  */
 abstract class Message
 {
@@ -42,21 +42,13 @@ abstract class Message
     }
 
     /**
-     * @deprecated use withProtocolVersion()
+     * Returns a copy of this message with a new protocol version.
      *
-     * @param string $version
+     * This instance is immutable and unaffected by this method call.
      *
-     * @return static
-     */
-    public function setProtocolVersion(string $version) : Message
-    {
-        $this->protocolVersion = $version;
-
-        return $this;
-    }
-
-    /**
-     * @return static
+     * @param string $version The HTTP protocol version.
+     *
+     * @return static The updated message.
      */
     public function withProtocolVersion(string $version): Message
     {
@@ -161,29 +153,19 @@ abstract class Message
     }
 
     /**
-     * @deprecated use withHeader()
+     * Returns a copy of this message with a new header.
      *
-     * Sets a header, replacing any existing values of any headers with the same case-insensitive name.
+     * This replaces any existing values of any headers with the same
+     * case-insensitive name in the original message.
      *
      * The header value MUST be a string or an array of strings.
      *
-     * @param string          $name
-     * @param string|string[] $value
+     * This instance is immutable and unaffected by this method call.
      *
-     * @return static
-     */
-    public function setHeader(string $name, $value) : Message
-    {
-        $name = strtolower($name);
-        $this->headers[$name] = is_array($value) ? array_values($value) : [$value];
-
-        return $this;
-    }
-
-    /**
-     * @param string|string[] $value
+     * @param string          $name  The header name.
+     * @param string|string[] $value The header values(s).
      *
-     * @return static
+     * @return static The updated message.
      */
     public function withHeader(string $name, $value): Message
     {
@@ -196,30 +178,17 @@ abstract class Message
     }
 
     /**
-     * @deprecated use withHeaders()
+     * Returns a copy of this message with new headers.
      *
-     * Sets headers, replacing any headers that have already been set on the message.
+     * This replaces any headers that were set on the original message.
      *
-     * The array keys MUST be a string. The array values must be either a
-     * string or an array of strings.
+     * The array keys MUST be strings. The array values MUST be strings or arrays of strings.
      *
-     * @param array<string, string|string[]> $headers
+     * This instance is immutable and unaffected by this method call.
      *
-     * @return static
-     */
-    public function setHeaders(array $headers) : Message
-    {
-        foreach ($headers as $name => $value) {
-            $this->setHeader($name, $value);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param array<string, string|string[]> $headers
+     * @param array<string, string|string[]> $headers The header names & values.
      *
-     * @return static
+     * @return static The updated message.
      */
     public function withHeaders(array $headers): Message
     {
@@ -233,48 +202,37 @@ abstract class Message
     }
 
     /**
-     * @deprecated use withAddedHeader()
+     * Returns a copy of this message with additional header values.
      *
-     * Appends a header value to any existing values associated with the given header name.
+     * The value is added to any existing values associated with the given header name.
      *
-     * @param string          $name
-     * @param string|string[] $value
+     * This instance is immutable and unaffected by this method call.
      *
-     * @return static
-     */
-    public function addHeader(string $name, $value) : Message
-    {
-        $name = strtolower($name);
-
-        if (is_array($value)) {
-            $value = array_values($value);
-            $this->headers[$name] = isset($this->headers[$name])
-                ? array_merge($this->headers[$name], $value)
-                : $value;
-        } else {
-            $this->headers[$name][] = $value;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param string|string[] $value
+     * @param string          $name  The header name.
+     * @param string|string[] $value The header value(s).
      *
-     * @return static
+     * @return static The updated message.
      */
     public function withAddedHeader(string $name, $value): Message
     {
         $that = clone $this;
-        $that->addHeader($name, $value);
+
+        $name = strtolower($name);
+
+        if (is_array($value)) {
+            $value = array_values($value);
+            $that->headers[$name] = isset($that->headers[$name])
+                ? array_merge($that->headers[$name], $value)
+                : $value;
+        } else {
+            $that->headers[$name][] = $value;
+        }
 
         return $that;
     }
 
     /**
-     * @deprecated use withAddedHeaders()
-     *
-     * Merges in an associative array of headers.
+     * Returns a copy of this message with additional headers.
      *
      * Each array key MUST be a string representing the case-insensitive name
      * of a header. Each value MUST be either a string or an array of strings.
@@ -282,23 +240,11 @@ abstract class Message
      * name, or, if a header does not already exist by the given name, then the
      * header is added.
      *
+     * This instance is immutable and unaffected by this method call.
+     *
      * @param array<string, string|string[]> $headers
      *
-     * @return static
-     */
-    public function addHeaders(array $headers) : Message
-    {
-        foreach ($headers as $name => $value) {
-            $this->addHeader($name, $value);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param array<string, string|string[]> $headers
-     *
-     * @return static
+     * @return static The updated message.
      */
     public function withAddedHeaders(array $headers): Message
     {
@@ -312,24 +258,15 @@ abstract class Message
     }
 
     /**
-     * @deprecated use withoutHeader()
+     * Returns a copy of this message without a specific header.
      *
-     * Removes a specific header by case-insensitive name.
+     * The header name is matched case-insensitively
      *
-     * @param string $name
+     * This instance is immutable and unaffected by this method call.
      *
-     * @return static
-     */
-    public function removeHeader(string $name) : Message
-    {
-        $name = strtolower($name);
-        unset($this->headers[$name]);
-
-        return $this;
-    }
-
-    /**
-     * @return static
+     * @param string $name The header name.
+     *
+     * @return static The updated message.
      */
     public function withoutHeader(string $name) : Message
     {
@@ -368,44 +305,32 @@ abstract class Message
     }
 
     /**
-     * @deprecated use withBody()
+     * Returns a copy of this message with a new body.
      *
-     * Sets the message body.
+     * This instance is immutable and unaffected by this method call.
      *
-     * @param MessageBody|null $body
-     *
-     * @return static
-     */
-    public function setBody(?MessageBody $body) : Message
-    {
-        $this->body = $body;
-
-        if ($body) {
-            $size = $body->getSize();
-
-            if ($size === null) {
-                $this->setHeader('Transfer-Encoding', 'chunked');
-                $this->removeHeader('Content-Length');
-            } else {
-                $this->setHeader('Content-Length', (string) $size);
-                $this->removeHeader('Transfer-Encoding');
-            }
-        } else {
-            $this->removeHeader('Content-Length');
-            $this->removeHeader('Transfer-Encoding');
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return static
+     * @return static The updated message.
      */
     public function withBody(?MessageBody $body): Message
     {
         $that = clone $this;
 
-        $that->setBody($body);
+        $that->body = $body;
+
+        if ($body) {
+            $size = $body->getSize();
+
+            if ($size === null) {
+                $that = $that->withHeader('Transfer-Encoding', 'chunked');
+                $that = $that->withoutHeader('Content-Length');
+            } else {
+                $that = $that->withHeader('Content-Length', (string) $size);
+                $that = $that->withoutHeader('Transfer-Encoding');
+            }
+        } else {
+            $that = $that->withoutHeader('Content-Length');
+            $that = $that->withoutHeader('Transfer-Encoding');
+        }
 
         return $that;
     }

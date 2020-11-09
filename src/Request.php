@@ -9,7 +9,7 @@ use Brick\Http\Exception\HttpBadRequestException;
 /**
  * @todo make final
  *
- * Represents an HTTP request received by the server.
+ * Represents an HTTP request received by the server. This class is immutable.
  */
 class Request extends Message
 {
@@ -203,7 +203,7 @@ class Request extends Message
         }
 
         if (isset($_SERVER['REQUEST_URI'])) {
-            $request->setRequestUri($_SERVER['REQUEST_URI']);
+            $request = $request->withRequestUri($_SERVER['REQUEST_URI']);
         }
 
         if (isset($_SERVER['SERVER_PROTOCOL'])) {
@@ -315,36 +315,29 @@ class Request extends Message
     }
 
     /**
-     * @deprecated use withQuery()
+     * Returns a copy of this request with new query parameters.
      *
-     * Sets the query parameters.
+     * This instance is immutable and unaffected by this method call.
      *
      * @param array $query The associative array of parameters.
      *
-     * @return static This request.
+     * @return Request The updated request.
      */
-    public function setQuery(array $query) : Request
-    {
-        $this->queryString = http_build_query($query);
-
-        // Ensure that we get a value for getQuery() that's consistent with the query string, and whose scalar values
-        // have all been converted to strings, to get a result similar to what we'd get with an incoming HTTP request.
-        parse_str($this->queryString, $this->query);
-
-        $this->requestUri = $this->path;
-
-        if ($this->queryString !== '') {
-            $this->requestUri .= '?' . $this->queryString;
-        }
-
-        return $this;
-    }
-
     public function withQuery(array $query): Request
     {
         $that = clone $this;
 
-        $that->setQuery($query);
+        $that->queryString = http_build_query($query);
+
+        // Ensure that we get a value for getQuery() that's consistent with the query string, and whose scalar values
+        // have all been converted to strings, to get a result similar to what we'd get with an incoming HTTP request.
+        parse_str($that->queryString, $that->query);
+
+        $that->requestUri = $that->path;
+
+        if ($that->queryString !== '') {
+            $that->requestUri .= '?' . $that->queryString;
+        }
 
         return $that;
     }
@@ -366,40 +359,33 @@ class Request extends Message
     }
 
     /**
-     * @deprecated use withPost()
-     *
-     * Sets the post parameter.
+     * Returns a copy of this request with new post parameters.
      *
      * This will set a request body with the URL-encoded data,
      * unless the Content-Type of this request is multipart/form-data,
      * in which case the body is left as is.
      *
+     * This instance is immutable and unaffected by this method call.
+     *
      * @param array $post The associative array of parameters.
      *
-     * @return static This request.
+     * @return Request The updated request.
      */
-    public function setPost(array $post) : Request
-    {
-        // Ensure that we get a value for getQuery() that's consistent with the query string, and whose scalar values
-        // have all been converted to strings, to get a result similar to what we'd get with an incoming HTTP request.
-        parse_str(http_build_query($post), $this->post);
-
-        if (! $this->isContentType('multipart/form-data')) {
-            $body = http_build_query($post);
-            $body = new MessageBodyString($body);
-
-            $this->setBody($body);
-            $this->setHeader('Content-Type', 'x-www-form-urlencoded');
-        }
-
-        return $this;
-    }
-
     public function withPost(array $post): Request
     {
         $that = clone $this;
 
-        $that->setPost($post);
+        // Ensure that we get a value for getQuery() that's consistent with the query string, and whose scalar values
+        // have all been converted to strings, to get a result similar to what we'd get with an incoming HTTP request.
+        parse_str(http_build_query($post), $that->post);
+
+        if (! $that->isContentType('multipart/form-data')) {
+            $body = http_build_query($post);
+            $body = new MessageBodyString($body);
+
+            $that = $that->withBody($body);
+            $that = $that->withHeader('Content-Type', 'x-www-form-urlencoded');
+        }
 
         return $that;
     }
@@ -457,41 +443,32 @@ class Request extends Message
     }
 
     /**
-     * @deprecated use withFiles()
+     * Returns a copy of this request with new uploaded files.
      *
-     * Sets the uploaded files.
+     * The resulting request will have an empty message body; this is in line with the values available when dealing
+     * with a multipart request in PHP.
      *
-     * This will replace the message body, if any, with an empty body.
-     * This is in line with the values available when dealing with a multipart request in PHP.
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return Request The updated request.
      *
      * @param array $files An associative array of (potentially nested) UploadedFile instances.
      *
-     * @return static This request.
-     *
      * @throws \InvalidArgumentException If the UploadedFile array is invalid.
      */
-    public function setFiles(array $files) : Request
-    {
-        $this->checkFiles($files);
-
-        $this->files = $files;
-        $this->body  = new MessageBodyString('');
-
-        $this->setHeaders([
-            'Content-Type'   => 'multipart/form-data',
-            'Content-Length' => '0'
-        ]);
-
-        return $this;
-    }
-
     public function withFiles(array $files): Request
     {
         $that = clone $this;
 
-        $that->setFiles($files);
+        $that->checkFiles($files);
 
-        return $that;
+        $that->files = $files;
+        $that->body  = new MessageBodyString('');
+
+        return $that->withHeaders([
+            'Content-Type'   => 'multipart/form-data',
+            'Content-Length' => '0'
+        ]);
     }
 
     /**
@@ -531,61 +508,45 @@ class Request extends Message
     }
 
     /**
-     * @deprecated use withAddedCookies()
-     *
-     * Adds cookies to this request.
+     * Returns a copy of this request with added cookies.
      *
      * Existing cookies with the same name will be replaced.
      *
+     * This instance is immutable and unaffected by this method call.
+     *
      * @param array $cookies An associative array of cookies.
      *
-     * @return static This request.
+     * @return Request The updated request.
      */
-    public function addCookies(array $cookies) : Request
-    {
-        return $this->setCookies($cookies + $this->cookies);
-    }
-
     public function withAddedCookies(array $cookies): Request
     {
-        $that = clone $this;
-
-        $that->addCookies($cookies);
-
-        return $that;
+        return $this->withCookies($cookies + $this->cookies);
     }
 
     /**
-     * @deprecated use withCookies()
+     * Returns a copy of this request with new cookies.
      *
-     * Sets the cookies for this request.
+     * All cookies of the original request will be replaced.
      *
-     * All existing cookies will be replaced.
+     * This instance is immutable and unaffected by this method call.
      *
      * @param array $cookies An associative array of cookies.
      *
-     * @return static This request.
+     * @return Request The updated request.
      */
-    public function setCookies(array $cookies) : Request
-    {
-        $query = http_build_query($cookies);
-        parse_str($query, $this->cookies);
-
-        if ($cookies) {
-            $cookie = str_replace('&', '; ', $query);
-            $this->setHeader('Cookie', $cookie);
-        } else {
-            $this->removeHeader('Cookie');
-        }
-
-        return $this;
-    }
-
     public function withCookies(array $cookies): Request
     {
         $that = clone $this;
 
-        $that->setCookies($cookies);
+        $query = http_build_query($cookies);
+        parse_str($query, $that->cookies);
+
+        if ($cookies) {
+            $cookie = str_replace('&', '; ', $query);
+            $that = $that->withHeader('Cookie', $cookie);
+        } else {
+            $that = $that->withoutHeader('Cookie');
+        }
 
         return $that;
     }
@@ -631,23 +592,16 @@ class Request extends Message
     }
 
     /**
-     * @deprecated use withMethod()
-     *
-     * Sets the request method.
+     * Returns a copy of this request with a new request method.
      *
      * If the method case-insensitively matches a standard method, it will be converted to uppercase.
      *
+     * This instance is immutable and unaffected by this method call.
+     *
      * @param string $method The new request method.
      *
-     * @return static This request.
+     * @return Request The updated request.
      */
-    public function setMethod(string $method) : Request
-    {
-        $this->method = $this->fixMethodCase($method);
-
-        return $this;
-    }
-
     public function withMethod(string $method): Request
     {
         $that = clone $this;
@@ -711,36 +665,27 @@ class Request extends Message
     }
 
     /**
-     * @deprecated use withScheme()
+     * Returns a copy of this request with a new scheme.
      *
-     * Sets the request scheme.
+     * This instance is immutable and unaffected by this method call.
      *
-     * @param string $scheme The new request scheme.
+     * @param string $scheme The new request scheme, 'http' or 'https'.
      *
-     * @return static This request.
-     *
-     * @throws \InvalidArgumentException If the scheme is not http or https.
+     * @return Request The updated request.
      */
-    public function setScheme(string $scheme) : Request
-    {
-        $scheme = strtolower($scheme);
-
-        if ($scheme === 'http') {
-            $this->isSecure = false;
-        } elseif ($scheme === 'https') {
-            $this->isSecure = true;
-        } else {
-            throw new \InvalidArgumentException('The scheme must be http or https.');
-        }
-
-        return $this;
-    }
-
     public function withScheme(string $scheme): Request
     {
         $that = clone $this;
 
-        $that->setScheme($scheme);
+        $scheme = strtolower($scheme);
+
+        if ($scheme === 'http') {
+            $that->isSecure = false;
+        } elseif ($scheme === 'https') {
+            $that->isSecure = true;
+        } else {
+            throw new \InvalidArgumentException('The scheme must be http or https.');
+        }
 
         return $that;
     }
@@ -793,23 +738,16 @@ class Request extends Message
     }
 
     /**
-     * @deprecated use withHost()
-     *
-     * Sets the host name of this request.
+     * Returns a copy of this request with a new host.
      *
      * This will update the Host header accordingly.
      *
+     * This instance is immutable and unaffected by this method call.
+     *
      * @param string $host The new host name.
      *
-     * @return static This request.
+     * @return Request The updated request.
      */
-    public function setHost(string $host) : Request
-    {
-        $this->host = $host;
-
-        return $this->updateHostHeader();
-    }
-
     public function withHost(string $host): Request
     {
         $that = clone $this;
@@ -829,23 +767,16 @@ class Request extends Message
     }
 
     /**
-     * @deprecated use withPort()
-     *
-     * Sets the port number of this request.
+     * Returns a copy of this request with a new port.
      *
      * This will update the Host header accordingly.
      *
+     * This instance is immutable and unaffected by this method call.
+     *
      * @param int $port The new port number.
      *
-     * @return static This request.
+     * @return Request The updated request.
      */
-    public function setPort(int $port) : Request
-    {
-        $this->port = $port;
-
-        return $this->updateHostHeader();
-    }
-
     public function withPort(int $port): Request
     {
         $that = clone $this;
@@ -868,7 +799,7 @@ class Request extends Message
             $host .= ':' . $this->port;
         }
 
-        return $this->setHeader('Host', $host);
+        return $this->withHeader('Host', $host);
     }
 
     /**
@@ -898,31 +829,24 @@ class Request extends Message
     }
 
     /**
-     * @deprecated use withPath()
-     *
-     * Sets the request path.
+     * Returns a copy of this request with a new path.
      *
      * Example: `/user/profile`
      *
+     * This instance is immutable and unaffected by this method call.
+     *
      * @param string $path The new request path.
      *
-     * @return static This request.
+     * @return Request The updated request.
      *
      * @throws \InvalidArgumentException If the path is not valid.
      */
-    public function setPath(string $path) : Request
-    {
-        if (strpos($path, '?') !== false) {
-            throw new \InvalidArgumentException('The request path must not contain a query string.');
-        }
-
-        $this->path = $path;
-
-        return $this->updateRequestUri();
-    }
-
     public function withPath(string $path): Request
     {
+        if ($path === $this->path) {
+            return $this;
+        }
+
         if (strpos($path, '?') !== false) {
             throw new \InvalidArgumentException('The request path must not contain a query string.');
         }
@@ -948,24 +872,20 @@ class Request extends Message
     }
 
     /**
-     * @deprecated use withQueryString()
+     * Returns a copy of this request with a new query string.
      *
-     * Sets the query string.
+     * This instance is immutable and unaffected by this method call.
      *
      * @param string $queryString The new query string.
      *
-     * @return static This request.
+     * @return Request The updated request.
      */
-    public function setQueryString(string $queryString) : Request
-    {
-        $this->queryString = $queryString;
-        parse_str($this->queryString, $this->query);
-
-        return $this->updateRequestUri();
-    }
-
     public function withQueryString(string $queryString): Request
     {
+        if ($queryString === $this->queryString) {
+            return $this;
+        }
+
         $that = clone $this;
 
         $that->queryString = $queryString;
@@ -1001,45 +921,42 @@ class Request extends Message
     }
 
     /**
-     * @deprecated use withRequestUri()
-     *
-     * Sets the request URI.
+     * Returns a copy of this request with a new request URI.
      *
      * This will update the request path, query string, and query parameters.
      *
-     * @param string $requestUri
+     * This instance is immutable and unaffected by this method call.
      *
-     * @return static
+     * @param string $requestUri The new request URI.
+     *
+     * @return Request The updated request.
      */
-    public function setRequestUri(string $requestUri) : Request
+    public function withRequestUri(string $requestUri): Request
     {
+        if ($requestUri === $this->requestUri) {
+            return $this;
+        }
+
+        $that = clone $this;
+
         $pos = strpos($requestUri, '?');
 
         if ($pos === false) {
-            $this->path = $requestUri;
-            $this->queryString = '';
-            $this->query = [];
+            $that->path = $requestUri;
+            $that->queryString = '';
+            $that->query = [];
         } else {
-            $this->path        = substr($requestUri, 0, $pos);
-            $this->queryString = substr($requestUri, $pos + 1);
+            $that->path        = substr($requestUri, 0, $pos);
+            $that->queryString = substr($requestUri, $pos + 1);
 
-            if ($this->queryString === '') {
-                $this->query = [];
+            if ($that->queryString === '') {
+                $that->query = [];
             } else {
-                parse_str($this->queryString, $this->query);
+                parse_str($that->queryString, $that->query);
             }
         }
 
-        $this->requestUri = $requestUri;
-
-        return $this;
-    }
-
-    public function withRequestUri(string $requestUri): Request
-    {
-        $that = clone $this;
-
-        $that->setRequestUri($requestUri);
+        $that->requestUri = $requestUri;
 
         return $that;
     }
@@ -1068,18 +985,20 @@ class Request extends Message
     }
 
     /**
-     * @deprecated use withUrl()
+     * Returns a copy of this request with a new URL.
      *
-     * Sets the request URL.
+     * This instance is immutable and unaffected by this method call.
      *
      * @param string $url The new URL.
      *
-     * @return static This request.
+     * @return Request The updated request.
      *
      * @throws \InvalidArgumentException If the URL is not valid.
      */
-    public function setUrl(string $url) : Request
+    public function withUrl(string $url): Request
     {
+        $that = clone $this;
+
         $components = parse_url($url);
 
         if ($components === false) {
@@ -1112,33 +1031,24 @@ class Request extends Message
             $hostHeader = $host;
         }
 
-        $this->path = isset($components['path']) ? $components['path'] : '/';
-        $requestUri = $this->path;
+        $that->path = isset($components['path']) ? $components['path'] : '/';
+        $requestUri = $that->path;
 
         if (isset($components['query'])) {
-            $this->queryString = $components['query'];
-            parse_str($this->queryString, $this->query);
-            $requestUri .= '?' . $this->queryString;
+            $that->queryString = $components['query'];
+            parse_str($that->queryString, $that->query);
+            $requestUri .= '?' . $that->queryString;
         } else {
-            $this->queryString = '';
-            $this->query = [];
+            $that->queryString = '';
+            $that->query = [];
         }
 
-        $this->setHeader('Host', $hostHeader);
+        $that = $that->withHeader('Host', $hostHeader);
 
-        $this->host = $host;
-        $this->port = $port;
-        $this->isSecure = $isSecure;
-        $this->requestUri = $requestUri;
-
-        return $this;
-    }
-
-    public function withUrl(string $url): Request
-    {
-        $that = clone $this;
-
-        $that->setUrl($url);
+        $that->host = $host;
+        $that->port = $port;
+        $that->isSecure = $isSecure;
+        $that->requestUri = $requestUri;
 
         return $that;
     }
@@ -1174,31 +1084,31 @@ class Request extends Message
     }
 
     /**
-     * @deprecated use withSecure()
+     * Returns a copy of this request with the secure flag changed.
      *
-     * Sets whether this request is sent over a secure connection.
+     * Sets whether the request is sent over a secure connection.
+     *
+     * This instance is immutable and unaffected by this method call.
      *
      * @param bool $isSecure True to mark the request as secure, false to mark it as not secure.
      *
-     * @return static This request.
+     * @return Request The updated request.
      */
-    public function setSecure(bool $isSecure) : Request
-    {
-        $isStandardPort = ($this->port === ($this->isSecure ? 443 : 80));
-
-        if ($isStandardPort) {
-            $this->port = $isSecure ? 443 : 80;
-        }
-
-        $this->isSecure = $isSecure;
-
-        return $this;
-    }
-
     public function withSecure(bool $isSecure): Request
     {
+        if ($isSecure === $this->isSecure) {
+            return $this;
+        }
+
         $that = clone $this;
-        $that->setSecure($isSecure);
+
+        $isStandardPort = ($that->port === ($that->isSecure ? 443 : 80));
+
+        if ($isStandardPort) {
+            $that->port = $isSecure ? 443 : 80;
+        }
+
+        $that->isSecure = $isSecure;
 
         return $that;
     }
@@ -1214,21 +1124,14 @@ class Request extends Message
     }
 
     /**
-     * @deprecated use withClientIp()
+     * Returns a copy of this request with a new client IP address.
      *
-     * Sets the client IP address.
+     * This instance is immutable and unaffected by this method call.
      *
      * @param string $ip The new IP address.
      *
-     * @return static This request.
+     * @return Request The updated request.
      */
-    public function setClientIp(string $ip) : Request
-    {
-        $this->clientIp = $ip;
-
-        return $this;
-    }
-
     public function withClientIp(string $ip): Request
     {
         $that = clone $this;

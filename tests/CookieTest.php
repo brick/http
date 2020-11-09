@@ -35,7 +35,8 @@ class CookieTest extends TestCase
     public function testIsHostOnlyShouldReturnFalse()
     {
         $cookie = new Cookie('foo', 'bar');
-        $cookie->setDomain('http://localhost');
+
+        $cookie = $cookie->withDomain('http://localhost');
 
         $this->assertFalse($cookie->isHostOnly());
     }
@@ -124,50 +125,71 @@ class CookieTest extends TestCase
         ];
     }
 
-    public function testGetSetExpires()
+    public function testGetWithExpires()
     {
         $cookie = new Cookie('foo', 'bar');
 
-        $this->assertSame($cookie, $cookie->setExpires(123456789));
-        $this->assertSame(123456789, $cookie->getExpires());
+        $newCookie = $cookie->withExpires(123456789);
+
+        $this->assertNotSame($cookie, $newCookie);
+        $this->assertSame(0, $cookie->getExpires());
+        $this->assertSame(123456789, $newCookie->getExpires());
     }
 
-    public function testGetSetPath()
+    public function testGetWithPath()
     {
         $cookie = new Cookie('foo', 'bar');
 
-        $this->assertSame($cookie, $cookie->setPath('/'));
-        $this->assertSame('/', $cookie->getPath());
+        $newCookie = $cookie->withPath('/');
 
-        $cookie->setPath(null);
-        $this->assertNull($cookie->getPath());
+        $this->assertNotSame($cookie, $newCookie);
+        $this->assertSame(null, $cookie->getPath());
+        $this->assertSame('/', $newCookie->getPath());
+
+        $newCookieWithNoPath = $newCookie->withPath(null);
+
+        $this->assertNotSame($newCookie, $newCookieWithNoPath);
+        $this->assertSame('/', $newCookie->getPath());
+        $this->assertNull($newCookieWithNoPath->getPath());
     }
 
-    public function testGetSetDomain()
+    public function testGetWithDomain()
     {
         $cookie = new Cookie('foo', 'bar');
 
-        $this->assertSame($cookie, $cookie->setDomain('example.com'));
-        $this->assertSame('example.com', $cookie->getDomain());
+        $newCookie = $cookie->withDomain('example.com');
 
-        $cookie->setDomain(null);
-        $this->assertNull($cookie->getDomain());
+        $this->assertNotSame($cookie, $newCookie);
+        $this->assertSame(null, $cookie->getDomain());
+        $this->assertSame('example.com', $newCookie->getDomain());
+
+        $newCookieWithNoDomain = $newCookie->withDomain(null);
+
+        $this->assertNotSame($newCookie, $newCookieWithNoDomain);
+        $this->assertSame('example.com', $newCookie->getDomain());
+        $this->assertSame(null, $newCookieWithNoDomain->getDomain());
     }
 
-    public function testIsSetSecure()
+    public function testIsWithSecure()
     {
         $cookie = new Cookie('foo', 'bar');
 
-        $this->assertSame($cookie, $cookie->setSecure(true));
-        $this->assertTrue($cookie->isSecure());
+        $newCookie = $cookie->withSecure(true);
+
+        $this->assertNotSame($cookie, $newCookie);
+        $this->assertFalse($cookie->isSecure());
+        $this->assertTrue($newCookie->isSecure());
     }
 
-    public function testIsSetHttpOnly()
+    public function testIsWithHttpOnly()
     {
         $cookie = new Cookie('foo', 'bar');
 
-        $this->assertSame($cookie, $cookie->setHttpOnly(true));
-        $this->assertTrue($cookie->isHttpOnly());
+        $newCookie = $cookie->withHttpOnly(true);
+
+        $this->assertNotSame($cookie, $newCookie);
+        $this->assertFalse($cookie->isHttpOnly());
+        $this->assertTrue($newCookie->isHttpOnly());
     }
 
     /**
@@ -180,7 +202,7 @@ class CookieTest extends TestCase
     public function testIsExpiredIsPersistent($expires, $isExpired, $isPersistent)
     {
         $cookie = new Cookie('foo', 'bar');
-        $cookie->setExpires($expires);
+        $cookie = $cookie->withExpires($expires);
 
         $this->assertSame($isExpired, $cookie->isExpired());
         $this->assertSame($isPersistent, $cookie->isPersistent());
@@ -205,19 +227,19 @@ class CookieTest extends TestCase
         $cookie = new Cookie('foo', 'bar');
         $this->assertSame('foo=bar', (string) $cookie);
 
-        $cookie->setExpires(2000000000);
+        $cookie = $cookie->withExpires(2000000000);
         $this->assertSame('foo=bar; Expires=Wed, 18 May 2033 03:33:20 +0000', (string) $cookie);
 
-        $cookie->setExpires(0)->setDomain('example.com');
+        $cookie = $cookie->withExpires(0)->withDomain('example.com');
         $this->assertSame('foo=bar; Domain=example.com', (string) $cookie);
 
-        $cookie->setDomain(null)->setPath('/');
+        $cookie = $cookie->withDomain(null)->withPath('/');
         $this->assertSame('foo=bar; Path=/', (string) $cookie);
 
-        $cookie->setPath(null)->setSecure(true);
+        $cookie = $cookie->withPath(null)->withSecure(true);
         $this->assertSame('foo=bar; Secure', (string) $cookie);
 
-        $cookie->setHttpOnly(true);
+        $cookie = $cookie->withHttpOnly(true);
         $this->assertSame('foo=bar; Secure; HttpOnly', (string) $cookie);
     }
 }

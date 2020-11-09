@@ -429,7 +429,7 @@ class RequestTest extends TestCase
         ];
     }
 
-    public function testGetSetQuery()
+    public function testGetWithQuery()
     {
         $query = [
             'a' => 'x',
@@ -441,25 +441,27 @@ class RequestTest extends TestCase
         ];
 
         $request = new Request();
-        $request->setRequestUri('/test?foo=bar');
+        $request = $request->withRequestUri('/test?foo=bar');
 
-        $this->assertSame($request, $request->setQuery($query));
+        $newRequest = $request->withQuery($query);
 
-        $this->assertSame($query, $request->getQuery());
-        $this->assertSame('a=x&b%5Bc%5D%5Bd%5D=y', $request->getQueryString());
-        $this->assertSame('/test?a=x&b%5Bc%5D%5Bd%5D=y', $request->getRequestUri());
+        $this->assertNotSame($request, $newRequest);
+        $this->assertSame(['foo' => 'bar'], $request->getQuery());
+        $this->assertSame($query, $newRequest->getQuery());
+        $this->assertSame('a=x&b%5Bc%5D%5Bd%5D=y', $newRequest->getQueryString());
+        $this->assertSame('/test?a=x&b%5Bc%5D%5Bd%5D=y', $newRequest->getRequestUri());
 
-        $this->assertNull($request->getQuery('foo'));
-        $this->assertSame('x', $request->getQuery('a'));
-        $this->assertSame('y', $request->getQuery('b.c.d'));
-        $this->assertSame('y', $request->getQuery('b[c][d]'));
-        $this->assertSame(['d' => 'y'], $request->getQuery('b.c'));
-        $this->assertSame(['d' => 'y'], $request->getQuery('b[c]'));
-        $this->assertNull($request->getQuery('b.c.d.e'));
-        $this->assertNull($request->getQuery('b[c][d][e]'));
+        $this->assertNull($newRequest->getQuery('foo'));
+        $this->assertSame('x', $newRequest->getQuery('a'));
+        $this->assertSame('y', $newRequest->getQuery('b.c.d'));
+        $this->assertSame('y', $newRequest->getQuery('b[c][d]'));
+        $this->assertSame(['d' => 'y'], $newRequest->getQuery('b.c'));
+        $this->assertSame(['d' => 'y'], $newRequest->getQuery('b[c]'));
+        $this->assertNull($newRequest->getQuery('b.c.d.e'));
+        $this->assertNull($newRequest->getQuery('b[c][d][e]'));
     }
 
-    public function testGetSetPost()
+    public function testGetWithPost()
     {
         $post = [
             'a' => 'x',
@@ -470,23 +472,26 @@ class RequestTest extends TestCase
 
         $request = new Request();
 
-        $this->assertSame($request, $request->setPost($post));
+        $newRequest = $request->withPost($post);
 
-        $this->assertSame($post, $request->getPost());
-        $this->assertSame('x-www-form-urlencoded', $request->getHeader('Content-Type'));
-        $this->assertSame('14', $request->getHeader('Content-Length'));
-        $this->assertSame('a=x&b%5Bc%5D=y', (string) $request->getBody());
+        $this->assertNotSame($request, $newRequest);
+        $this->assertSame([], $request->getPost());
 
-        $this->assertNull($request->getPost('foo'));
-        $this->assertSame('x', $request->getPost('a'));
-        $this->assertSame('y', $request->getPost('b.c'));
-        $this->assertSame('y', $request->getPost('b[c]'));
-        $this->assertSame(['c' => 'y'], $request->getPost('b'));
-        $this->assertNull($request->getPost('b.c.d'));
-        $this->assertNull($request->getPost('b[c][d]'));
+        $this->assertSame($post, $newRequest->getPost());
+        $this->assertSame('x-www-form-urlencoded', $newRequest->getHeader('Content-Type'));
+        $this->assertSame('14', $newRequest->getHeader('Content-Length'));
+        $this->assertSame('a=x&b%5Bc%5D=y', (string) $newRequest->getBody());
+
+        $this->assertNull($newRequest->getPost('foo'));
+        $this->assertSame('x', $newRequest->getPost('a'));
+        $this->assertSame('y', $newRequest->getPost('b.c'));
+        $this->assertSame('y', $newRequest->getPost('b[c]'));
+        $this->assertSame(['c' => 'y'], $newRequest->getPost('b'));
+        $this->assertNull($newRequest->getPost('b.c.d'));
+        $this->assertNull($newRequest->getPost('b[c][d]'));
     }
 
-    public function testGetSetAddCookies()
+    public function testGetWithCookies()
     {
         $cookies = [
             'a' => 'w',
@@ -495,17 +500,22 @@ class RequestTest extends TestCase
 
         $request = new Request();
 
-        $this->assertSame($request, $request->setCookies($cookies));
-        $this->assertSame($cookies, $request->getCookie());
+        $requestWithCookies = $request->withCookies($cookies);
 
-        $this->assertSame($request, $request->addCookies([
+        $this->assertNotSame($request, $requestWithCookies);
+        $this->assertSame([], $request->getCookie());
+        $this->assertSame($cookies, $requestWithCookies->getCookie());
+
+        $requestWithAddedCookies = $requestWithCookies->withAddedCookies([
             'a' => 'x',
             'c' => 'z'
-        ]));
+        ]);
 
-        $this->assertSame('x', $request->getCookie('a'));
-        $this->assertSame('y', $request->getCookie('b'));
-        $this->assertSame('z', $request->getCookie('c'));
+        $this->assertNotSame($requestWithCookies, $requestWithAddedCookies);
+        $this->assertSame($cookies, $requestWithCookies->getCookie());
+        $this->assertSame('x', $requestWithAddedCookies->getCookie('a'));
+        $this->assertSame('y', $requestWithAddedCookies->getCookie('b'));
+        $this->assertSame('z', $requestWithAddedCookies->getCookie('c'));
     }
 
     /**
@@ -611,36 +621,39 @@ class RequestTest extends TestCase
     public function testGetStartLine()
     {
         $request = (new Request())
-            ->setMethod('POST')
-            ->setRequestUri('/test')
-            ->setProtocolVersion('1.1');
+            ->withMethod('POST')
+            ->withRequestUri('/test')
+            ->withProtocolVersion('1.1');
 
         $this->assertSame('POST /test HTTP/1.1', $request->getStartLine());
     }
 
     /**
-     * @dataProvider providerGetSetIsMethod
+     * @dataProvider providerGetWithIsMethod
      *
      * @param string $setMethod The method to set.
      * @param string $getMethod The expected method to get.
      * @param array  $isMethod  An associative array of methods to test against.
      */
-    public function testGetSetIsMethod($setMethod, $getMethod, array $isMethod)
+    public function testGetWithIsMethod($setMethod, $getMethod, array $isMethod)
     {
         $request = new Request();
 
-        $this->assertSame($request, $request->setMethod($setMethod));
-        $this->assertSame($getMethod, $request->getMethod());
+        $newRequest = $request->withMethod($setMethod);
+
+        $this->assertNotSame($request, $newRequest);
+        $this->assertSame('GET', $request->getMethod());
+        $this->assertSame($getMethod, $newRequest->getMethod());
 
         foreach ($isMethod as $method => $expectedIsMethod) {
-            $this->assertSame($expectedIsMethod, $request->isMethod($method));
+            $this->assertSame($expectedIsMethod, $newRequest->isMethod($method));
         }
     }
 
     /**
      * @return array
      */
-    public function providerGetSetIsMethod()
+    public function providerGetWithIsMethod()
     {
         return [
             ['GET',     'GET',     ['GET'     => true, 'get'     => true,  'Get'     => true,  'POST' => false]],
@@ -667,10 +680,10 @@ class RequestTest extends TestCase
     {
         $request = new Request();
 
-        $request->setMethod($method);
+        $request = $request->withMethod($method);
         $this->assertSame($isSafe, $request->isMethodSafe());
 
-        $request->setMethod(strtolower($method));
+        $request = $request->withMethod(strtolower($method));
         $this->assertSame($isSafe, $request->isMethodSafe());
     }
 
@@ -689,25 +702,28 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @dataProvider providerGetSetScheme
+     * @dataProvider providerGetWithScheme
      *
      * @param string  $setScheme The scheme to set.
      * @param string  $getScheme The expected scheme to get.
      * @param boolean $isSecure  The expected secure flag.
      */
-    public function testGetSetScheme($setScheme, $getScheme, $isSecure)
+    public function testGetWithScheme($setScheme, $getScheme, $isSecure)
     {
         $request = new Request();
 
-        $this->assertSame($request, $request->setScheme($setScheme));
-        $this->assertSame($getScheme, $request->getScheme());
-        $this->assertSame($isSecure, $request->isSecure());
+        $newRequest = $request->withScheme($setScheme);
+
+        $this->assertNotSame($request, $newRequest);
+        $this->assertSame('http', $request->getScheme());
+        $this->assertSame($getScheme, $newRequest->getScheme());
+        $this->assertSame($isSecure, $newRequest->isSecure());
     }
 
     /**
      * @return array
      */
-    public function providerGetSetScheme()
+    public function providerGetWithScheme()
     {
         return [
             ['http',  'http',  false],
@@ -722,29 +738,35 @@ class RequestTest extends TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testSetInvalidSchemeThrowsException()
+    public function testWithInvalidSchemeThrowsException()
     {
         $request = new Request();
-        $request->setScheme('ftp');
+        $request->withScheme('ftp');
     }
 
-    public function testGetSetHostPort()
+    public function testGetWithHostPort()
     {
         $request = new Request();
 
-        $this->assertSame($request, $request->setHost('example.com'));
-        $this->assertSame('example.com', $request->getHost());
-        $this->assertSame('example.com', $request->getHeader('Host'));
+        $requestWithHost = $request->withHost('example.com');
 
-        $this->assertSame($request, $request->setPort('81'));
-        $this->assertSame(81, $request->getPort());
-        $this->assertSame('example.com:81', $request->getHeader('Host'));
+        $this->assertNotSame($request, $requestWithHost);
+        $this->assertSame('localhost', $request->getHost());
+        $this->assertSame('example.com', $requestWithHost->getHost());
+        $this->assertSame('example.com', $requestWithHost->getHeader('Host'));
+
+        $requestWithHostAndPort = $requestWithHost->withPort(81);
+
+        $this->assertNotSame($requestWithHost, $requestWithHostAndPort);
+        $this->assertSame(80, $requestWithHost->getPort());
+        $this->assertSame(81, $requestWithHostAndPort->getPort());
+        $this->assertSame('example.com:81', $requestWithHostAndPort->getHeader('Host'));
     }
 
     public function testGetHostParts()
     {
         $request = new Request();
-        $request->setHost('www.example.com');
+        $request = $request->withHost('www.example.com');
 
         $this->assertSame(['www', 'example', 'com'], $request->getHostParts());
     }
@@ -760,7 +782,7 @@ class RequestTest extends TestCase
     public function testIsHost($requestHost, $testHost, $includeSubDomains, $result)
     {
         $request = new Request();
-        $request->setHost($requestHost);
+        $request = $request->withHost($requestHost);
 
         $this->assertSame($result, $request->isHost($testHost, $includeSubDomains));
     }
@@ -815,15 +837,17 @@ class RequestTest extends TestCase
         ];
     }
 
-    public function testGetSetPath()
+    public function testGetWithPath()
     {
         $request = new Request();
-        $request->setRequestUri('/user/profile?user=123');
+        $request = $request->withRequestUri('/user/profile?user=123');
 
+        $newRequest = $request->withPath('/user/edit');
+
+        $this->assertNotSame($request, $newRequest);
         $this->assertSame('/user/profile', $request->getPath());
-        $this->assertSame($request, $request->setPath('/user/edit'));
-        $this->assertSame('/user/edit', $request->getPath());
-        $this->assertSame('/user/edit?user=123', $request->getRequestUri());
+        $this->assertSame('/user/edit', $newRequest->getPath());
+        $this->assertSame('/user/edit?user=123', $newRequest->getRequestUri());
     }
 
     /**
@@ -835,7 +859,7 @@ class RequestTest extends TestCase
     public function testGetPathParts($path, array $expectedParts)
     {
         $request = new Request();
-        $request->setPath($path);
+        $request = $request->withPath($path);
 
         $this->assertSame($expectedParts, $request->getPathParts());
     }
@@ -860,37 +884,41 @@ class RequestTest extends TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testSetPathThrowsExceptionWhenPathIsInvalid()
+    public function testWithPathThrowsExceptionWhenPathIsInvalid()
     {
         $request = new Request();
-        $request->setPath('/user/edit?user=123');
+        $request->withPath('/user/edit?user=123');
     }
 
-    public function testGetSetQueryString()
+    public function testGetWithQueryString()
     {
         $request = new Request();
-        $request->setRequestUri('/user/profile?user=123');
+        $request = $request->withRequestUri('/user/profile?user=123');
 
+        $newRequest = $request->withQueryString('user=456');
+
+        $this->assertNotSame($request, $newRequest);
         $this->assertSame('user=123', $request->getQueryString());
-        $this->assertSame($request, $request->setQueryString('user=456'));
-        $this->assertSame('user=456', $request->getQueryString());
-        $this->assertSame('/user/profile?user=456', $request->getRequestUri());
+        $this->assertSame('user=456', $newRequest->getQueryString());
+        $this->assertSame('/user/profile?user=456', $newRequest->getRequestUri());
     }
 
-    public function testGetSetRequestUri()
+    public function testGetWithRequestUri()
     {
         $request = new Request();
 
-        $this->assertSame($request, $request->setRequestUri('/test?foo=bar'));
+        $newRequest = $request->withRequestUri('/test?foo=bar');
 
-        $this->assertSame('/test?foo=bar', $request->getRequestUri());
-        $this->assertSame('/test', $request->getPath());
-        $this->assertSame('foo=bar', $request->getQueryString());
-        $this->assertSame(['foo' => 'bar'], $request->getQuery());
+        $this->assertNotSame($request, $newRequest);
+        $this->assertSame('/', $request->getRequestUri());
+        $this->assertSame('/test?foo=bar', $newRequest->getRequestUri());
+        $this->assertSame('/test', $newRequest->getPath());
+        $this->assertSame('foo=bar', $newRequest->getQueryString());
+        $this->assertSame(['foo' => 'bar'], $newRequest->getQuery());
     }
 
     /**
-     * @dataProvider providerGetSetUrl
+     * @dataProvider providerGetWithUrl
      *
      * @param string       $url         The URL to test.
      * @param string|null  $expectedUrl The expected URL, or NULL to use the original URL.
@@ -902,30 +930,37 @@ class RequestTest extends TestCase
      * @param string       $isSecure    The expected isSecure flag.
      * @param array        $query       The expected query parameters.
      */
-    public function testGetSetUrl($url, $expectedUrl, $host, $port, $requestUri, $path, $qs, $isSecure, array $query)
+    public function testGetWithUrl($url, $expectedUrl, $host, $port, $requestUri, $path, $qs, $isSecure, array $query)
     {
         $request = new Request();
 
         // Set some values to ensure the defaults get overridden.
-        $request->setPort(999);
-        $request->setSecure(true);
-        $request->setRequestUri('/path?a=b');
+        $request = $request->withPort(999);
+        $request = $request->withSecure(true);
+        $request = $request->withRequestUri('/path?a=b');
 
-        $this->assertSame($request, $request->setUrl($url));
-        $this->assertSame($expectedUrl ?: $url, $request->getUrl());
-        $this->assertSame($host, $request->getHost());
-        $this->assertSame($port, $request->getPort());
-        $this->assertSame($requestUri, $request->getRequestUri());
-        $this->assertSame($path, $request->getPath());
-        $this->assertSame($qs, $request->getQueryString());
-        $this->assertSame($isSecure, $request->isSecure());
-        $this->assertSame($query, $request->getQuery());
+        $newRequest = $request->withUrl($url);
+        $this->assertNotSame($request, $newRequest);
+
+        // original request should be unaffected
+        $this->assertSame(999, $request->getPort());
+        $this->assertSame(true, $request->isSecure());
+        $this->assertSame('/path?a=b', $request->getRequestUri());
+
+        $this->assertSame($expectedUrl ?: $url, $newRequest->getUrl());
+        $this->assertSame($host, $newRequest->getHost());
+        $this->assertSame($port, $newRequest->getPort());
+        $this->assertSame($requestUri, $newRequest->getRequestUri());
+        $this->assertSame($path, $newRequest->getPath());
+        $this->assertSame($qs, $newRequest->getQueryString());
+        $this->assertSame($isSecure, $newRequest->isSecure());
+        $this->assertSame($query, $newRequest->getQuery());
     }
 
     /**
      * @return array
      */
-    public function providerGetSetUrl()
+    public function providerGetWithUrl()
     {
         return [
             ['http://foo',            'http://foo/',  'foo', 80,  '/',      '/',     '',    false, []],
@@ -944,7 +979,7 @@ class RequestTest extends TestCase
     public function testGetUrlBase($url, $expectedUrlBase)
     {
         $request = new Request();
-        $request->setUrl($url);
+        $request = $request->withUrl($url);
 
         $this->assertSame($expectedUrlBase, $request->getUrlBase());
     }
@@ -964,40 +999,45 @@ class RequestTest extends TestCase
         ];
     }
 
-    public function testIsSetSecure()
+    public function testIsWithSecure()
     {
         $request = new Request();
+
+        $newRequest = $request->withSecure(true);
+        $this->assertNotSame($request, $newRequest);
 
         // Making the request secure should change the port number to 443.
-        $this->assertSame($request, $request->setSecure(true));
-        $this->assertTrue($request->isSecure());
-        $this->assertSame(443, $request->getPort());
+        $this->assertTrue($newRequest->isSecure());
+        $this->assertSame(443, $newRequest->getPort());
 
         // Reverting to non-secure should change the port number to 80.
-        $request->setSecure(false);
-        $this->assertFalse($request->isSecure());
-        $this->assertSame(80, $request->getPort());
+        $newRequest = $newRequest->withSecure(false);
+        $this->assertFalse($newRequest->isSecure());
+        $this->assertSame(80, $newRequest->getPort());
 
         // Making the request secure with a non-standard port should not change the port.
-        $request->setPort(81)->setSecure(true);
-        $this->assertTrue($request->isSecure());
-        $this->assertSame(81, $request->getPort());
+        $newRequest = $newRequest->withPort(81)->withSecure(true);
+        $this->assertTrue($newRequest->isSecure());
+        $this->assertSame(81, $newRequest->getPort());
     }
 
-    public function testGetSetClientIp()
+    public function testGetWithClientIp()
     {
         $request = new Request();
 
-        $this->assertSame($request, $request->setClientIp('4.3.2.1'));
-        $this->assertSame('4.3.2.1', $request->getClientIp());
+        $newRequest = $request->withClientIp('4.3.2.1');
+
+        $this->assertNotSame($request, $newRequest);
+        $this->assertSame('0.0.0.0', $request->getClientIp());
+        $this->assertSame('4.3.2.1', $newRequest->getClientIp());
     }
 
     public function testGetFirstLastHeader()
     {
         $request = new Request();
-        $request->addHeader('Referer', 'http://example.com/1');
-        $request->addHeader('Referer', 'http://example.com/2');
-        $request->addHeader('Referer', 'http://example.com/3');
+        $request = $request->withAddedHeader('Referer', 'http://example.com/1');
+        $request = $request->withAddedHeader('Referer', 'http://example.com/2');
+        $request = $request->withAddedHeader('Referer', 'http://example.com/3');
 
         $this->assertSame('http://example.com/1', $request->getFirstHeader('Referer'));
         $this->assertSame('http://example.com/3', $request->getLastHeader('Referer'));
@@ -1013,7 +1053,7 @@ class RequestTest extends TestCase
     public function testGetReferer()
     {
         $request = new Request();
-        $request->addHeader('Referer', 'https://example.com/path?query=string');
+        $request = $request->withAddedHeader('Referer', 'https://example.com/path?query=string');
         $referer = $request->getReferer();
 
         $this->assertInstanceOf(Url::class, $referer);
@@ -1029,7 +1069,7 @@ class RequestTest extends TestCase
     public function testGetRefererInvalid()
     {
         $request = new Request();
-        $request->addHeader('Referer', 'example.com');
+        $request = $request->withAddedHeader('Referer', 'example.com');
         $this->assertNull($request->getReferer());
     }
 
@@ -1043,7 +1083,7 @@ class RequestTest extends TestCase
         Request::getCurrent();
     }
 
-    public function testSetFiles()
+    public function testWithFiles()
     {
         $uploadedFile = UploadedFileTest::createSampleUploadedFile();
 
@@ -1056,54 +1096,66 @@ class RequestTest extends TestCase
         ];
 
         $request = new Request();
-        $result = $request->setFiles($expectedArray);
+        $newRequest = $request->withFiles($expectedArray);
 
-        $this->assertInstanceOf(Request::class, $result);
-        $this->assertSame($expectedArray, $request->getFiles());
+        $this->assertNotSame($request, $newRequest);
+        $this->assertInstanceOf(Request::class, $newRequest);
+        $this->assertSame([], $request->getFiles());
+        $this->assertSame($expectedArray, $newRequest->getFiles());
     }
 
     /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Expected Brick\Http\UploadedFile or array, got string
      */
-    public function testSetFilesWithInvalidContentsThrowException()
+    public function testWithFilesWithInvalidContentsThrowException()
     {
         $request = new Request();
-        $request->setFiles(['nested' => ['array' => ['contains' => 'string']]]);
+        $request->withFiles(['nested' => ['array' => ['contains' => 'string']]]);
     }
 
-    public function testSetCookiesShouldRemoveCookieHeader()
+    public function testWithCookiesShouldUpdateCookieHeader()
     {
         $request = new Request();
-        $result = $request->setCookies(['Key' => 'Value']);
-        $this->assertCount(1, $result->getCookie());
-        $this->assertSame('Key=Value', $result->getHeader('Cookie'));
 
-        $request->setCookies([]);
-        $this->assertCount(0, $result->getCookie());
-        $this->assertSame('', $result->getHeader('Cookie'));
+        $newRequest = $request->withCookies(['Key' => 'Value']);
+
+        $this->assertNotSame($request, $newRequest);
+        $this->assertSame([], $request->getCookie());
+        $this->assertCount(1, $newRequest->getCookie());
+        $this->assertSame('Key=Value', $newRequest->getHeader('Cookie'));
+
+        $newRequestWithNoCookies = $newRequest->withCookies([]);
+
+        $this->assertNotSame($newRequest, $newRequestWithNoCookies);
+        $this->assertCount(1, $newRequest->getCookie());
+        $this->assertCount(0, $newRequestWithNoCookies->getCookie());
+        $this->assertSame('', $newRequestWithNoCookies->getHeader('Cookie'));
     }
 
     /**
-     * @dataProvider providerSetRequestUriWithNoQueryString
+     * @dataProvider providerWithRequestUriWithNoQueryString
      *
      * @param string $requestUri
      */
-    public function testSetRequestUriWithNoQueryString(string $requestUri)
+    public function testWithRequestUriWithNoQueryString(string $requestUri)
     {
         $request = new Request();
-        $result = $request->setRequestUri($requestUri);
-        $this->assertInstanceOf(Request::class, $result);
-        $this->assertSame($requestUri, $result->getRequestUri());
-        $this->assertSame([], $result->getQuery());
-        $this->assertSame('', $result->getQueryString());
-        $this->assertSame(rtrim($requestUri, '?'), $result->getPath());
+        $newRequest = $request->withRequestUri($requestUri);
+
+        $this->assertNotSame($request, $newRequest);
+        $this->assertInstanceOf(Request::class, $newRequest);
+        $this->assertSame('/', $request->getRequestUri());
+        $this->assertSame($requestUri, $newRequest->getRequestUri());
+        $this->assertSame([], $newRequest->getQuery());
+        $this->assertSame('', $newRequest->getQueryString());
+        $this->assertSame(rtrim($requestUri, '?'), $newRequest->getPath());
     }
 
     /**
      * @return array
      */
-    public function providerSetRequestUriWithNoQueryString()
+    public function providerWithRequestUriWithNoQueryString()
     {
         return [
             ['/foo'],
@@ -1120,8 +1172,8 @@ class RequestTest extends TestCase
     public function testGetAccept($accept, $expectedResult)
     {
         $request = new Request();
-        $request->setHeader('Accept', $accept);
-        $this->assertSame($expectedResult, $request->setUrl('http://localhost:8000')->getAccept());
+        $request = $request->withHeader('Accept', $accept);
+        $this->assertSame($expectedResult, $request->withUrl('http://localhost:8000')->getAccept());
     }
 
     /**
@@ -1148,7 +1200,7 @@ class RequestTest extends TestCase
     public function testIsAjax($ajax, $expectedResult)
     {
         $request = new Request();
-        $request->setHeader('X-Requested-With', $ajax);
+        $request = $request->withHeader('X-Requested-With', $ajax);
         $this->assertSame($expectedResult, $request->isAjax());
     }
 
@@ -1167,40 +1219,40 @@ class RequestTest extends TestCase
      * @expectedException        \InvalidArgumentException
      * @expectedExceptionMessage The URL provided is not valid.
      */
-    public function testSetUrlWithInvalidUrl()
+    public function testWithUrlWithInvalidUrl()
     {
         $request = new Request();
-        $request->setUrl('http:////invalid_url');
+        $request->withUrl('http:////invalid_url');
     }
 
     /**
      * @expectedException        \InvalidArgumentException
      * @expectedExceptionMessage The URL must have a scheme.
      */
-    public function testSetUrlWithNoUrlScheme()
+    public function testWithUrlWithNoUrlScheme()
     {
         $request = new Request();
-        $request->setUrl('invalid_protocol://invalid_url');
+        $request->withUrl('invalid_protocol://invalid_url');
     }
 
     /**
      * @expectedException        \InvalidArgumentException
      * @expectedExceptionMessage The URL scheme "ftp" is not acceptable.
      */
-    public function testSetUrlWithUnsupportedProtocol()
+    public function testWithUrlWithUnsupportedProtocol()
     {
         $request = new Request();
-        $request->setUrl('ftp://invalid_url');
+        $request->withUrl('ftp://invalid_url');
     }
 
     /**
      * @expectedException        \InvalidArgumentException
      * @expectedExceptionMessage The URL must have a host name.
      */
-    public function testSetUrlWithNoHostName()
+    public function testWithUrlWithNoHostName()
     {
         $request = new Request();
-        $request->setUrl('http:sub.site.org');
+        $request->withUrl('http:sub.site.org');
     }
 
     /**
@@ -1213,7 +1265,7 @@ class RequestTest extends TestCase
     {
         $request = new Request();
 
-        $request->setHeader('Accept-Language', $acceptLanguage);
+        $request = $request->withHeader('Accept-Language', $acceptLanguage);
         $this->assertSame($expectedResult, $request->getAcceptLanguage());
     }
 
