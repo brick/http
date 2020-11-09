@@ -11,10 +11,10 @@ use Brick\Http\Exception\HttpBadRequestException;
  */
 final class Request extends Message
 {
-    const PREFER_HTTP_HOST   = 0; // Prefer HTTP_HOST, fall back to SERVER_NAME and SERVER_PORT.
-    const PREFER_SERVER_NAME = 1; // Prefer SERVER_NAME and SERVER_PORT, fall back to HTTP_HOST.
-    const ONLY_HTTP_HOST     = 2; // Only use HTTP_HOST if available, ignore SERVER_NAME and SERVER_PORT.
-    const ONLY_SERVER_NAME   = 3; // Only use SERVER_NAME and SERVER_PORT if available, ignore HTTP_HOST.
+    public const PREFER_HTTP_HOST   = 0; // Prefer HTTP_HOST, fall back to SERVER_NAME and SERVER_PORT.
+    public const PREFER_SERVER_NAME = 1; // Prefer SERVER_NAME and SERVER_PORT, fall back to HTTP_HOST.
+    public const ONLY_HTTP_HOST     = 2; // Only use HTTP_HOST if available, ignore SERVER_NAME and SERVER_PORT.
+    public const ONLY_SERVER_NAME   = 3; // Only use SERVER_NAME and SERVER_PORT if available, ignore HTTP_HOST.
 
     /**
      * The standard HTTP methods.
@@ -27,10 +27,8 @@ final class Request extends Message
      * - If the method is not in this list, consider it case-sensitive.
      *
      * @see http://www.w3.org/TR/XMLHttpRequest/
-     *
-     * @var array
      */
-    private static $standardMethods = [
+    private const STANDARD_METHODS = [
         'CONNECT',
         'DELETE',
         'GET',
@@ -638,7 +636,7 @@ final class Request extends Message
     /**
      * Fixes a method case.
      *
-     * @see \Brick\Http\Request::$standardMethods
+     * @see Request::STANDARD_METHODS
      *
      * @param string $method
      *
@@ -647,7 +645,7 @@ final class Request extends Message
     private function fixMethodCase(string $method) : string
     {
         $upperMethod = strtoupper($method);
-        $isStandard = in_array($upperMethod, self::$standardMethods, true);
+        $isStandard = in_array($upperMethod, self::STANDARD_METHODS, true);
 
         return $isStandard ? $upperMethod : $method;
     }

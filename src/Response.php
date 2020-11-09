@@ -11,10 +11,8 @@ final class Response extends Message
 {
     /**
      * Mapping of Status Code to Reason Phrase.
-     *
-     * @var array
      */
-    private static $statusCodes = [
+    private const STATUS_CODES = [
         100 => 'Continue',
         101 => 'Switching Protocols',
         200 => 'OK',
@@ -171,8 +169,8 @@ final class Response extends Message
         }
 
         if ($reasonPhrase === null) {
-            $reasonPhrase = isset(self::$statusCodes[$statusCode])
-                ? self::$statusCodes[$statusCode]
+            $reasonPhrase = isset(self::STATUS_CODES[$statusCode])
+                ? self::STATUS_CODES[$statusCode]
                 : 'Unknown';
         }
 
