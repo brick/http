@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  */
 class CookieTest extends TestCase
 {
-    public function testConstructorAndDefaults()
+    public function testConstructorAndDefaults(): void
     {
         $cookie = new Cookie('foo', 'bar');
 
@@ -25,14 +25,14 @@ class CookieTest extends TestCase
         $this->assertFalse($cookie->isHttpOnly());
     }
 
-    public function testIsHostOnlyShouldReturnTrue()
+    public function testIsHostOnlyShouldReturnTrue(): void
     {
         $cookie = new Cookie('foo', 'bar');
 
         $this->assertTrue($cookie->isHostOnly());
     }
 
-    public function testIsHostOnlyShouldReturnFalse()
+    public function testIsHostOnlyShouldReturnFalse(): void
     {
         $cookie = new Cookie('foo', 'bar');
 
@@ -53,7 +53,7 @@ class CookieTest extends TestCase
      * @param boolean     $secure
      * @param boolean     $httpOnly
      */
-    public function testParse($cookieString, $name, $value, $expires, $path, $domain, $secure, $httpOnly)
+    public function testParse(string $cookieString, string $name, string $value, int $expires, ?string $path, ?string $domain, bool $secure, bool $httpOnly): void
     {
         $cookie = Cookie::parse($cookieString);
 
@@ -88,7 +88,7 @@ class CookieTest extends TestCase
     /**
      * @return array
      */
-    public function providerParse()
+    public function providerParse(): array
     {
         return [
             ['foo=bar', 'foo', 'bar', 0, null, null, false, false],
@@ -107,7 +107,7 @@ class CookieTest extends TestCase
      *
      * @param string $cookieString
      */
-    public function testParseInvalidCookieThrowsException($cookieString)
+    public function testParseInvalidCookieThrowsException(string $cookieString): void
     {
         Cookie::parse($cookieString);
     }
@@ -115,7 +115,7 @@ class CookieTest extends TestCase
     /**
      * @return array
      */
-    public function providerParseInvalidCookieThrowsException()
+    public function providerParseInvalidCookieThrowsException(): array
     {
         return [
             [''],
@@ -125,7 +125,7 @@ class CookieTest extends TestCase
         ];
     }
 
-    public function testGetWithExpires()
+    public function testGetWithExpires(): void
     {
         $cookie = new Cookie('foo', 'bar');
 
@@ -136,7 +136,7 @@ class CookieTest extends TestCase
         $this->assertSame(123456789, $newCookie->getExpires());
     }
 
-    public function testGetWithPath()
+    public function testGetWithPath(): void
     {
         $cookie = new Cookie('foo', 'bar');
 
@@ -153,7 +153,7 @@ class CookieTest extends TestCase
         $this->assertNull($newCookieWithNoPath->getPath());
     }
 
-    public function testGetWithDomain()
+    public function testGetWithDomain(): void
     {
         $cookie = new Cookie('foo', 'bar');
 
@@ -170,7 +170,7 @@ class CookieTest extends TestCase
         $this->assertSame(null, $newCookieWithNoDomain->getDomain());
     }
 
-    public function testIsWithSecure()
+    public function testIsWithSecure(): void
     {
         $cookie = new Cookie('foo', 'bar');
 
@@ -181,7 +181,7 @@ class CookieTest extends TestCase
         $this->assertTrue($newCookie->isSecure());
     }
 
-    public function testIsWithHttpOnly()
+    public function testIsWithHttpOnly(): void
     {
         $cookie = new Cookie('foo', 'bar');
 
@@ -199,7 +199,7 @@ class CookieTest extends TestCase
      * @param boolean $isExpired    The expected value for isExpired.
      * @param boolean $isPersistent The expected value for isPersistent.
      */
-    public function testIsExpiredIsPersistent($expires, $isExpired, $isPersistent)
+    public function testIsExpiredIsPersistent(int $expires, bool $isExpired, bool $isPersistent): void
     {
         $cookie = new Cookie('foo', 'bar');
         $cookie = $cookie->withExpires($expires);
@@ -211,7 +211,7 @@ class CookieTest extends TestCase
     /**
      * @return array
      */
-    public function providerIsExpiredIsPersistent()
+    public function providerIsExpiredIsPersistent(): array
     {
         return [
             [0,             false, false],
@@ -222,7 +222,7 @@ class CookieTest extends TestCase
         ];
     }
 
-    public function testToString()
+    public function testToString(): void
     {
         $cookie = new Cookie('foo', 'bar');
         $this->assertSame('foo=bar', (string) $cookie);

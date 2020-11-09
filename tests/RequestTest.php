@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  */
 class RequestTest extends TestCase
 {
-    public function testDefaults()
+    public function testDefaults(): void
     {
         $request = new Request();
 
@@ -34,7 +34,7 @@ class RequestTest extends TestCase
         $this->assertSame('0.0.0.0', $request->getClientIp());
     }
 
-    public function testGetCurrentWithNoServerVariablesUsesDefaults()
+    public function testGetCurrentWithNoServerVariablesUsesDefaults(): void
     {
         $_SERVER = [];
 
@@ -47,7 +47,7 @@ class RequestTest extends TestCase
      * @param string  $https    The HTTPS server value.
      * @param boolean $isSecure The expected isSecure() value.
      */
-    public function testGetCurrentWithHttps($https, $isSecure)
+    public function testGetCurrentWithHttps(string $https, bool $isSecure): void
     {
         $_SERVER = ['HTTPS' => $https];
         $request = Request::getCurrent();
@@ -58,7 +58,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    public function providerGetCurrentWithHttps()
+    public function providerGetCurrentWithHttps(): array
     {
         return [
             ['on', true],
@@ -74,11 +74,11 @@ class RequestTest extends TestCase
      * @dataProvider providerGetCurrentWithHostPort
      *
      * @param array   $server         The contents of the $_SERVER array.
-     * @param boolean $hostPortSource The value that will be passed to getCurrent().
+     * @param int     $hostPortSource The value that will be passed to getCurrent().
      * @param string  $expectedHost   The expected host name.
      * @param integer $expectedPort   The expected port number.
      */
-    public function testGetCurrentWithHostPort(array $server, $hostPortSource, $expectedHost, $expectedPort)
+    public function testGetCurrentWithHostPort(array $server, int $hostPortSource, string $expectedHost, int $expectedPort): void
     {
         $_SERVER = $server;
         $request = Request::getCurrent(false, $hostPortSource);
@@ -90,7 +90,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    public function providerGetCurrentWithHostPort()
+    public function providerGetCurrentWithHostPort(): array
     {
         $https = [
             'HTTPS' => 'on'
@@ -235,7 +235,7 @@ class RequestTest extends TestCase
         ];
     }
 
-    public function testGetCurrentWithRequestMethod()
+    public function testGetCurrentWithRequestMethod(): void
     {
         $_SERVER = ['REQUEST_METHOD' => 'POST'];
         $request = Request::getCurrent();
@@ -251,7 +251,7 @@ class RequestTest extends TestCase
      * @param string $queryString The expected query string.
      * @param array  $query       The expected query array.
      */
-    public function testGetCurrentWithRequestUri($requestUri, $path, $queryString, array $query)
+    public function testGetCurrentWithRequestUri(string $requestUri, string $path, string $queryString, array $query): void
     {
         $_SERVER = ['REQUEST_URI' => $requestUri];
         $request = Request::getCurrent();
@@ -265,7 +265,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    public function providerGetCurrentWithRequestUri()
+    public function providerGetCurrentWithRequestUri(): array
     {
         return [
             ['/foo',             '/foo',     '',        []],
@@ -277,7 +277,7 @@ class RequestTest extends TestCase
         ];
     }
 
-    public function testGetCurrentWithServerProtocol()
+    public function testGetCurrentWithServerProtocol(): void
     {
         $_SERVER = ['SERVER_PROTOCOL' => 'HTTP/1.1'];
         $request = Request::getCurrent();
@@ -285,7 +285,7 @@ class RequestTest extends TestCase
         $this->assertSame('1.1', $request->getProtocolVersion());
     }
 
-    public function testGetCurrentWithRemoteAddr()
+    public function testGetCurrentWithRemoteAddr(): void
     {
         $_SERVER = ['REMOTE_ADDR' => '12.34.56.78'];
         $request = Request::getCurrent();
@@ -293,7 +293,7 @@ class RequestTest extends TestCase
         $this->assertSame('12.34.56.78', $request->getClientIp());
     }
 
-    public function testGetCurrentWithHeaders()
+    public function testGetCurrentWithHeaders(): void
     {
         $_SERVER = [
             'CONTENT_TYPE'    => 'text/xml',
@@ -316,7 +316,7 @@ class RequestTest extends TestCase
      * @param array   $server
      * @param boolean $hasBody
      */
-    public function testGetCurrentWithBody(array $server, $hasBody)
+    public function testGetCurrentWithBody(array $server, bool $hasBody): void
     {
         $_SERVER = $server;
         $request = Request::getCurrent();
@@ -327,7 +327,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    public function providerGetCurrentWithBody()
+    public function providerGetCurrentWithBody(): array
     {
         return [
             [[],                                      false],
@@ -337,7 +337,7 @@ class RequestTest extends TestCase
         ];
     }
 
-    public function testGetCurrentWithCookie()
+    public function testGetCurrentWithCookie(): void
     {
         $_COOKIE = ['foo' => 'bar'];
         $request = Request::getCurrent();
@@ -345,7 +345,7 @@ class RequestTest extends TestCase
         $this->assertSame($_COOKIE, $request->getCookie());
     }
 
-    public function testGetCurrentWithPost()
+    public function testGetCurrentWithPost(): void
     {
         $_POST = ['foo' => 'bar'];
         $request = Request::getCurrent();
@@ -353,7 +353,7 @@ class RequestTest extends TestCase
         $this->assertSame($_POST, $request->getPost());
     }
 
-    public function testGetCurrentTrustProxyOff()
+    public function testGetCurrentTrustProxyOff(): void
     {
         $_SERVER = $this->getProxyServerVariables();
         $request = Request::getCurrent();
@@ -364,7 +364,7 @@ class RequestTest extends TestCase
         $this->assertFalse($request->isSecure());
     }
 
-    public function testGetCurrentTrustProxyOn()
+    public function testGetCurrentTrustProxyOn(): void
     {
         $_SERVER = $this->getProxyServerVariables();
         $request = Request::getCurrent(true);
@@ -378,7 +378,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    private function getProxyServerVariables()
+    private function getProxyServerVariables(): array
     {
         return [
             'REMOTE_ADDR' => '1.2.3.4',
@@ -402,7 +402,7 @@ class RequestTest extends TestCase
      * @param integer $size   The expected file size.
      * @param integer $status The expected upload status.
      */
-    public function testGetCurrentWithFiles($key, $path, $name, $type, $size, $status)
+    public function testGetCurrentWithFiles(string $key, string $path, string $name, string $type, int $size, int $status): void
     {
         $_FILES = $this->getSampleFilesArray();
         $request = Request::getCurrent();
@@ -418,7 +418,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    public function providerGetCurrentWithFiles()
+    public function providerGetCurrentWithFiles(): array
     {
         return [
             ['logo',                       '/tmp/001', 'logo.png',  'image/png',  1001, UPLOAD_ERR_OK],
@@ -429,7 +429,7 @@ class RequestTest extends TestCase
         ];
     }
 
-    public function testGetWithQuery()
+    public function testGetWithQuery(): void
     {
         $query = [
             'a' => 'x',
@@ -461,7 +461,7 @@ class RequestTest extends TestCase
         $this->assertNull($newRequest->getQuery('b[c][d][e]'));
     }
 
-    public function testGetWithPost()
+    public function testGetWithPost(): void
     {
         $post = [
             'a' => 'x',
@@ -491,7 +491,7 @@ class RequestTest extends TestCase
         $this->assertNull($newRequest->getPost('b[c][d]'));
     }
 
-    public function testGetWithCookies()
+    public function testGetWithCookies(): void
     {
         $cookies = [
             'a' => 'w',
@@ -523,7 +523,7 @@ class RequestTest extends TestCase
      *
      * @param string $name
      */
-    public function testGetFileReturnsNullWhenNotAFile($name)
+    public function testGetFileReturnsNullWhenNotAFile(string $name): void
     {
         $_FILES = $this->getSampleFilesArray();
         $request = Request::getCurrent();
@@ -534,7 +534,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    public function providerGetFileReturnsNullWhenNotAFile()
+    public function providerGetFileReturnsNullWhenNotAFile(): array
     {
         return [
             ['foo'],
@@ -557,7 +557,7 @@ class RequestTest extends TestCase
      * @param string $key
      * @param string $expectedFileName
      */
-    public function testGetFile($key, $expectedFileName)
+    public function testGetFile(string $key, string $expectedFileName): void
     {
         $_FILES = $this->getSampleFilesArray();
         $request = Request::getCurrent();
@@ -568,7 +568,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    public function providerGetFile()
+    public function providerGetFile(): array
     {
         return [
             ['logo',                       'logo.png'],
@@ -585,7 +585,7 @@ class RequestTest extends TestCase
      * @param string $key
      * @param array  $expectedFileNames
      */
-    public function testGetFiles($key, $expectedFileNames)
+    public function testGetFiles(string $key, array $expectedFileNames): void
     {
         $_FILES = $this->getSampleFilesArray();
         $request = Request::getCurrent();
@@ -602,7 +602,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    public function providerGetFiles()
+    public function providerGetFiles(): array
     {
         return [
             ['foo',                       []],
@@ -618,7 +618,7 @@ class RequestTest extends TestCase
         ];
     }
 
-    public function testGetStartLine()
+    public function testGetStartLine(): void
     {
         $request = (new Request())
             ->withMethod('POST')
@@ -635,7 +635,7 @@ class RequestTest extends TestCase
      * @param string $getMethod The expected method to get.
      * @param array  $isMethod  An associative array of methods to test against.
      */
-    public function testGetWithIsMethod($setMethod, $getMethod, array $isMethod)
+    public function testGetWithIsMethod(string $setMethod, string $getMethod, array $isMethod): void
     {
         $request = new Request();
 
@@ -653,7 +653,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    public function providerGetWithIsMethod()
+    public function providerGetWithIsMethod(): array
     {
         return [
             ['GET',     'GET',     ['GET'     => true, 'get'     => true,  'Get'     => true,  'POST' => false]],
@@ -676,7 +676,7 @@ class RequestTest extends TestCase
      * @param string  $method
      * @param boolean $isSafe
      */
-    public function testIsMethodSafe($method, $isSafe)
+    public function testIsMethodSafe(string $method, bool $isSafe): void
     {
         $request = new Request();
 
@@ -690,7 +690,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    public function providerIsMethodSafe()
+    public function providerIsMethodSafe(): array
     {
         return [
             ['GET', true],
@@ -708,7 +708,7 @@ class RequestTest extends TestCase
      * @param string  $getScheme The expected scheme to get.
      * @param boolean $isSecure  The expected secure flag.
      */
-    public function testGetWithScheme($setScheme, $getScheme, $isSecure)
+    public function testGetWithScheme(string $setScheme, string $getScheme, bool $isSecure): void
     {
         $request = new Request();
 
@@ -723,7 +723,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    public function providerGetWithScheme()
+    public function providerGetWithScheme(): array
     {
         return [
             ['http',  'http',  false],
@@ -738,13 +738,13 @@ class RequestTest extends TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testWithInvalidSchemeThrowsException()
+    public function testWithInvalidSchemeThrowsException(): void
     {
         $request = new Request();
         $request->withScheme('ftp');
     }
 
-    public function testGetWithHostPort()
+    public function testGetWithHostPort(): void
     {
         $request = new Request();
 
@@ -763,7 +763,7 @@ class RequestTest extends TestCase
         $this->assertSame('example.com:81', $requestWithHostAndPort->getHeader('Host'));
     }
 
-    public function testGetHostParts()
+    public function testGetHostParts(): void
     {
         $request = new Request();
         $request = $request->withHost('www.example.com');
@@ -779,7 +779,7 @@ class RequestTest extends TestCase
      * @param bool   $includeSubDomains
      * @param bool   $result
      */
-    public function testIsHost($requestHost, $testHost, $includeSubDomains, $result)
+    public function testIsHost(string $requestHost, string $testHost, bool $includeSubDomains, bool $result): void
     {
         $request = new Request();
         $request = $request->withHost($requestHost);
@@ -790,7 +790,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    public function providerIsHost()
+    public function providerIsHost(): array
     {
         return [
             ['example.com', 'example.com', false, true],
@@ -837,7 +837,7 @@ class RequestTest extends TestCase
         ];
     }
 
-    public function testGetWithPath()
+    public function testGetWithPath(): void
     {
         $request = new Request();
         $request = $request->withRequestUri('/user/profile?user=123');
@@ -856,7 +856,7 @@ class RequestTest extends TestCase
      * @param string $path
      * @param array  $expectedParts
      */
-    public function testGetPathParts($path, array $expectedParts)
+    public function testGetPathParts(string $path, array $expectedParts): void
     {
         $request = new Request();
         $request = $request->withPath($path);
@@ -867,7 +867,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    public function providerGetPathParts()
+    public function providerGetPathParts(): array
     {
         return [
             ['/',            []],
@@ -884,13 +884,13 @@ class RequestTest extends TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testWithPathThrowsExceptionWhenPathIsInvalid()
+    public function testWithPathThrowsExceptionWhenPathIsInvalid(): void
     {
         $request = new Request();
         $request->withPath('/user/edit?user=123');
     }
 
-    public function testGetWithQueryString()
+    public function testGetWithQueryString(): void
     {
         $request = new Request();
         $request = $request->withRequestUri('/user/profile?user=123');
@@ -903,7 +903,7 @@ class RequestTest extends TestCase
         $this->assertSame('/user/profile?user=456', $newRequest->getRequestUri());
     }
 
-    public function testGetWithRequestUri()
+    public function testGetWithRequestUri(): void
     {
         $request = new Request();
 
@@ -927,10 +927,10 @@ class RequestTest extends TestCase
      * @param string       $requestUri  The expected request URI.
      * @param string       $path        The expected path.
      * @param string       $qs          The expected query string.
-     * @param string       $isSecure    The expected isSecure flag.
+     * @param bool         $isSecure    The expected isSecure flag.
      * @param array        $query       The expected query parameters.
      */
-    public function testGetWithUrl($url, $expectedUrl, $host, $port, $requestUri, $path, $qs, $isSecure, array $query)
+    public function testGetWithUrl(string $url, ?string $expectedUrl, string $host, int $port, string $requestUri, string $path, string $qs, bool $isSecure, array $query): void
     {
         $request = new Request();
 
@@ -960,7 +960,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    public function providerGetWithUrl()
+    public function providerGetWithUrl(): array
     {
         return [
             ['http://foo',            'http://foo/',  'foo', 80,  '/',      '/',     '',    false, []],
@@ -976,7 +976,7 @@ class RequestTest extends TestCase
      * @param string $url
      * @param string $expectedUrlBase
      */
-    public function testGetUrlBase($url, $expectedUrlBase)
+    public function testGetUrlBase(string $url, string $expectedUrlBase): void
     {
         $request = new Request();
         $request = $request->withUrl($url);
@@ -987,7 +987,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    public function providerUrlBase()
+    public function providerUrlBase(): array
     {
         return [
             ['http://example.com',              'http://example.com'],
@@ -999,7 +999,7 @@ class RequestTest extends TestCase
         ];
     }
 
-    public function testIsWithSecure()
+    public function testIsWithSecure(): void
     {
         $request = new Request();
 
@@ -1021,7 +1021,7 @@ class RequestTest extends TestCase
         $this->assertSame(81, $newRequest->getPort());
     }
 
-    public function testGetWithClientIp()
+    public function testGetWithClientIp(): void
     {
         $request = new Request();
 
@@ -1032,7 +1032,7 @@ class RequestTest extends TestCase
         $this->assertSame('4.3.2.1', $newRequest->getClientIp());
     }
 
-    public function testGetFirstLastHeader()
+    public function testGetFirstLastHeader(): void
     {
         $request = new Request();
         $request = $request->withAddedHeader('Referer', 'http://example.com/1');
@@ -1043,14 +1043,14 @@ class RequestTest extends TestCase
         $this->assertSame('http://example.com/3', $request->getLastHeader('Referer'));
     }
 
-    public function testGetFirstLastHeaderNull()
+    public function testGetFirstLastHeaderNull(): void
     {
         $request = new Request();
         $this->assertNull($request->getFirstHeader('Referer'));
         $this->assertNull($request->getLastHeader('Referer'));
     }
 
-    public function testGetReferer()
+    public function testGetReferer(): void
     {
         $request = new Request();
         $request = $request->withAddedHeader('Referer', 'https://example.com/path?query=string');
@@ -1060,13 +1060,13 @@ class RequestTest extends TestCase
         $this->assertSame('https://example.com/path?query=string', (string) $referer);
     }
 
-    public function testGetRefererEmpty()
+    public function testGetRefererEmpty(): void
     {
         $request = new Request();
         $this->assertNull($request->getReferer());
     }
 
-    public function testGetRefererInvalid()
+    public function testGetRefererInvalid(): void
     {
         $request = new Request();
         $request = $request->withAddedHeader('Referer', 'example.com');
@@ -1077,13 +1077,13 @@ class RequestTest extends TestCase
      * @expectedException        \Brick\Http\Exception\HttpBadRequestException
      * @expectedExceptionMessage Invalid protocol: invalid_protocol
      */
-    public function testGetCurrentWithInvalidProtocolThrowsException()
+    public function testGetCurrentWithInvalidProtocolThrowsException(): void
     {
         $_SERVER['SERVER_PROTOCOL'] = 'invalid_protocol';
         Request::getCurrent();
     }
 
-    public function testWithFiles()
+    public function testWithFiles(): void
     {
         $uploadedFile = UploadedFileTest::createSampleUploadedFile();
 
@@ -1108,13 +1108,13 @@ class RequestTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Expected Brick\Http\UploadedFile or array, got string
      */
-    public function testWithFilesWithInvalidContentsThrowException()
+    public function testWithFilesWithInvalidContentsThrowException(): void
     {
         $request = new Request();
         $request->withFiles(['nested' => ['array' => ['contains' => 'string']]]);
     }
 
-    public function testWithCookiesShouldUpdateCookieHeader()
+    public function testWithCookiesShouldUpdateCookieHeader(): void
     {
         $request = new Request();
 
@@ -1138,7 +1138,7 @@ class RequestTest extends TestCase
      *
      * @param string $requestUri
      */
-    public function testWithRequestUriWithNoQueryString(string $requestUri)
+    public function testWithRequestUriWithNoQueryString(string $requestUri): void
     {
         $request = new Request();
         $newRequest = $request->withRequestUri($requestUri);
@@ -1155,7 +1155,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    public function providerWithRequestUriWithNoQueryString()
+    public function providerWithRequestUriWithNoQueryString(): array
     {
         return [
             ['/foo'],
@@ -1169,7 +1169,7 @@ class RequestTest extends TestCase
      * @param string $accept         The Accept header.
      * @param array  $expectedResult The expected result.
      */
-    public function testGetAccept($accept, $expectedResult)
+    public function testGetAccept(string $accept, array $expectedResult): void
     {
         $request = new Request();
         $request = $request->withHeader('Accept', $accept);
@@ -1179,7 +1179,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    public function providerAccept()
+    public function providerAccept(): array
     {
         return [
             ['', []],
@@ -1197,7 +1197,7 @@ class RequestTest extends TestCase
      * @param string  $ajax           X-Requested-With header.
      * @param boolean $expectedResult The expected result.
      */
-    public function testIsAjax($ajax, $expectedResult)
+    public function testIsAjax(string $ajax, bool $expectedResult): void
     {
         $request = new Request();
         $request = $request->withHeader('X-Requested-With', $ajax);
@@ -1207,7 +1207,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    public function providerIsAjax()
+    public function providerIsAjax(): array
     {
         return [
             ['', false],
@@ -1219,7 +1219,7 @@ class RequestTest extends TestCase
      * @expectedException        \InvalidArgumentException
      * @expectedExceptionMessage The URL provided is not valid.
      */
-    public function testWithUrlWithInvalidUrl()
+    public function testWithUrlWithInvalidUrl(): void
     {
         $request = new Request();
         $request->withUrl('http:////invalid_url');
@@ -1229,7 +1229,7 @@ class RequestTest extends TestCase
      * @expectedException        \InvalidArgumentException
      * @expectedExceptionMessage The URL must have a scheme.
      */
-    public function testWithUrlWithNoUrlScheme()
+    public function testWithUrlWithNoUrlScheme(): void
     {
         $request = new Request();
         $request->withUrl('invalid_protocol://invalid_url');
@@ -1239,7 +1239,7 @@ class RequestTest extends TestCase
      * @expectedException        \InvalidArgumentException
      * @expectedExceptionMessage The URL scheme "ftp" is not acceptable.
      */
-    public function testWithUrlWithUnsupportedProtocol()
+    public function testWithUrlWithUnsupportedProtocol(): void
     {
         $request = new Request();
         $request->withUrl('ftp://invalid_url');
@@ -1249,7 +1249,7 @@ class RequestTest extends TestCase
      * @expectedException        \InvalidArgumentException
      * @expectedExceptionMessage The URL must have a host name.
      */
-    public function testWithUrlWithNoHostName()
+    public function testWithUrlWithNoHostName(): void
     {
         $request = new Request();
         $request->withUrl('http:sub.site.org');
@@ -1261,7 +1261,7 @@ class RequestTest extends TestCase
      * @param string $acceptLanguage The Accept-Language header.
      * @param array  $expectedResult The expected result.
      */
-    public function testGetAcceptLanguage($acceptLanguage, $expectedResult)
+    public function testGetAcceptLanguage(string $acceptLanguage, array $expectedResult): void
     {
         $request = new Request();
 
@@ -1272,7 +1272,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    public function providerAcceptLanguage()
+    public function providerAcceptLanguage(): array
     {
         return [
             ['', []],
@@ -1290,7 +1290,7 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    private function getSampleFilesArray()
+    private function getSampleFilesArray(): array
     {
         return [
             'logo' => [

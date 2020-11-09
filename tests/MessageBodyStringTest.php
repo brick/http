@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  */
 class MessageBodyStringTest extends TestCase
 {
-    public function testRead()
+    public function testRead(): void
     {
         $messageBodyString = new MessageBodyString('<!DOCTYPE html><html lang="en"><body></body></html>');
 

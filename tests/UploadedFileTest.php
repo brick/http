@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  */
 class UploadedFileTest extends TestCase
 {
-    protected $uploadedFile;
+    protected UploadedFile $uploadedFile;
 
     public static function createSampleUploadedFile() : UploadedFile
     {
@@ -24,22 +24,22 @@ class UploadedFileTest extends TestCase
         ]);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->uploadedFile = self::createSampleUploadedFile();
     }
 
-    public function testGetExtension()
+    public function testGetExtension(): void
     {
         $this->assertSame('txt', $this->uploadedFile->getExtension());
     }
 
-    public function testGetPath()
+    public function testGetPath(): void
     {
         $this->assertSame('uploaded_temp_file.txt', $this->uploadedFile->getPath());
     }
 
-    public function testGetName()
+    public function testGetName(): void
     {
         $this->assertSame('uploaded_file.txt', $this->uploadedFile->getName());
     }
@@ -59,7 +59,7 @@ class UploadedFileTest extends TestCase
         $this->assertSame(0, $this->uploadedFile->getStatus());
     }
 
-    public function testIsValid()
+    public function testIsValid(): void
     {
         $uploadedFile = UploadedFile::create([
             'tmp_name' => 'uploaded_temp_file.txt',
@@ -73,7 +73,7 @@ class UploadedFileTest extends TestCase
         $this->assertFalse($uploadedFile->isValid());
     }
 
-    public function testIsSelected()
+    public function testIsSelected(): void
     {
         $uploadedFile = UploadedFile::create([
             'tmp_name' => 'uploaded_temp_file.txt',

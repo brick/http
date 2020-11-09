@@ -26,7 +26,7 @@ class UrlTest extends TestCase
      * @param bool   $isStandardPort
      * @param bool   $isSecure
      */
-    public function testValidUrl($url, $toString, $scheme, $host, $port, $path, $query, $fragment, $isStandardPort, $isSecure)
+    public function testValidUrl(string $url, string $toString, string $scheme, string $host, int $port, string $path, string $query, string $fragment, bool $isStandardPort, bool $isSecure)
     {
         $url = new Url($url);
 
@@ -46,7 +46,7 @@ class UrlTest extends TestCase
      * @expectedException        \InvalidArgumentException
      * @expectedExceptionMessage URL must contain a host name.
      */
-    public function testConstructorUrlWithNoHostName()
+    public function testConstructorUrlWithNoHostName(): void
     {
         $url = new Url('http:sub.site.org');
     }
@@ -54,7 +54,7 @@ class UrlTest extends TestCase
     /**
      * @return array
      */
-    public function providerValidUrl()
+    public function providerValidUrl(): array
     {
         return [
             ['http://example.com', 'http://example.com/', 'http', 'example.com', 80, '/', '', '', true, false],
@@ -73,7 +73,7 @@ class UrlTest extends TestCase
      *
      * @param string $url
      */
-    public function testInvalidUrl($url)
+    public function testInvalidUrl(string $url): void
     {
         new Url($url);
     }
@@ -81,7 +81,7 @@ class UrlTest extends TestCase
     /**
      * @return array
      */
-    public function providerInvalidUrl()
+    public function providerInvalidUrl(): array
     {
         return [
             ['ftp://example.com/'],
@@ -99,7 +99,7 @@ class UrlTest extends TestCase
      * @param bool   $includeSubDomains
      * @param bool   $result
      */
-    public function testIsHost($urlHost, $testHost, $includeSubDomains, $result)
+    public function testIsHost(string $urlHost, string $testHost, bool $includeSubDomains, bool $result): void
     {
         $url = new Url('http://' . $urlHost);
         $this->assertSame($result, $url->isHost($testHost, $includeSubDomains));
@@ -108,7 +108,7 @@ class UrlTest extends TestCase
     /**
      * @return array
      */
-    public function providerIsHost()
+    public function providerIsHost(): array
     {
         return [
             ['example.com', 'example.com', false, true],

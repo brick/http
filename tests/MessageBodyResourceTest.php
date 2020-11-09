@@ -16,7 +16,7 @@ class MessageBodyResourceTest extends TestCase
      */
     protected $messageBodyResource;
 
-    public function setUp()
+    public function setUp(): void
     {
         $fp = fopen('php://memory', 'rb+');
 
@@ -26,13 +26,13 @@ class MessageBodyResourceTest extends TestCase
         $this->messageBodyResource = new MessageBodyResource($fp);
     }
 
-    public function testRead()
+    public function testRead(): void
     {
         $this->assertSame('da', $this->messageBodyResource->read(2));
         $this->assertSame('ta', $this->messageBodyResource->read(1024));
     }
 
-    public function testGetSize()
+    public function testGetSize(): void
     {
         $this->assertSame(4, $this->messageBodyResource->getSize());
     }

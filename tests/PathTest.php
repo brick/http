@@ -13,12 +13,12 @@ class PathTest extends TestCase
 {
     protected $path;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->path = new Path('/path1/path2');
     }
 
-    public function testGetParts()
+    public function testGetParts(): void
     {
         $result = $this->path->getParts();
 
@@ -27,19 +27,19 @@ class PathTest extends TestCase
         $this->assertSame('path2', $result[1]);
     }
 
-    public function testContains()
+    public function testContains(): void
     {
         $this->assertTrue($this->path->contains('path1'));
         $this->assertFalse($this->path->contains('path3'));
     }
 
-    public function testStartsWith()
+    public function testStartsWith(): void
     {
         $this->assertTrue($this->path->startsWith('/path1'));
         $this->assertFalse($this->path->startsWith('/path3'));
     }
 
-    public function testEndsWith()
+    public function testEndsWith(): void
     {
         $this->assertTrue($this->path->endsWith('/path2'));
         $this->assertFalse($this->path->endsWith('/path3'));

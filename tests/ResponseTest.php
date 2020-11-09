@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ResponseTest extends TestCase
 {
-    public function testDefaults()
+    public function testDefaults(): void
     {
         $response = new Response();
 
@@ -31,11 +31,11 @@ class ResponseTest extends TestCase
     /**
      * @dataProvider providerGetWithStatusCode
      *
-     * @param string      $statusCode           The status code to set.
+     * @param int         $statusCode           The status code to set.
      * @param string|null $reasonPhrase         The reason phrase to set, or null to skip.
      * @param string      $expectedReasonPhrase The expected reason phrase.
      */
-    public function testGetWithStatusCode($statusCode, $reasonPhrase, $expectedReasonPhrase)
+    public function testGetWithStatusCode(int $statusCode, ?string $reasonPhrase, string $expectedReasonPhrase): void
     {
         $response = new Response();
 
@@ -50,7 +50,7 @@ class ResponseTest extends TestCase
     /**
      * @return array
      */
-    public function providerGetWithStatusCode()
+    public function providerGetWithStatusCode(): array
     {
         return [
             [404, null,     'Not Found'],
@@ -66,7 +66,7 @@ class ResponseTest extends TestCase
      *
      * @param integer $statusCode
      */
-    public function testWithInvalidStatusCodeThrowsException($statusCode)
+    public function testWithInvalidStatusCodeThrowsException(int $statusCode): void
     {
         $response = new Response();
         $response->withStatusCode($statusCode);
@@ -75,7 +75,7 @@ class ResponseTest extends TestCase
     /**
      * @return array
      */
-    public function providerWithInvalidStatusCodeThrowsException()
+    public function providerWithInvalidStatusCodeThrowsException(): array
     {
         return [
             [0],
@@ -84,7 +84,7 @@ class ResponseTest extends TestCase
         ];
     }
 
-    public function testWithWithoutCookies()
+    public function testWithWithoutCookies(): void
     {
         $response = new Response();
 
@@ -115,7 +115,7 @@ class ResponseTest extends TestCase
         $this->assertSame([], $responseWithNoCookies->getHeaderAsArray('Set-Cookie'));
     }
 
-    public function testWithContent()
+    public function testWithContent(): void
     {
         $response = new Response();
 
@@ -127,7 +127,7 @@ class ResponseTest extends TestCase
         $this->assertSame('Hello World', (string) $newResponse->getBody());
     }
 
-    public function testWithContentAsResource()
+    public function testWithContentAsResource(): void
     {
         $fp = fopen('php://memory', 'rb+');
         fwrite($fp, 'data');
@@ -145,7 +145,7 @@ class ResponseTest extends TestCase
         $this->assertSame('data', (string) $newResponseBody);
     }
 
-    public function testIsStatusCode()
+    public function testIsStatusCode(): void
     {
         $response = new Response();
 
@@ -157,7 +157,7 @@ class ResponseTest extends TestCase
      * @expectedException        \RuntimeException
      * @expectedExceptionMessage Could not parse response (error 1).
      */
-    public function testParseShouldThrowRuntimeExceptionError1()
+    public function testParseShouldThrowRuntimeExceptionError1(): void
     {
         Response::parse('<!DOCTYPE html><html>HTML strings</html>');
     }
@@ -166,7 +166,7 @@ class ResponseTest extends TestCase
      * @expectedException        \RuntimeException
      * @expectedExceptionMessage Could not parse response (error 2).
      */
-    public function testParseShouldThrowRuntimeExceptionError2()
+    public function testParseShouldThrowRuntimeExceptionError2(): void
     {
         Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Type: text/plain' . "\r\n");
     }
@@ -175,12 +175,12 @@ class ResponseTest extends TestCase
      * @expectedException        \RuntimeException
      * @expectedExceptionMessage Could not parse response (error 3).
      */
-    public function testParseShouldThrowRuntimeExceptionError3()
+    public function testParseShouldThrowRuntimeExceptionError3(): void
     {
         Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Typetext/plain' . "\r\n\r\n");
     }
 
-    public function testParseShouldReturnResponseObject()
+    public function testParseShouldReturnResponseObject(): void
     {
         $result = Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Type: text/html' . "\r\n\r\n");
 
@@ -190,7 +190,7 @@ class ResponseTest extends TestCase
         $this->assertSame(['Content-Type' => ['text/html'], 'Content-Length' => ['0']], $result->getHeaders());
     }
 
-    public function testParseWithCookieHeaderShouldReturnResponseObject()
+    public function testParseWithCookieHeaderShouldReturnResponseObject(): void
     {
         $result = Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Type: text/html' . "\r\n" . 'Set-Cookie: sessionid=38afes7a8; HttpOnly; Path=/' . "\r\n\r\n");
 
@@ -200,7 +200,7 @@ class ResponseTest extends TestCase
         $this->assertSame(['Content-Type' => ['text/html'], 'Set-Cookie' => ['sessionid=38afes7a8; Path=/; HttpOnly'], 'Content-Length' => ['0']], $result->getHeaders());
     }
 
-    public function testIsType()
+    public function testIsType(): void
     {
         $response = new Response();
 
@@ -216,7 +216,7 @@ class ResponseTest extends TestCase
         }
     }
 
-    public function testHasHeader()
+    public function testHasHeader(): void
     {
         $response = new Response();
         $response = $response->withHeader('Accept', 'image/png');
@@ -225,7 +225,7 @@ class ResponseTest extends TestCase
         $this->assertTrue($response->hasHeader('Accept'));
     }
 
-    public function testWithAddedHeaderWithArrayValue()
+    public function testWithAddedHeaderWithArrayValue(): void
     {
         $response = new Response();
 
@@ -237,7 +237,7 @@ class ResponseTest extends TestCase
         $this->assertSame('Sun, 18 Oct 2009 08:56:53 GMT', $newResponse->getHeader('Date'));
     }
 
-    public function testWithAddedHeaderWithExistingValue()
+    public function testWithAddedHeaderWithExistingValue(): void
     {
         $response = new Response();
         $response = $response->withAddedHeader('Date', 'Sun');
@@ -246,7 +246,7 @@ class ResponseTest extends TestCase
         $this->assertSame('Sun, 18 Oct 2009 08:56:53 GMT', $response->getHeader('Date'));
     }
 
-    public function testWithAddedHeaders()
+    public function testWithAddedHeaders(): void
     {
         $response = new Response();
 
@@ -262,7 +262,7 @@ class ResponseTest extends TestCase
         $this->assertSame('Apache', $newResponse->getHeader('Server'));
     }
 
-    public function testGetHead()
+    public function testGetHead(): void
     {
         $response = new Response();
         $response = $response->withAddedHeaders([
@@ -274,14 +274,14 @@ class ResponseTest extends TestCase
         $this->assertSame($expectedHead, $response->getHead());
     }
 
-    public function testGetContentLength()
+    public function testGetContentLength(): void
     {
         $response = new Response();
 
         $this->assertSame(0, $response->getContentLength());
     }
 
-    public function testGetContentLengthWithValue()
+    public function testGetContentLengthWithValue(): void
     {
         $response = new Response();
         $response = $response->withAddedHeader('Content-Length', 19730);
@@ -295,7 +295,7 @@ class ResponseTest extends TestCase
      * @param string  $headerValue    The specific header value
      * @param boolean $expectedResult The expected result
      */
-    public function testIsContentType($headerValue, $expectedResult)
+    public function testIsContentType(string $headerValue, bool $expectedResult): void
     {
         $response = new Response();
         $response = $response->withAddedHeader('Content-Type', $headerValue);
@@ -306,7 +306,7 @@ class ResponseTest extends TestCase
     /**
      * @return array
      */
-    public function providerIsContentType()
+    public function providerIsContentType(): array
     {
         return [
             ['text/html; charset=utf-8', true],
@@ -316,7 +316,7 @@ class ResponseTest extends TestCase
         ];
     }
 
-    public function testCastToString()
+    public function testCastToString(): void
     {
         $response = new Response();
         $response = $response->withBody(new MessageBodyString('param1=value1&param2=value2'));
@@ -326,7 +326,7 @@ class ResponseTest extends TestCase
         $this->assertSame($expectedString, (string) $response);
     }
 
-    public function testClone()
+    public function testClone(): void
     {
         $response = new Response();
         $response = $response->withBody(new MessageBodyString('param1=value1&param2=value2'));
