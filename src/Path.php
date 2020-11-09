@@ -12,7 +12,7 @@ final class Path
     /**
      * @var string
      */
-    private $path;
+    private string $path;
 
     /**
      * @param string $path

@@ -16,14 +16,14 @@ final class Cookie
      *
      * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * The value of the cookie.
      *
      * @var string
      */
-    private $value;
+    private string $value;
 
     /**
      * The unix timestamp at which the cookie expires.
@@ -32,35 +32,35 @@ final class Cookie
      *
      * @var int
      */
-    private $expires = 0;
+    private int $expires = 0;
 
     /**
      * The path on which the cookie is valid, or null if not set.
      *
      * @var string|null
      */
-    private $path;
+    private ?string $path = null;
 
     /**
      * The domain on which the cookie is valid, or null if not set.
      *
      * @var string|null
      */
-    private $domain;
+    private ?string $domain = null;
 
     /**
      * Whether the cookie should only be sent on a secure connection.
      *
      * @var bool
      */
-    private $secure = false;
+    private bool $secure = false;
 
     /**
      * Whether the cookie should only be sent over the HTTP protocol.
      *
      * @var bool
      */
-    private $httpOnly = false;
+    private bool $httpOnly = false;
 
     /**
      * Class constructor.

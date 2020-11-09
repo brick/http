@@ -14,7 +14,7 @@ final class MessageBodyResource implements MessageBody
     /**
      * @var bool
      */
-    private $seekable;
+    private bool $seekable;
 
     /**
      * @param resource $body

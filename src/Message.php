@@ -9,12 +9,12 @@ namespace Brick\Http;
  */
 abstract class Message
 {
-    const CRLF = "\r\n";
+    public const CRLF = "\r\n";
 
     /**
      * @var string
      */
-    protected $protocolVersion = '1.0';
+    protected string $protocolVersion = '1.0';
 
     /**
      * The message headers.
@@ -24,12 +24,12 @@ abstract class Message
      *
      * @var array
      */
-    protected $headers = [];
+    protected array $headers = [];
 
     /**
-     * @var \Brick\Http\MessageBody|null
+     * @var MessageBody|null
      */
-    protected $body;
+    protected ?MessageBody $body = null;
 
     /**
      * Returns the protocol version, such as '1.0'.

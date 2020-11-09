@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Brick\Http;
 
 /**
- * Represents a collection of UploadedFile instances, potentially nested in sub-arrays.
- * This object is immutable.
+ * Builds collections of UploadedFile instances, potentially nested in sub-arrays.
  */
 final class UploadedFileMap
 {

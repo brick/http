@@ -58,17 +58,17 @@ final class Response extends Message
     /**
      * @var int
      */
-    private $statusCode = 200;
+    private int $statusCode = 200;
 
     /**
      * @var string
      */
-    private $reasonPhrase = 'OK';
+    private string $reasonPhrase = 'OK';
 
     /**
-     * @var \Brick\Http\Cookie[]
+     * @var Cookie[]
      */
-    private $cookies = [];
+    private array $cookies = [];
 
     /**
      * Parses a raw response string, including headers and body, and returns a Response object.

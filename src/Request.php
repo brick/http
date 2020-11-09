@@ -43,70 +43,70 @@ final class Request extends Message
     /**
      * @var array
      */
-    private $query = [];
+    private array $query = [];
 
     /**
      * @var array
      */
-    private $post = [];
+    private array $post = [];
 
     /**
      * @var array
      */
-    private $cookies = [];
+    private array $cookies = [];
 
     /**
      * @var array
      */
-    private $files = [];
+    private array $files = [];
 
     /**
      * @var bool
      */
-    private $isSecure = false;
+    private bool $isSecure = false;
 
     /**
      * The request method.
      *
      * @var string
      */
-    private $method = 'GET';
+    private string $method = 'GET';
 
     /**
      * @var string
      */
-    private $host = 'localhost';
+    private string $host = 'localhost';
 
     /**
      * @var int
      */
-    private $port = 80;
+    private int $port = 80;
 
     /**
      * The Request-URI.
      *
      * @var string
      */
-    private $requestUri = '/';
+    private string $requestUri = '/';
 
     /**
      * The part before the `?` in the Request-URI.
      *
      * @var string
      */
-    private $path = '/';
+    private string $path = '/';
 
     /**
      * The part after the `?` in the Request-URI.
      *
      * @var string
      */
-    private $queryString = '';
+    private string $queryString = '';
 
     /**
      * @var string
      */
-    private $clientIp = '0.0.0.0';
+    private string $clientIp = '0.0.0.0';
 
     /**
      * Returns a Request object representing the current request.

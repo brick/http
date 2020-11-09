@@ -20,49 +20,49 @@ final class Url
     /**
      * @var string
      */
-    private $url;
+    private string $url;
 
     /**
      * The scheme, http or https.
      *
      * @var string
      */
-    private $scheme;
+    private string $scheme;
 
     /**
      * The host name.
      *
      * @var string
      */
-    private $host;
+    private string $host;
 
     /**
      * The port number.
      *
      * @var int
      */
-    private $port;
+    private int $port;
 
     /**
      * The path.
      *
-     * @var string
+     * @var Path
      */
-    private $path;
+    private Path $path;
 
     /**
      * The query string, after the `?` character. Can be empty.
      *
      * @var string
      */
-    private $query;
+    private string $query;
 
     /**
      * The fragment, after the `#` character. Can be empty.
      *
      * @var string
      */
-    private $fragment;
+    private string $fragment;
 
     /**
      * @param string $url

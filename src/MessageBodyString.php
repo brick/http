@@ -9,12 +9,12 @@ final class MessageBodyString implements MessageBody
     /**
      * @var string
      */
-    private $body;
+    private string $body;
 
     /**
      * @var int
      */
-    private $offset = 0;
+    private int $offset = 0;
 
     /**
      * @param string $body The message body.

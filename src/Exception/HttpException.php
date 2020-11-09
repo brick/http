@@ -12,7 +12,7 @@ class HttpException extends \RuntimeException
     /**
      * @var array
      */
-    private $headers;
+    private array $headers;
 
     /**
      * Class constructor.

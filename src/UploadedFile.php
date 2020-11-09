@@ -16,7 +16,7 @@ final class UploadedFile
      *
      * @var string
      */
-    private $path;
+    private string $path;
 
     /**
      * The original file name, as sent by the browser.
@@ -25,7 +25,7 @@ final class UploadedFile
      *
      * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * The MIME type, as sent by the browser.
@@ -34,7 +34,7 @@ final class UploadedFile
      *
      * @var string
      */
-    private $type;
+    private string $type;
 
     /**
      * The size of the uploaded file.
@@ -43,14 +43,14 @@ final class UploadedFile
      *
      * @var int
      */
-    private $size;
+    private int $size;
 
     /**
      * The status of the upload, one of the `UPLOAD_ERR_*` constants.
      *
      * @var int
      */
-    private $status;
+    private int $status;
 
     /**
      * Class constructor.
