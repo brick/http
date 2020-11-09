@@ -7,6 +7,8 @@ namespace Brick\Http;
 use Brick\Http\Exception\HttpBadRequestException;
 
 /**
+ * @todo make final
+ *
  * Represents an HTTP request received by the server.
  */
 class Request extends Message
@@ -313,6 +315,8 @@ class Request extends Message
     }
 
     /**
+     * @deprecated use withQuery()
+     *
      * Sets the query parameters.
      *
      * @param array $query The associative array of parameters.
@@ -336,6 +340,15 @@ class Request extends Message
         return $this;
     }
 
+    public function withQuery(array $query): Request
+    {
+        $that = clone $this;
+
+        $that->setQuery($query);
+
+        return $that;
+    }
+
     /**
      * Returns the post parameter(s).
      *
@@ -353,6 +366,8 @@ class Request extends Message
     }
 
     /**
+     * @deprecated use withPost()
+     *
      * Sets the post parameter.
      *
      * This will set a request body with the URL-encoded data,
@@ -378,6 +393,15 @@ class Request extends Message
         }
 
         return $this;
+    }
+
+    public function withPost(array $post): Request
+    {
+        $that = clone $this;
+
+        $that->setPost($post);
+
+        return $that;
     }
 
     /**
@@ -433,6 +457,8 @@ class Request extends Message
     }
 
     /**
+     * @deprecated use withFiles()
+     *
      * Sets the uploaded files.
      *
      * This will replace the message body, if any, with an empty body.
@@ -457,6 +483,15 @@ class Request extends Message
         ]);
 
         return $this;
+    }
+
+    public function withFiles(array $files): Request
+    {
+        $that = clone $this;
+
+        $that->setFiles($files);
+
+        return $that;
     }
 
     /**
@@ -496,6 +531,8 @@ class Request extends Message
     }
 
     /**
+     * @deprecated use withAddedCookies()
+     *
      * Adds cookies to this request.
      *
      * Existing cookies with the same name will be replaced.
@@ -509,7 +546,18 @@ class Request extends Message
         return $this->setCookies($cookies + $this->cookies);
     }
 
+    public function withAddedCookies(array $cookies): Request
+    {
+        $that = clone $this;
+
+        $that->addCookies($cookies);
+
+        return $that;
+    }
+
     /**
+     * @deprecated use withCookies()
+     *
      * Sets the cookies for this request.
      *
      * All existing cookies will be replaced.
@@ -531,6 +579,15 @@ class Request extends Message
         }
 
         return $this;
+    }
+
+    public function withCookies(array $cookies): Request
+    {
+        $that = clone $this;
+
+        $that->setCookies($cookies);
+
+        return $that;
     }
 
     /**
@@ -574,6 +631,8 @@ class Request extends Message
     }
 
     /**
+     * @deprecated use withMethod()
+     *
      * Sets the request method.
      *
      * If the method case-insensitively matches a standard method, it will be converted to uppercase.
@@ -587,6 +646,14 @@ class Request extends Message
         $this->method = $this->fixMethodCase($method);
 
         return $this;
+    }
+
+    public function withMethod(string $method): Request
+    {
+        $that = clone $this;
+        $that->method = $that->fixMethodCase($method);
+
+        return $that;
     }
 
     /**
@@ -644,6 +711,8 @@ class Request extends Message
     }
 
     /**
+     * @deprecated use withScheme()
+     *
      * Sets the request scheme.
      *
      * @param string $scheme The new request scheme.
@@ -665,6 +734,15 @@ class Request extends Message
         }
 
         return $this;
+    }
+
+    public function withScheme(string $scheme): Request
+    {
+        $that = clone $this;
+
+        $that->setScheme($scheme);
+
+        return $that;
     }
 
     /**
@@ -715,6 +793,8 @@ class Request extends Message
     }
 
     /**
+     * @deprecated use withHost()
+     *
      * Sets the host name of this request.
      *
      * This will update the Host header accordingly.
@@ -730,6 +810,14 @@ class Request extends Message
         return $this->updateHostHeader();
     }
 
+    public function withHost(string $host): Request
+    {
+        $that = clone $this;
+        $that->host = $host;
+
+        return $that->updateHostHeader();
+    }
+
     /**
      * Returns the port number of this request.
      *
@@ -741,6 +829,8 @@ class Request extends Message
     }
 
     /**
+     * @deprecated use withPort()
+     *
      * Sets the port number of this request.
      *
      * This will update the Host header accordingly.
@@ -754,6 +844,14 @@ class Request extends Message
         $this->port = $port;
 
         return $this->updateHostHeader();
+    }
+
+    public function withPort(int $port): Request
+    {
+        $that = clone $this;
+        $that->port = $port;
+
+        return $that->updateHostHeader();
     }
 
     /**
@@ -800,6 +898,8 @@ class Request extends Message
     }
 
     /**
+     * @deprecated use withPath()
+     *
      * Sets the request path.
      *
      * Example: `/user/profile`
@@ -821,6 +921,18 @@ class Request extends Message
         return $this->updateRequestUri();
     }
 
+    public function withPath(string $path): Request
+    {
+        if (strpos($path, '?') !== false) {
+            throw new \InvalidArgumentException('The request path must not contain a query string.');
+        }
+
+        $that = clone $this;
+        $that->path = $path;
+
+        return $that->updateRequestUri();
+    }
+
     /**
      * Returns the query string.
      *
@@ -836,6 +948,8 @@ class Request extends Message
     }
 
     /**
+     * @deprecated use withQueryString()
+     *
      * Sets the query string.
      *
      * @param string $queryString The new query string.
@@ -844,10 +958,20 @@ class Request extends Message
      */
     public function setQueryString(string $queryString) : Request
     {
-        $this->queryString = (string) $queryString;
+        $this->queryString = $queryString;
         parse_str($this->queryString, $this->query);
 
         return $this->updateRequestUri();
+    }
+
+    public function withQueryString(string $queryString): Request
+    {
+        $that = clone $this;
+
+        $that->queryString = $queryString;
+        parse_str($that->queryString, $that->query);
+
+        return $that->updateRequestUri();
     }
 
     /**
@@ -877,6 +1001,8 @@ class Request extends Message
     }
 
     /**
+     * @deprecated use withRequestUri()
+     *
      * Sets the request URI.
      *
      * This will update the request path, query string, and query parameters.
@@ -909,6 +1035,15 @@ class Request extends Message
         return $this;
     }
 
+    public function withRequestUri(string $requestUri): Request
+    {
+        $that = clone $this;
+
+        $that->setRequestUri($requestUri);
+
+        return $that;
+    }
+
     /**
      * Returns the URL of this request.
      *
@@ -933,6 +1068,8 @@ class Request extends Message
     }
 
     /**
+     * @deprecated use withUrl()
+     *
      * Sets the request URL.
      *
      * @param string $url The new URL.
@@ -997,6 +1134,15 @@ class Request extends Message
         return $this;
     }
 
+    public function withUrl(string $url): Request
+    {
+        $that = clone $this;
+
+        $that->setUrl($url);
+
+        return $that;
+    }
+
     /**
      * Returns the Referer URL if it is present and valid, else null.
      *
@@ -1028,6 +1174,8 @@ class Request extends Message
     }
 
     /**
+     * @deprecated use withSecure()
+     *
      * Sets whether this request is sent over a secure connection.
      *
      * @param bool $isSecure True to mark the request as secure, false to mark it as not secure.
@@ -1047,6 +1195,14 @@ class Request extends Message
         return $this;
     }
 
+    public function withSecure(bool $isSecure): Request
+    {
+        $that = clone $this;
+        $that->setSecure($isSecure);
+
+        return $that;
+    }
+
     /**
      * Returns the client IP address.
      *
@@ -1058,6 +1214,8 @@ class Request extends Message
     }
 
     /**
+     * @deprecated use withClientIp()
+     *
      * Sets the client IP address.
      *
      * @param string $ip The new IP address.
@@ -1069,6 +1227,14 @@ class Request extends Message
         $this->clientIp = $ip;
 
         return $this;
+    }
+
+    public function withClientIp(string $ip): Request
+    {
+        $that = clone $this;
+        $that->clientIp = $ip;
+
+        return $that;
     }
 
     /**

@@ -174,6 +174,8 @@ class Cookie
     }
 
     /**
+     * @deprecated use withExpires()
+     *
      * Sets the cookie expiry time.
      *
      * @param int $expires The unix timestamp at which the cookie expires, zero for a transient cookie.
@@ -187,6 +189,14 @@ class Cookie
         return $this;
     }
 
+    public function withExpires(int $expires): Cookie
+    {
+        $that = clone $this;
+        $that->expires = $expires;
+
+        return $that;
+    }
+
     /**
      * @return string|null
      */
@@ -196,19 +206,25 @@ class Cookie
     }
 
     /**
+     * @deprecated use withPath()
+     *
      * @param string|null $path
      *
      * @return static This cookie.
      */
     public function setPath(?string $path) : Cookie
     {
-        if ($path !== null) {
-            $path = (string) $path;
-        }
-
         $this->path = $path;
 
         return $this;
+    }
+
+    public function withPath(?string $path): Cookie
+    {
+        $that = clone $this;
+        $that->path = $path;
+
+        return $that;
     }
 
     /**
@@ -220,19 +236,25 @@ class Cookie
     }
 
     /**
+     * @deprecated use withDomain()
+     *
      * @param string|null $domain
      *
      * @return static This cookie.
      */
     public function setDomain(?string $domain) : Cookie
     {
-        if ($domain !== null) {
-            $domain = (string) $domain;
-        }
-
         $this->domain = $domain;
 
         return $this;
+    }
+
+    public function withDomain(?string $domain): Cookie
+    {
+        $that = clone $this;
+        $that->domain = $domain;
+
+        return $that;
     }
 
     /**
@@ -252,6 +274,8 @@ class Cookie
     }
 
     /**
+     * @deprecated use withSecure()
+     *
      * Sets whether this cookie should only be sent over a secure connection.
      *
      * @param bool $secure True to only send over a secure connection, false otherwise.
@@ -265,6 +289,14 @@ class Cookie
         return $this;
     }
 
+    public function withSecure(bool $secure): Cookie
+    {
+        $that = clone $this;
+        $that->secure = $secure;
+
+        return $that;
+    }
+
     /**
      * Returns whether to limit the scope of this cookie to HTTP requests.
      *
@@ -276,6 +308,8 @@ class Cookie
     }
 
     /**
+     * @deprecated use withHttpOnly()
+     *
      * Sets whether to limit the scope of this cookie to HTTP requests.
      *
      * Set to true to instruct the user agent to omit the cookie when providing access to
@@ -293,6 +327,14 @@ class Cookie
         $this->httpOnly = $httpOnly;
 
         return $this;
+    }
+
+    public function withHttpOnly(bool $httpOnly): Cookie
+    {
+        $that = clone $this;
+        $that->httpOnly = $httpOnly;
+
+        return $that;
     }
 
     /**

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Brick\Http;
 
 /**
+ * @todo make final
+ *
  * Represents an HTTP response to send back to the client.
  */
 class Response extends Message
@@ -151,6 +153,8 @@ class Response extends Message
     }
 
     /**
+     * @deprecated use withStatusCode()
+     *
      * Sets the status code of this response.
      *
      * @param int         $statusCode   The status code.
@@ -180,6 +184,14 @@ class Response extends Message
         return $this;
     }
 
+    public function withStatusCode(int $statusCode, ?string $reasonPhrase = null): Response
+    {
+        $that = clone $this;
+        $that->setStatusCode($statusCode);
+
+        return $that;
+    }
+
     /**
      * Returns the cookies currently set on this response.
      *
@@ -191,6 +203,8 @@ class Response extends Message
     }
 
     /**
+     * @deprecated use withCookie()
+     *
      * Sets a cookie on this response.
      *
      * @param \Brick\Http\Cookie $cookie The cookie to set.
@@ -205,7 +219,17 @@ class Response extends Message
         return $this;
     }
 
+    public function withCookie(Cookie $cookie): Response
+    {
+        $that = clone $this;
+        $that->setCookie($cookie);
+
+        return $that;
+    }
+
     /**
+     * @deprecated use withoutCookies()
+     *
      * Removes all cookies from this response.
      *
      * @return static This response.
@@ -217,7 +241,17 @@ class Response extends Message
         return $this->removeHeader('Set-Cookie');
     }
 
+    public function withoutCookies(): Response
+    {
+        $that = clone $this;
+        $that->cookies = [];
+
+        return $that->withoutHeader('Set-Cookie');
+    }
+
     /**
+     * @deprecated use withContent()
+     *
      * @param string|resource $content
      *
      * @return static This response.
@@ -231,6 +265,17 @@ class Response extends Message
         }
 
         return $this->setBody($body);
+    }
+
+    /**
+     * @param string|resource $content
+     */
+    public function withContent($content): Response
+    {
+        $that = clone $this;
+        $that->setContent($content);
+
+        return $that;
     }
 
     /**

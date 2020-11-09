@@ -42,6 +42,8 @@ abstract class Message
     }
 
     /**
+     * @deprecated use withProtocolVersion()
+     *
      * @param string $version
      *
      * @return static
@@ -51,6 +53,17 @@ abstract class Message
         $this->protocolVersion = $version;
 
         return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function withProtocolVersion(string $version): Message
+    {
+        $that = clone $this;
+        $that->protocolVersion = $version;
+
+        return $that;
     }
 
     /**
@@ -148,12 +161,14 @@ abstract class Message
     }
 
     /**
+     * @deprecated use withHeader()
+     *
      * Sets a header, replacing any existing values of any headers with the same case-insensitive name.
      *
      * The header value MUST be a string or an array of strings.
      *
-     * @param string       $name
-     * @param string|array $value
+     * @param string          $name
+     * @param string|string[] $value
      *
      * @return static
      */
@@ -166,12 +181,29 @@ abstract class Message
     }
 
     /**
+     * @param string|string[] $value
+     *
+     * @return static
+     */
+    public function withHeader(string $name, $value): Message
+    {
+        $that = clone $this;
+
+        $name = strtolower($name);
+        $that->headers[$name] = is_array($value) ? array_values($value) : [$value];
+
+        return $that;
+    }
+
+    /**
+     * @deprecated use withHeaders()
+     *
      * Sets headers, replacing any headers that have already been set on the message.
      *
      * The array keys MUST be a string. The array values must be either a
      * string or an array of strings.
      *
-     * @param array $headers
+     * @param array<string, string|string[]> $headers
      *
      * @return static
      */
@@ -185,10 +217,28 @@ abstract class Message
     }
 
     /**
+     * @param array<string, string|string[]> $headers
+     *
+     * @return static
+     */
+    public function withHeaders(array $headers): Message
+    {
+        $that = $this;
+
+        foreach ($headers as $name => $value) {
+            $that = $that->withHeader($name, $value);
+        }
+
+        return $that;
+    }
+
+    /**
+     * @deprecated use withAddedHeader()
+     *
      * Appends a header value to any existing values associated with the given header name.
      *
-     * @param string       $name
-     * @param string|array $value
+     * @param string          $name
+     * @param string|string[] $value
      *
      * @return static
      */
@@ -209,6 +259,21 @@ abstract class Message
     }
 
     /**
+     * @param string|string[] $value
+     *
+     * @return static
+     */
+    public function withAddedHeader(string $name, $value): Message
+    {
+        $that = clone $this;
+        $that->addHeader($name, $value);
+
+        return $that;
+    }
+
+    /**
+     * @deprecated use withAddedHeaders()
+     *
      * Merges in an associative array of headers.
      *
      * Each array key MUST be a string representing the case-insensitive name
@@ -217,7 +282,7 @@ abstract class Message
      * name, or, if a header does not already exist by the given name, then the
      * header is added.
      *
-     * @param array $headers
+     * @param array<string, string|string[]> $headers
      *
      * @return static
      */
@@ -231,6 +296,24 @@ abstract class Message
     }
 
     /**
+     * @param array<string, string|string[]> $headers
+     *
+     * @return static
+     */
+    public function withAddedHeaders(array $headers): Message
+    {
+        $that = $this;
+
+        foreach ($headers as $name => $value) {
+            $that = $that->withAddedHeader($name, $value);
+        }
+
+        return $that;
+    }
+
+    /**
+     * @deprecated use withoutHeader()
+     *
      * Removes a specific header by case-insensitive name.
      *
      * @param string $name
@@ -243,6 +326,19 @@ abstract class Message
         unset($this->headers[$name]);
 
         return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function withoutHeader(string $name) : Message
+    {
+        $that = clone $this;
+
+        $name = strtolower($name);
+        unset($that->headers[$name]);
+
+        return $that;
     }
 
     /**
@@ -272,6 +368,8 @@ abstract class Message
     }
 
     /**
+     * @deprecated use withBody()
+     *
      * Sets the message body.
      *
      * @param MessageBody|null $body
@@ -298,6 +396,18 @@ abstract class Message
         }
 
         return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function withBody(?MessageBody $body): Message
+    {
+        $that = clone $this;
+
+        $that->setBody($body);
+
+        return $that;
     }
 
     /**
