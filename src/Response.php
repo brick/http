@@ -176,8 +176,6 @@ class Response extends Message
             $reasonPhrase = isset(self::$statusCodes[$statusCode])
                 ? self::$statusCodes[$statusCode]
                 : 'Unknown';
-        } else {
-            $reasonPhrase = (string) $reasonPhrase;
         }
 
         $that->statusCode   = $statusCode;

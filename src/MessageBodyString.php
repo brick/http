@@ -17,11 +17,11 @@ class MessageBodyString implements MessageBody
     private $offset = 0;
 
     /**
-     * @param string $body
+     * @param string $body The message body.
      */
-    public function __construct($body)
+    public function __construct(string $body)
     {
-        $this->body = (string) $body;
+        $this->body = $body;
     }
 
     /**
