@@ -22,7 +22,7 @@ composer require brick/http
 Requirements
 ------------
 
-This library requires PHP 7.1 or later.
+This library requires PHP 7.4 or PHP 8.
 
 Package contents
 ----------------
