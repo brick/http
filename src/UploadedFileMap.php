@@ -39,12 +39,10 @@ final class UploadedFileMap
         foreach ($files as $file) {
             $keys = array_keys($file);
 
-            if (is_array($keys)) {
-                foreach ($keys as $key) {
-                    $result[$key] = [];
-                    foreach ($files as $index => $file) {
-                        $result[$key][$index] = $file[$key];
-                    }
+            foreach ($keys as $key) {
+                $result[$key] = [];
+                foreach ($files as $index => $file) {
+                    $result[$key][$index] = $file[$key];
                 }
             }
 

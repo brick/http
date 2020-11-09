@@ -1200,7 +1200,7 @@ final class Request extends Message
             $position--;
         }
 
-        usort($result, static function(array $a, array $b) {
+        usort($result, static function(array $a, array $b): int {
             return $b[2] - $a[2];
         });
 
