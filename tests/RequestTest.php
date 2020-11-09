@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Brick\Http\Tests;
 
+use Brick\Http\Exception\HttpBadRequestException;
 use Brick\Http\Request;
 use Brick\Http\Url;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -737,12 +739,11 @@ class RequestTest extends TestCase
         ];
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testWithInvalidSchemeThrowsException(): void
     {
         $request = new Request();
+
+        $this->expectException(InvalidArgumentException::class);
         $request->withScheme('ftp');
     }
 
@@ -883,12 +884,11 @@ class RequestTest extends TestCase
         ];
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testWithPathThrowsExceptionWhenPathIsInvalid(): void
     {
         $request = new Request();
+
+        $this->expectException(InvalidArgumentException::class);
         $request->withPath('/user/edit?user=123');
     }
 
@@ -1075,13 +1075,12 @@ class RequestTest extends TestCase
         $this->assertNull($request->getReferer());
     }
 
-    /**
-     * @expectedException        \Brick\Http\Exception\HttpBadRequestException
-     * @expectedExceptionMessage Invalid protocol: invalid_protocol
-     */
     public function testGetCurrentWithInvalidProtocolThrowsException(): void
     {
         $_SERVER['SERVER_PROTOCOL'] = 'invalid_protocol';
+
+        $this->expectException(HttpBadRequestException::class);
+        $this->expectExceptionMessage('Invalid protocol: invalid_protocol');
         Request::getCurrent();
     }
 
@@ -1106,13 +1105,11 @@ class RequestTest extends TestCase
         $this->assertSame($expectedArray, $newRequest->getFiles());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Expected Brick\Http\UploadedFile or array, got string
-     */
     public function testWithFilesWithInvalidContentsThrowException(): void
     {
         $request = new Request();
+
+        $this->expectException(InvalidArgumentException::class);
         $request->withFiles(['nested' => ['array' => ['contains' => 'string']]]);
     }
 
@@ -1217,43 +1214,43 @@ class RequestTest extends TestCase
         ];
     }
 
-    /**
-     * @expectedException        \InvalidArgumentException
-     * @expectedExceptionMessage The URL provided is not valid.
-     */
     public function testWithUrlWithInvalidUrl(): void
     {
         $request = new Request();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The URL provided is not valid.');
+
         $request->withUrl('http:////invalid_url');
     }
 
-    /**
-     * @expectedException        \InvalidArgumentException
-     * @expectedExceptionMessage The URL must have a scheme.
-     */
     public function testWithUrlWithNoUrlScheme(): void
     {
         $request = new Request();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The URL must have a scheme.');
+
         $request->withUrl('invalid_protocol://invalid_url');
     }
 
-    /**
-     * @expectedException        \InvalidArgumentException
-     * @expectedExceptionMessage The URL scheme "ftp" is not acceptable.
-     */
     public function testWithUrlWithUnsupportedProtocol(): void
     {
         $request = new Request();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The URL scheme "ftp" is not acceptable.');
+
         $request->withUrl('ftp://invalid_url');
     }
 
-    /**
-     * @expectedException        \InvalidArgumentException
-     * @expectedExceptionMessage The URL must have a host name.
-     */
     public function testWithUrlWithNoHostName(): void
     {
         $request = new Request();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The URL must have a host name.');
+
         $request->withUrl('http:sub.site.org');
     }
 

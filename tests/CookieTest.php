@@ -6,6 +6,7 @@ namespace Brick\Http\Tests;
 
 use Brick\Http\Cookie;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -105,12 +106,12 @@ class CookieTest extends TestCase
 
     /**
      * @dataProvider providerParseInvalidCookieThrowsException
-     * @expectedException \InvalidArgumentException
      *
      * @param string $cookieString
      */
     public function testParseInvalidCookieThrowsException(string $cookieString): void
     {
+        $this->expectException(InvalidArgumentException::class);
         Cookie::parse($cookieString);
     }
 

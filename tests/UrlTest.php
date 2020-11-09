@@ -7,6 +7,7 @@ namespace Brick\Http\Tests;
 use Brick\Http\Url;
 use Brick\Http\Path;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -44,13 +45,12 @@ class UrlTest extends TestCase
         $this->assertSame($isSecure, $url->isSecure());
     }
 
-    /**
-     * @expectedException        \InvalidArgumentException
-     * @expectedExceptionMessage URL must contain a host name.
-     */
     public function testConstructorUrlWithNoHostName(): void
     {
-        $url = new Url('http:sub.site.org');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('URL must contain a host name.');
+
+        new Url('http:sub.site.org');
     }
 
     /**
@@ -71,12 +71,13 @@ class UrlTest extends TestCase
 
     /**
      * @dataProvider providerInvalidUrl
-     * @expectedException \InvalidArgumentException
      *
      * @param string $url
      */
     public function testInvalidUrl(string $url): void
     {
+        $this->expectException(InvalidArgumentException::class);
+
         new Url($url);
     }
 

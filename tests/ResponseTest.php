@@ -10,7 +10,9 @@ use Brick\Http\MessageBodyString;
 use Brick\Http\MessageBodyResource;
 use Brick\Http\Response;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 /**
  * Unit tests for class Request.
@@ -64,13 +66,15 @@ class ResponseTest extends TestCase
 
     /**
      * @dataProvider providerWithInvalidStatusCodeThrowsException
-     * @expectedException \InvalidArgumentException
      *
      * @param int $statusCode
      */
     public function testWithInvalidStatusCodeThrowsException(int $statusCode): void
     {
         $response = new Response();
+
+        $this->expectException(InvalidArgumentException::class);
+
         $response->withStatusCode($statusCode);
     }
 
@@ -155,30 +159,27 @@ class ResponseTest extends TestCase
         $this->assertFalse($response->isStatusCode(400));
     }
 
-    /**
-     * @expectedException        \RuntimeException
-     * @expectedExceptionMessage Could not parse response (error 1).
-     */
     public function testParseShouldThrowRuntimeExceptionError1(): void
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Could not parse response (error 1).');
+
         Response::parse('<!DOCTYPE html><html>HTML strings</html>');
     }
 
-    /**
-     * @expectedException        \RuntimeException
-     * @expectedExceptionMessage Could not parse response (error 2).
-     */
     public function testParseShouldThrowRuntimeExceptionError2(): void
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Could not parse response (error 2).');
+
         Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Type: text/plain' . "\r\n");
     }
 
-    /**
-     * @expectedException        \RuntimeException
-     * @expectedExceptionMessage Could not parse response (error 3).
-     */
     public function testParseShouldThrowRuntimeExceptionError3(): void
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Could not parse response (error 3).');
+
         Response::parse('HTTP/1.0 200 OK' . "\r\n" . 'Content-Typetext/plain' . "\r\n\r\n");
     }
 
