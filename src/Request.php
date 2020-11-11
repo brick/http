@@ -111,6 +111,11 @@ final class Request extends Message
     private string $clientIp = '0.0.0.0';
 
     /**
+     * @var array<string, mixed>
+     */
+    private array $attributes = [];
+
+    /**
      * Returns a Request object representing the current request.
      *
      * Note that due to the way PHP works, the request body will be empty
@@ -1177,6 +1182,42 @@ final class Request extends Message
     public function getAcceptLanguage() : array
     {
         return $this->parseQualityValues($this->getHeader('Accept-Language'));
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
+    public function getAttribute(string $name, $default = null)
+    {
+        if (array_key_exists($name, $this->attributes)) {
+            return $this->attributes[$name];
+        }
+
+        return $default;
+    }
+
+    /**
+     * Returns a copy of this request with the given attribute set.
+     *
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param string $name  The attribute name.
+     * @param mixed  $value The attribute value.
+     *
+     * @return Request The updated request.
+     */
+    public function withAttribute(string $name, $value): Request
+    {
+        $that = clone $this;
+
+        $that->attributes[$name] = $value;
+
+        return $that;
     }
 
     /**
