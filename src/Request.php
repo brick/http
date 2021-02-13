@@ -274,7 +274,7 @@ final class Request extends Message
 
             if ($requestHeaders) {
                 foreach ($requestHeaders as $key => $value) {
-                    $key = strtolower($key);
+                    $key = strtolower((string) $key);
                     $headers[$key] = [$value];
                 }
 
